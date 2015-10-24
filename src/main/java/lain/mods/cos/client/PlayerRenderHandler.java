@@ -8,8 +8,6 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -18,32 +16,7 @@ public class PlayerRenderHandler
 
     public static boolean HideCosArmor = false;
 
-    private final LoadingCache<EntityPlayer, ItemStack[]> cache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).removalListener(new RemovalListener<EntityPlayer, ItemStack[]>()
-    {
-
-        @Override
-        public void onRemoval(RemovalNotification<EntityPlayer, ItemStack[]> notification)
-        {
-            EntityPlayer owner = notification.getKey();
-            ItemStack[] cachedArmor = notification.getValue();
-
-            if (owner == null || cachedArmor == null)
-                return;
-
-            ItemStack[] armor = owner.inventory.armorInventory;
-
-            if (armor == null || armor.length != cachedArmor.length)
-                return; // Incompatible
-
-            for (int i = 0; i < cachedArmor.length; i++)
-            {
-                if (cachedArmor[i] != null)
-                    armor[i] = cachedArmor[i];
-                cachedArmor[i] = null;
-            }
-        }
-
-    }).build(new CacheLoader<EntityPlayer, ItemStack[]>()
+    private final LoadingCache<EntityPlayer, ItemStack[]> cache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build(new CacheLoader<EntityPlayer, ItemStack[]>()
     {
 
         @Override
@@ -67,11 +40,7 @@ public class PlayerRenderHandler
             return; // Incompatible
 
         for (int i = 0; i < cachedArmor.length; i++)
-        {
-            if (cachedArmor[i] != null)
-                armor[i] = cachedArmor[i];
-            cachedArmor[i] = null;
-        }
+            armor[i] = cachedArmor[i];
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -84,19 +53,12 @@ public class PlayerRenderHandler
             return; // Incompatible
 
         for (int i = 0; i < cachedArmor.length; i++)
-        {
-            if (cachedArmor[i] != null)
-                armor[i] = cachedArmor[i];
-            cachedArmor[i] = null;
-        }
+            armor[i] = cachedArmor[i];
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.HIGH, receiveCanceled = true)
     public void handleEvent(RenderPlayerEvent.Pre event)
     {
-        if (HideCosArmor)
-            return;
-
         ItemStack[] cachedArmor = cache.getUnchecked(event.entityPlayer);
         ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmor(event.entityPlayer);
         ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
@@ -104,24 +66,20 @@ public class PlayerRenderHandler
         if (armor == null || armor.length != cachedArmor.length)
             return; // Incompatible
 
+        for (int i = 0; i < cachedArmor.length; i++)
+            cachedArmor[i] = armor[i];
+
+        if (HideCosArmor)
+            return;
+
         if (cosArmor != null)
         {
             for (int i = 0; i < cachedArmor.length; i++)
             {
-                if (cachedArmor[i] != null)
-                    armor[i] = cachedArmor[i];
-                cachedArmor[i] = null;
-
                 if (CosmeticArmorReworked.invMan.isSkinArmor(event.entityPlayer, i))
-                {
-                    cachedArmor[i] = armor[i];
                     armor[i] = null;
-                }
                 else if (cosArmor[i] != null)
-                {
-                    cachedArmor[i] = armor[i];
                     armor[i] = cosArmor[i];
-                }
             }
         }
     }
