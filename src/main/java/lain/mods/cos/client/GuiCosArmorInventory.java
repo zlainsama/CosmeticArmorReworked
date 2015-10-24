@@ -131,7 +131,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         for (int i = 0; i < 4; i++)
         {
             int j = 3 - i;
-            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, 97, 7 + 18 * i, 5, 5, "");
+            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97, guiTop + 7 + 18 * i, 5, 5, "");
             t.state = CosmeticArmorReworked.invMan.isSkinArmor(mc.thePlayer, j) ? 1 : 0;
             buttonList.add(t);
         }
