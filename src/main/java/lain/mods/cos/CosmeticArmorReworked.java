@@ -12,6 +12,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(modid = "cosmeticarmorreworked", useMetadata = true)
 public class CosmeticArmorReworked
@@ -19,6 +21,9 @@ public class CosmeticArmorReworked
 
     @Mod.Instance("cosmeticarmorreworked")
     public static CosmeticArmorReworked instance;
+
+    @SideOnly(Side.CLIENT)
+    public static KeyHandler keyHandler;
 
     public static final NetworkManager network = new NetworkManager("lain|nm|cos");
 
@@ -34,7 +39,7 @@ public class CosmeticArmorReworked
         if (event.getSide().isClient())
         {
             MinecraftForge.EVENT_BUS.register(new PlayerRenderHandler());
-            FMLCommonHandler.instance().bus().register(new KeyHandler());
+            FMLCommonHandler.instance().bus().register(keyHandler = new KeyHandler());
             MinecraftForge.EVENT_BUS.register(new GuiEvents());
         }
     }
