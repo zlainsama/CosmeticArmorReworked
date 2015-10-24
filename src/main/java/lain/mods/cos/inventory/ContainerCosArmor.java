@@ -20,12 +20,10 @@ public class ContainerCosArmor extends Container
 
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public IInventory craftResult = new InventoryCraftResult();
-    public boolean isLocal;
     public EntityPlayer player;
 
-    public ContainerCosArmor(InventoryPlayer invPlayer, InventoryCosArmor invCosArmor, boolean isLocal, EntityPlayer player)
+    public ContainerCosArmor(InventoryPlayer invPlayer, InventoryCosArmor invCosArmor, EntityPlayer player)
     {
-        this.isLocal = isLocal;
         this.player = player;
 
         // CraftingResult
