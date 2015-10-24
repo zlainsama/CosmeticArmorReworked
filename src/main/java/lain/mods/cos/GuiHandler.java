@@ -2,7 +2,6 @@ package lain.mods.cos;
 
 import lain.mods.cos.client.GuiCosArmorInventory;
 import lain.mods.cos.inventory.ContainerCosArmor;
-import lain.mods.cos.inventory.InventoryCosArmor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -16,7 +15,7 @@ public class GuiHandler implements IGuiHandler
         switch (id)
         {
             case 1:
-                return new GuiCosArmorInventory(new ContainerCosArmor(player.inventory, InventoryCosArmor.getCosArmorInventory(player), player));
+                return new GuiCosArmorInventory(new ContainerCosArmor(player.inventory, CosmeticArmorReworked.invMan.getCosArmorInventory(player), player));
         }
         return null;
     }
@@ -27,7 +26,7 @@ public class GuiHandler implements IGuiHandler
         switch (id)
         {
             case 1:
-                return new ContainerCosArmor(player.inventory, InventoryCosArmor.getCosArmorInventory(player), player);
+                return new ContainerCosArmor(player.inventory, CosmeticArmorReworked.invMan.getCosArmorInventory(player), player);
         }
         return null;
     }

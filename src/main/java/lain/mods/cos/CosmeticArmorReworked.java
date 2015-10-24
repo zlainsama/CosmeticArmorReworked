@@ -10,6 +10,7 @@ import lain.mods.cos.network.packet.PacketSyncCosArmor;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -24,6 +25,9 @@ public class CosmeticArmorReworked
 
     @SideOnly(Side.CLIENT)
     public static KeyHandler keyHandler;
+
+    @SidedProxy(serverSide = "lain.mods.cos.InventoryManager", clientSide = "lain.mods.cos.client.InventoryManagerClient")
+    public static InventoryManager invMan;
 
     public static final NetworkManager network = new NetworkManager("lain|nm|cos");
 
@@ -42,6 +46,9 @@ public class CosmeticArmorReworked
             FMLCommonHandler.instance().bus().register(keyHandler = new KeyHandler());
             MinecraftForge.EVENT_BUS.register(new GuiEvents());
         }
+
+        MinecraftForge.EVENT_BUS.register(invMan);
+        FMLCommonHandler.instance().bus().register(invMan);
     }
 
 }

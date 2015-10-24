@@ -1,7 +1,7 @@
 package lain.mods.cos.client;
 
 import java.util.concurrent.TimeUnit;
-import lain.mods.cos.inventory.InventoryCosArmor;
+import lain.mods.cos.CosmeticArmorReworked;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -98,7 +98,7 @@ public class PlayerRenderHandler
             return;
 
         ItemStack[] cachedArmor = cache.getUnchecked(event.entityPlayer);
-        ItemStack[] cosArmor = InventoryCosArmor.getCosArmor(event.entityPlayer);
+        ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmor(event.entityPlayer);
         ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
 
         if (armor == null || armor.length != 4)
@@ -112,7 +112,7 @@ public class PlayerRenderHandler
                     armor[i] = cachedArmor[i];
                 cachedArmor[i] = null;
 
-                if (InventoryCosArmor.isSkinCosArmor(event.entityPlayer, i))
+                if (CosmeticArmorReworked.invMan.isSkinCosArmor(event.entityPlayer, i))
                 {
                     cachedArmor[i] = armor[i];
                     armor[i] = null;

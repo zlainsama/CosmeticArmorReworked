@@ -2,7 +2,7 @@ package lain.mods.cos.network.packet;
 
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
-import lain.mods.cos.inventory.InventoryCosArmor;
+import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.network.NetworkPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -24,8 +24,8 @@ public class PacketSyncCosArmor extends NetworkPacket
     {
         this.entityId = player.getEntityId();
         this.slot = slot;
-        this.isSkinCosArmor = InventoryCosArmor.isSkinCosArmor(player, slot);
-        this.itemCosArmor = InventoryCosArmor.getCosArmorSlot(player, slot);
+        this.isSkinCosArmor = CosmeticArmorReworked.invMan.isSkinCosArmor(player, slot);
+        this.itemCosArmor = CosmeticArmorReworked.invMan.getCosArmorSlot(player, slot);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class PacketSyncCosArmor extends NetworkPacket
 
         Entity entity = mc.theWorld.getEntityByID(entityId);
         if (entity != null && entity instanceof EntityPlayer)
-            InventoryCosArmor.setCosArmorClient((EntityPlayer) entity, slot, isSkinCosArmor, itemCosArmor);
+            CosmeticArmorReworked.invMan.setCosArmorClient((EntityPlayer) entity, slot, isSkinCosArmor, itemCosArmor);
     }
 
     @Override
