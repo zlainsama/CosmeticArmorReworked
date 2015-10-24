@@ -13,7 +13,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 public class KeyHandler
 {
 
-    public KeyBinding keyOpenCosArmorInventory = new KeyBinding("key.openCosArmorInventory", Keyboard.KEY_C, "key.categories.inventory");
+    public KeyBinding keyOpenCosArmorInventory = new KeyBinding("cos.key.openCosArmorInventory", Keyboard.KEY_C, "key.categories.inventory");
 
     public KeyHandler()
     {
