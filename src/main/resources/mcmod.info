@@ -1,0 +1,21 @@
+{
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "cosmeticarmorreworked",
+    "name": "CosmeticArmorReworked",
+    "description": "",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://github.com/zlainsama/CosmeticArmorReworked",
+    "updateUrl": "",
+    "authorList": ["zlainsama"],
+    "credits": "dmillerw - original author",
+    "logoFile": "",
+    "screenshots": [],
+    "parent": "",
+    "requiredMods": ["Forge"],
+    "dependencies": [],
+    "dependants": [],
+    "useDependencyInformation": true
+  }]
+}
