@@ -3,35 +3,33 @@ package lain.mods.cos;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class InventoryManager
 {
 
     public ItemStack[] getCosArmor(EntityPlayer player)
     {
-        return null;
+        return getCosArmorInventory(player).getInventory();
     }
 
     public ItemStack getCosArmorSlot(EntityPlayer player, int slot)
     {
-        return null;
+        return getCosArmorInventory(player).getStackInSlot(slot);
     }
 
-    public boolean isSkinCosArmor(EntityPlayer player, int slot)
+    public boolean isSkinArmor(EntityPlayer player, int slot)
     {
-        return false;
+        return getCosArmorInventory(player).isSkinArmor(slot);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void setCosArmorClient(EntityPlayer player, int slot, boolean isSkinCosArmor, ItemStack itemCosArmor)
+    public void setCosArmorClient(EntityPlayer player, int slot, boolean isSkinArmor, ItemStack itemCosArmor)
     {
-
+        // TODO
     }
-    
+
     public InventoryCosArmor getCosArmorInventory(EntityPlayer player)
     {
+        // TODO
         return null;
     }
 

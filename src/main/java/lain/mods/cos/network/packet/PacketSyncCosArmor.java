@@ -24,7 +24,7 @@ public class PacketSyncCosArmor extends NetworkPacket
     {
         this.entityId = player.getEntityId();
         this.slot = slot;
-        this.isSkinCosArmor = CosmeticArmorReworked.invMan.isSkinCosArmor(player, slot);
+        this.isSkinCosArmor = CosmeticArmorReworked.invMan.isSkinArmor(player, slot);
         this.itemCosArmor = CosmeticArmorReworked.invMan.getCosArmorSlot(player, slot);
     }
 

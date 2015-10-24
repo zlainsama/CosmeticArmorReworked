@@ -32,10 +32,10 @@ public class PlayerRenderHandler
 
             ItemStack[] armor = owner.inventory.armorInventory;
 
-            if (armor == null || armor.length != 4)
+            if (armor == null || armor.length != cachedArmor.length)
                 return; // Incompatible
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < cachedArmor.length; i++)
             {
                 if (cachedArmor[i] != null)
                     armor[i] = cachedArmor[i];
@@ -47,9 +47,9 @@ public class PlayerRenderHandler
     {
 
         @Override
-        public ItemStack[] load(EntityPlayer key) throws Exception
+        public ItemStack[] load(EntityPlayer owner) throws Exception
         {
-            return new ItemStack[4];
+            return new ItemStack[owner.inventory.armorInventory.length];
         }
 
     });
@@ -63,10 +63,10 @@ public class PlayerRenderHandler
         ItemStack[] cachedArmor = cache.getUnchecked(event.entityPlayer);
         ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
 
-        if (armor == null || armor.length != 4)
+        if (armor == null || armor.length != cachedArmor.length)
             return; // Incompatible
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < cachedArmor.length; i++)
         {
             if (cachedArmor[i] != null)
                 armor[i] = cachedArmor[i];
@@ -80,10 +80,10 @@ public class PlayerRenderHandler
         ItemStack[] cachedArmor = cache.getUnchecked(event.entityPlayer);
         ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
 
-        if (armor == null || armor.length != 4)
+        if (armor == null || armor.length != cachedArmor.length)
             return; // Incompatible
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < cachedArmor.length; i++)
         {
             if (cachedArmor[i] != null)
                 armor[i] = cachedArmor[i];
@@ -101,18 +101,18 @@ public class PlayerRenderHandler
         ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmor(event.entityPlayer);
         ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
 
-        if (armor == null || armor.length != 4)
+        if (armor == null || armor.length != cachedArmor.length)
             return; // Incompatible
 
         if (cosArmor != null)
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < cachedArmor.length; i++)
             {
                 if (cachedArmor[i] != null)
                     armor[i] = cachedArmor[i];
                 cachedArmor[i] = null;
 
-                if (CosmeticArmorReworked.invMan.isSkinCosArmor(event.entityPlayer, i))
+                if (CosmeticArmorReworked.invMan.isSkinArmor(event.entityPlayer, i))
                 {
                     cachedArmor[i] = armor[i];
                     armor[i] = null;
