@@ -1,6 +1,7 @@
 package lain.mods.cos.client;
 
 import lain.mods.cos.CosmeticArmorReworked;
+import lain.mods.cos.inventory.InventoryCosArmor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiAchievements;
 import net.minecraft.client.gui.achievement.GuiStats;
@@ -74,14 +75,23 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
     }
 
     @Override
-    protected void actionPerformed(GuiButton p_actionPerformed_1_)
+    protected void actionPerformed(GuiButton button)
     {
-        if (p_actionPerformed_1_.id == 0)
+        if (button.id == 0)
         {
             mc.displayGuiScreen(new GuiAchievements(this, mc.thePlayer.getStatFileWriter()));
         }
-        if (p_actionPerformed_1_.id == 1)
+        if (button.id == 1)
             mc.displayGuiScreen(new GuiStats(this, mc.thePlayer.getStatFileWriter()));
+
+        if (button.id >= 80 && button.id < 84)
+        {
+            int i = button.id - 80;
+            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventory(mc.thePlayer);
+            inv.setSkinArmor(i, !inv.isSkinArmor(i));
+            inv.markDirty();
+            ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(i) ? 1 : 0;
+        }
     }
 
     @Override
@@ -110,11 +120,19 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         ySizeFloat = p_drawScreen_2_;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui()
     {
         buttonList.clear();
         super.initGui();
+        for (int i = 0; i < 4; i++)
+        {
+            int j = 3 - i;
+            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, 97, 7 + 18 * i, 5, 5, "");
+            t.state = CosmeticArmorReworked.invMan.isSkinArmor(mc.thePlayer, j) ? 1 : 0;
+            buttonList.add(t);
+        }
     }
 
     @Override
