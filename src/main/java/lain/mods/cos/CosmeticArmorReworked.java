@@ -18,6 +18,9 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 public class CosmeticArmorReworked
 {
 
+    @Mod.Instance("cosmeticarmorreworked")
+    public static CosmeticArmorReworked instance;
+
     public static final NetworkManager network = new NetworkManager("lain|nm|cos");
 
     @Mod.EventHandler
