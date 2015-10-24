@@ -27,7 +27,7 @@ public class GuiCosArmorToggleButton extends GuiButton
             OpenGlHelper.glBlendFunc(770, 771, 1, 0);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0 + 5 * state, 166, 5, 5);
+            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0 + 5 * state, 176, 5, 5);
 
             this.mouseDragged(mc, x, y);
         }
