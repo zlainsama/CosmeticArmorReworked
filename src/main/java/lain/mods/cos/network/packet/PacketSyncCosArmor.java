@@ -21,6 +21,10 @@ public class PacketSyncCosArmor extends NetworkPacket
     boolean isSkinArmor;
     ItemStack itemCosArmor;
 
+    public PacketSyncCosArmor()
+    {
+    }
+
     public PacketSyncCosArmor(EntityPlayer player, int slot)
     {
         this.entityId = player.getEntityId();

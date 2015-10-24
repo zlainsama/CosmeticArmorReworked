@@ -14,6 +14,10 @@ public class PacketSetSkinArmor extends NetworkPacket
     int slot;
     boolean isSkinArmor;
 
+    public PacketSetSkinArmor()
+    {
+    }
+
     public PacketSetSkinArmor(EntityPlayer player, int slot)
     {
         this.slot = slot;
