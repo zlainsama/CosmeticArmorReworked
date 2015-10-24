@@ -22,11 +22,6 @@ public class InventoryManager
         return getCosArmorInventory(player).isSkinArmor(slot);
     }
 
-    public void setCosArmorClient(EntityPlayer player, int slot, boolean isSkinArmor, ItemStack itemCosArmor)
-    {
-        // TODO
-    }
-
     public InventoryCosArmor getCosArmorInventory(EntityPlayer player)
     {
         // TODO

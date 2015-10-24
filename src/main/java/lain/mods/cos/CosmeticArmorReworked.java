@@ -6,6 +6,7 @@ import lain.mods.cos.client.PlayerRenderHandler;
 import lain.mods.cos.network.NetworkManager;
 import lain.mods.cos.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.network.packet.PacketOpenNormalInventory;
+import lain.mods.cos.network.packet.PacketSetSkinArmor;
 import lain.mods.cos.network.packet.PacketSyncCosArmor;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -35,8 +36,9 @@ public class CosmeticArmorReworked
     public void init(FMLPreInitializationEvent event)
     {
         network.registerPacket(1, PacketSyncCosArmor.class);
-        network.registerPacket(2, PacketOpenCosArmorInventory.class);
-        network.registerPacket(3, PacketOpenNormalInventory.class);
+        network.registerPacket(2, PacketSetSkinArmor.class);
+        network.registerPacket(3, PacketOpenCosArmorInventory.class);
+        network.registerPacket(4, PacketOpenNormalInventory.class);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 

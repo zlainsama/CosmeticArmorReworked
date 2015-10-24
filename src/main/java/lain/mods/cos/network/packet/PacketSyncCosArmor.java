@@ -3,6 +3,7 @@ package lain.mods.cos.network.packet;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import lain.mods.cos.CosmeticArmorReworked;
+import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.NetworkPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -17,14 +18,14 @@ public class PacketSyncCosArmor extends NetworkPacket
 
     int entityId;
     int slot;
-    boolean isSkinCosArmor;
+    boolean isSkinArmor;
     ItemStack itemCosArmor;
 
     public PacketSyncCosArmor(EntityPlayer player, int slot)
     {
         this.entityId = player.getEntityId();
         this.slot = slot;
-        this.isSkinCosArmor = CosmeticArmorReworked.invMan.isSkinArmor(player, slot);
+        this.isSkinArmor = CosmeticArmorReworked.invMan.isSkinArmor(player, slot);
         this.itemCosArmor = CosmeticArmorReworked.invMan.getCosArmorSlot(player, slot);
     }
 
@@ -38,7 +39,12 @@ public class PacketSyncCosArmor extends NetworkPacket
 
         Entity entity = mc.theWorld.getEntityByID(entityId);
         if (entity != null && entity instanceof EntityPlayer)
-            CosmeticArmorReworked.invMan.setCosArmorClient((EntityPlayer) entity, slot, isSkinCosArmor, itemCosArmor);
+        {
+            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventory((EntityPlayer) entity);
+            inv.setInventorySlotContents(slot, itemCosArmor);
+            inv.setSkinArmor(slot, isSkinArmor);
+            inv.markDirty();
+        }
     }
 
     @Override
@@ -53,7 +59,7 @@ public class PacketSyncCosArmor extends NetworkPacket
 
         entityId = pb.readInt();
         slot = pb.readByte();
-        isSkinCosArmor = pb.readBoolean();
+        isSkinArmor = pb.readBoolean();
         try
         {
             itemCosArmor = pb.readItemStackFromBuffer();
@@ -70,7 +76,7 @@ public class PacketSyncCosArmor extends NetworkPacket
 
         pb.writeInt(entityId);
         pb.writeByte(slot);
-        pb.writeBoolean(isSkinCosArmor);
+        pb.writeBoolean(isSkinArmor);
         try
         {
             pb.writeItemStackToBuffer(itemCosArmor);
