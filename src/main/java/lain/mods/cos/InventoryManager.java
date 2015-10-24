@@ -3,6 +3,8 @@ package lain.mods.cos;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class InventoryManager
 {
@@ -26,6 +28,12 @@ public class InventoryManager
     {
         // TODO
         return null;
+    }
+
+    @SubscribeEvent
+    public void handleEvent(PlayerLoggedInEvent event)
+    {
+
     }
 
 }

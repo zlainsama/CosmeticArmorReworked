@@ -19,18 +19,24 @@ public class GuiEvents
     @SubscribeEvent
     public void guiPostAction(GuiScreenEvent.ActionPerformedEvent.Post event)
     {
-        if (event.gui instanceof GuiInventory)
-        {
-            if (event.button.id == 76)
-                CosmeticArmorReworked.network.sendToServer(new PacketOpenCosArmorInventory());
-        }
-
-        if (event.gui instanceof GuiCosArmorInventory)
+        if (event.gui instanceof GuiInventory || event.gui instanceof GuiCosArmorInventory)
         {
             if (event.button.id == 76)
             {
-                event.gui.mc.displayGuiScreen(new GuiInventory(event.gui.mc.thePlayer));
-                CosmeticArmorReworked.network.sendToServer(new PacketOpenNormalInventory());
+                if (event.gui instanceof GuiCosArmorInventory)
+                {
+                    event.gui.mc.displayGuiScreen(new GuiInventory(event.gui.mc.thePlayer));
+                    CosmeticArmorReworked.network.sendToServer(new PacketOpenNormalInventory());
+                }
+                else
+                {
+                    CosmeticArmorReworked.network.sendToServer(new PacketOpenCosArmorInventory());
+                }
+            }
+            else if (event.button.id == 77)
+            {
+                PlayerRenderHandler.HideCosArmor = !PlayerRenderHandler.HideCosArmor;
+                ((GuiCosArmorToggleButton) event.button).state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
             }
         }
     }
@@ -54,6 +60,9 @@ public class GuiEvents
             }
 
             event.buttonList.add(new GuiCosArmorButton(76, guiLeft + 66, guiTop + 67, 10, 10, event.gui instanceof GuiCosArmorInventory ? "cos.gui.buttonCos" : "cos.gui.buttonNormal"));
+            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(77, guiLeft + 60, guiTop + 67, 5, 5, "");
+            t.state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
+            event.buttonList.add(t);
         }
     }
 
