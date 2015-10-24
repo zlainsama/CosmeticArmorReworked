@@ -2,6 +2,7 @@ package lain.mods.cos.client;
 
 import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.inventory.InventoryCosArmor;
+import lain.mods.cos.network.packet.PacketSetSkinArmor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiAchievements;
 import net.minecraft.client.gui.achievement.GuiStats;
@@ -91,6 +92,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
             inv.setSkinArmor(i, !inv.isSkinArmor(i));
             inv.markDirty();
             ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(i) ? 1 : 0;
+            CosmeticArmorReworked.network.sendToServer(new PacketSetSkinArmor(mc.thePlayer, i));
         }
     }
 
@@ -142,11 +144,6 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
             mc.thePlayer.closeScreen();
         else
             super.keyTyped(par1, par2);
-    }
-
-    @Override
-    public void updateScreen()
-    {
     }
 
 }
