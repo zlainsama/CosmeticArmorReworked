@@ -1,7 +1,6 @@
 package lain.mods.cos;
 
 import lain.mods.cos.client.GuiEvents;
-import lain.mods.cos.client.GuiHandlerClient;
 import lain.mods.cos.client.KeyHandler;
 import lain.mods.cos.client.PlayerRenderHandler;
 import lain.mods.cos.network.NetworkManager;
@@ -30,18 +29,14 @@ public class CosmeticArmorReworked
         network.registerPacket(2, PacketOpenCosArmorInventory.class);
         network.registerPacket(3, PacketOpenNormalInventory.class);
 
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+
         if (event.getSide().isClient())
         {
             MinecraftForge.EVENT_BUS.register(new PlayerRenderHandler());
-            NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandlerClient());
             FMLCommonHandler.instance().bus().register(new KeyHandler());
             MinecraftForge.EVENT_BUS.register(new GuiEvents());
         }
-        else
-        {
-            NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
-        }
-
     }
 
 }
