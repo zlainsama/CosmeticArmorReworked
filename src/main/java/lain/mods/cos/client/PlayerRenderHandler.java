@@ -16,6 +16,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class PlayerRenderHandler
 {
 
+    public static boolean HideCosArmor = false;
+
     private final LoadingCache<EntityPlayer, ItemStack[]> cache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).removalListener(new RemovalListener<EntityPlayer, ItemStack[]>()
     {
 
@@ -92,6 +94,9 @@ public class PlayerRenderHandler
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void handleEvent(RenderPlayerEvent.Pre event)
     {
+        if (HideCosArmor)
+            return;
+
         ItemStack[] cachedArmor = cache.getUnchecked(event.entityPlayer);
         ItemStack[] cosArmor = InventoryCosArmor.getCosArmor(event.entityPlayer);
         ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
@@ -99,7 +104,7 @@ public class PlayerRenderHandler
         if (armor == null || armor.length != 4)
             return; // Incompatible
 
-        if (!InventoryCosArmor.isDisabled() && cosArmor != null)
+        if (cosArmor != null)
         {
             for (int i = 0; i < 4; i++)
             {
