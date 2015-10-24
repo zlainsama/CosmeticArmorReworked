@@ -8,13 +8,40 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class PlayerRenderHandler
 {
 
-    private final LoadingCache<EntityPlayer, ItemStack[]> cache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build(new CacheLoader<EntityPlayer, ItemStack[]>()
+    private final LoadingCache<EntityPlayer, ItemStack[]> cache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).removalListener(new RemovalListener<EntityPlayer, ItemStack[]>()
+    {
+
+        @Override
+        public void onRemoval(RemovalNotification<EntityPlayer, ItemStack[]> notification)
+        {
+            EntityPlayer owner = notification.getKey();
+            ItemStack[] cachedArmor = notification.getValue();
+
+            if (owner == null || cachedArmor == null)
+                return;
+
+            ItemStack[] armor = owner.inventory.armorInventory;
+
+            if (armor == null || armor.length != 4)
+                return; // Incompatible
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (cachedArmor[i] != null)
+                    armor[i] = cachedArmor[i];
+                cachedArmor[i] = null;
+            }
+        }
+
+    }).build(new CacheLoader<EntityPlayer, ItemStack[]>()
     {
 
         @Override
