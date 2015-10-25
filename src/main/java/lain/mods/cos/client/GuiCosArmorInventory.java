@@ -128,10 +128,15 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
     {
         buttonList.clear();
         super.initGui();
+
+        int offset = 0;
+        if (!mc.thePlayer.getActivePotionEffects().isEmpty() && !GuiEvents.isNeiHidden())
+            offset -= 60;
+
         for (int i = 0; i < 4; i++)
         {
             int j = 3 - i;
-            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97, guiTop + 7 + 18 * i, 5, 5, "");
+            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97 + offset, guiTop + 7 + 18 * i, 5, 5, "");
             t.state = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.thePlayer.getUniqueID()).isSkinArmor(j) ? 1 : 0;
             buttonList.add(t);
         }
