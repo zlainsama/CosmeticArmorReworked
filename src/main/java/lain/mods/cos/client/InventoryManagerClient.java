@@ -1,7 +1,6 @@
 package lain.mods.cos.client;
 
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import lain.mods.cos.InventoryManager;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import com.google.common.cache.CacheBuilder;
@@ -13,7 +12,7 @@ import cpw.mods.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServer
 public class InventoryManagerClient extends InventoryManager
 {
 
-    LoadingCache<UUID, InventoryCosArmor> cacheClient = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build(new CacheLoader<UUID, InventoryCosArmor>()
+    LoadingCache<UUID, InventoryCosArmor> cacheClient = CacheBuilder.newBuilder().build(new CacheLoader<UUID, InventoryCosArmor>()
     {
 
         @Override

@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.packet.PacketSyncCosArmor;
@@ -18,6 +19,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
@@ -117,6 +119,7 @@ public class InventoryManager
         }
     }
 
+    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public void handleEvent(PlayerLoggedInEvent event)
     {
@@ -126,6 +129,15 @@ public class InventoryManager
             for (int i = 0; i < inv.getSizeInventory(); i++)
                 CosmeticArmorReworked.network.sendToAll(new PacketSyncCosArmor(event.player, i));
             inv.markClean();
+
+            for (EntityPlayerMP other : (List<EntityPlayerMP>) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
+            {
+                if (other == event.player)
+                    continue;
+                inv = getCosArmorInventory(other.getUniqueID());
+                for (int i = 0; i < inv.getSizeInventory(); i++)
+                    CosmeticArmorReworked.network.sendTo(new PacketSyncCosArmor(other, i), (EntityPlayerMP) event.player);
+            }
         }
     }
 
