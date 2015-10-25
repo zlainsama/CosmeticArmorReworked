@@ -16,7 +16,7 @@ public class InventoryManagerClient extends InventoryManager
     {
 
         @Override
-        public InventoryCosArmor load(UUID key) throws Exception
+        public InventoryCosArmor load(UUID owner) throws Exception
         {
             return new InventoryCosArmor();
         }

@@ -1,5 +1,6 @@
 package lain.mods.cos;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -33,12 +35,41 @@ public class InventoryManager
     {
 
         @Override
-        public InventoryCosArmor load(UUID key) throws Exception
+        public InventoryCosArmor load(UUID owner) throws Exception
         {
-            return new InventoryCosArmor();
+            InventoryCosArmor inv = new InventoryCosArmor();
+            try
+            {
+                forceLoad(owner, inv);
+            }
+            catch (IOException e)
+            {
+                System.err.println("Error loading CosmeticArmor data file: " + e.getMessage());
+                e.printStackTrace();
+                inv = new InventoryCosArmor();
+            }
+            return inv;
         }
 
     });
+
+    void forceLoad(UUID uuid, InventoryCosArmor inv) throws IOException
+    {
+        try
+        {
+            inv.readFromNBT(CompressedStreamTools.readCompressed(new FileInputStream(getDataFile(uuid))));
+        }
+        catch (FileNotFoundException ignored)
+        {
+        }
+    }
+
+    void forceSave(UUID uuid, InventoryCosArmor inv) throws IOException
+    {
+        NBTTagCompound compound = new NBTTagCompound();
+        inv.writeToNBT(compound);
+        CompressedStreamTools.writeCompressed(compound, new FileOutputStream(getDataFile(uuid)));
+    }
 
     public InventoryCosArmor getCosArmorInventory(UUID uuid)
     {
@@ -48,6 +79,19 @@ public class InventoryManager
     public InventoryCosArmor getCosArmorInventoryClient(UUID uuid)
     {
         throw new UnsupportedOperationException();
+    }
+
+    File getDataFile(UUID uuid)
+    {
+        return new File(new File(getSavesDirectory(), "playerdata"), uuid + ".cosarmor");
+    }
+
+    File getSavesDirectory()
+    {
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (FMLCommonHandler.instance().getSide().isClient())
+            return new File(server.getFile("saves"), server.worldServerForDimension(0).getSaveHandler().getWorldDirectoryName());
+        return server.getFile(server.getFolderName());
     }
 
     @SubscribeEvent
@@ -85,7 +129,7 @@ public class InventoryManager
 
         try
         {
-            inv.readFromNBT(CompressedStreamTools.readCompressed(new FileInputStream(event.getPlayerFile("cosarmor"))));
+            inv.readFromNBT(CompressedStreamTools.readCompressed(new FileInputStream(getDataFile(uuid))));
         }
         catch (FileNotFoundException ignored)
         {
@@ -110,7 +154,7 @@ public class InventoryManager
         inv.writeToNBT(compound);
         try
         {
-            CompressedStreamTools.writeCompressed(compound, new FileOutputStream(event.getPlayerFile("cosarmor")));
+            CompressedStreamTools.writeCompressed(compound, new FileOutputStream(getDataFile(uuid)));
         }
         catch (IOException e)
         {
@@ -146,7 +190,17 @@ public class InventoryManager
     {
         if (event.player instanceof EntityPlayerMP)
         {
-            cache.invalidate(event.player.getUniqueID());
+            UUID uuid = event.player.getUniqueID();
+            try
+            {
+                forceSave(uuid, getCosArmorInventory(uuid));
+            }
+            catch (IOException e)
+            {
+                System.err.println("Error saving CosmeticArmor data file: " + e.getMessage());
+                e.printStackTrace();
+            }
+            cache.invalidate(uuid);
         }
     }
 
