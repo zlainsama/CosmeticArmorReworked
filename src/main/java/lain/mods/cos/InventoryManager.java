@@ -8,7 +8,6 @@ import java.util.UUID;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.packet.PacketSyncCosArmor;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -39,19 +38,14 @@ public class InventoryManager
 
     });
 
-    public ItemStack[] getCosArmor(EntityPlayer player)
+    public InventoryCosArmor getCosArmorInventory(UUID uuid)
     {
-        return getCosArmorInventory(player).getInventory();
+        return cache.getUnchecked(uuid);
     }
 
-    public InventoryCosArmor getCosArmorInventory(EntityPlayer player)
+    public InventoryCosArmor getCosArmorInventoryClient(UUID uuid)
     {
-        return cache.getUnchecked(player.getUniqueID());
-    }
-
-    public ItemStack getCosArmorSlot(EntityPlayer player, int slot)
-    {
-        return getCosArmorInventory(player).getStackInSlot(slot);
+        throw new UnsupportedOperationException();
     }
 
     @SubscribeEvent
@@ -59,7 +53,7 @@ public class InventoryManager
     {
         if (event.entityPlayer instanceof EntityPlayerMP && !event.entityPlayer.worldObj.isRemote && !event.entityPlayer.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
         {
-            InventoryCosArmor inv = getCosArmorInventory(event.entityPlayer);
+            InventoryCosArmor inv = getCosArmorInventory(event.entityPlayer.getUniqueID());
             for (int i = 0; i < inv.getSizeInventory(); i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
@@ -128,7 +122,7 @@ public class InventoryManager
     {
         if (event.player instanceof EntityPlayerMP)
         {
-            InventoryCosArmor inv = getCosArmorInventory(event.player);
+            InventoryCosArmor inv = getCosArmorInventory(event.player.getUniqueID());
             for (int i = 0; i < inv.getSizeInventory(); i++)
                 CosmeticArmorReworked.network.sendToAll(new PacketSyncCosArmor(event.player, i));
             inv.markClean();
@@ -151,7 +145,7 @@ public class InventoryManager
         {
             if (event.player instanceof EntityPlayerMP)
             {
-                InventoryCosArmor inv = getCosArmorInventory(event.player);
+                InventoryCosArmor inv = getCosArmorInventory(event.player.getUniqueID());
                 if (inv.isDirty())
                 {
                     for (int i = 0; i < inv.getSizeInventory(); i++)
@@ -160,11 +154,6 @@ public class InventoryManager
                 }
             }
         }
-    }
-
-    public boolean isSkinArmor(EntityPlayer player, int slot)
-    {
-        return getCosArmorInventory(player).isSkinArmor(slot);
     }
 
 }

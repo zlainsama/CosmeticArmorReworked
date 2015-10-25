@@ -60,7 +60,7 @@ public class PlayerRenderHandler
     public void handleEvent(RenderPlayerEvent.Pre event)
     {
         ItemStack[] cachedArmor = cache.getUnchecked(event.entityPlayer);
-        ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmor(event.entityPlayer);
+        ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.entityPlayer.getUniqueID()).getInventory();
         ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
 
         if (armor == null || armor.length != cachedArmor.length)
@@ -76,7 +76,7 @@ public class PlayerRenderHandler
         {
             for (int i = 0; i < cachedArmor.length; i++)
             {
-                if (CosmeticArmorReworked.invMan.isSkinArmor(event.entityPlayer, i))
+                if (CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.entityPlayer.getUniqueID()).isSkinArmor(i))
                     armor[i] = null;
                 else if (cosArmor[i] != null)
                     armor[i] = cosArmor[i];

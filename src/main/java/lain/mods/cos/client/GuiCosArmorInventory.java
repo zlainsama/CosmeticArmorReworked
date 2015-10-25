@@ -88,7 +88,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         if (button.id >= 80 && button.id < 84)
         {
             int i = button.id - 80;
-            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventory(mc.thePlayer);
+            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.thePlayer.getUniqueID());
             inv.setSkinArmor(i, !inv.isSkinArmor(i));
             inv.markDirty();
             ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(i) ? 1 : 0;
@@ -132,7 +132,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         {
             int j = 3 - i;
             GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97, guiTop + 7 + 18 * i, 5, 5, "");
-            t.state = CosmeticArmorReworked.invMan.isSkinArmor(mc.thePlayer, j) ? 1 : 0;
+            t.state = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.thePlayer.getUniqueID()).isSkinArmor(j) ? 1 : 0;
             buttonList.add(t);
         }
     }

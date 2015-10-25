@@ -4,13 +4,11 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lain.mods.cos.InventoryManager;
 import lain.mods.cos.inventory.InventoryCosArmor;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.entity.player.EntityPlayer;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 
 public class InventoryManagerClient extends InventoryManager
 {
@@ -27,15 +25,13 @@ public class InventoryManagerClient extends InventoryManager
     });
 
     @Override
-    public InventoryCosArmor getCosArmorInventory(EntityPlayer player)
+    public InventoryCosArmor getCosArmorInventoryClient(UUID uuid)
     {
-        if (player instanceof AbstractClientPlayer)
-            return cacheClient.getUnchecked(player.getUniqueID());
-        return super.getCosArmorInventory(player);
+        return cacheClient.getUnchecked(uuid);
     }
 
     @SubscribeEvent
-    public void handleEvent(ClientConnectedToServerEvent event)
+    public void handleEvent(ClientDisconnectionFromServerEvent event)
     {
         PlayerRenderHandler.HideCosArmor = false;
         cacheClient.invalidateAll();

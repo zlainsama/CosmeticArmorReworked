@@ -13,6 +13,25 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiEvents
 {
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static boolean isNeiHidden()
+    {
+        boolean hidden = true;
+        try
+        {
+            if (isNEIHidden == null)
+            {
+                Class fake = Class.forName("codechicken.nei.NEIClientConfig");
+                isNEIHidden = fake.getMethod("isHidden");
+            }
+            hidden = (Boolean) isNEIHidden.invoke(null);
+        }
+        catch (Exception ex)
+        {
+        }
+        return hidden;
+    }
+
     static Method isNEIHidden;
 
     @SideOnly(Side.CLIENT)
@@ -64,25 +83,6 @@ public class GuiEvents
             t.state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
             event.buttonList.add(t);
         }
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    boolean isNeiHidden()
-    {
-        boolean hidden = true;
-        try
-        {
-            if (isNEIHidden == null)
-            {
-                Class fake = Class.forName("codechicken.nei.NEIClientConfig");
-                isNEIHidden = fake.getMethod("isHidden");
-            }
-            hidden = (Boolean) isNEIHidden.invoke(null);
-        }
-        catch (Exception ex)
-        {
-        }
-        return hidden;
     }
 
 }

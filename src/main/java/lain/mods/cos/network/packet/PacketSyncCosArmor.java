@@ -2,11 +2,11 @@ package lain.mods.cos.network.packet;
 
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
+import java.util.UUID;
 import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.NetworkPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -16,7 +16,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 public class PacketSyncCosArmor extends NetworkPacket
 {
 
-    int entityId;
+    UUID uuid;
     int slot;
     boolean isSkinArmor;
     ItemStack itemCosArmor;
@@ -27,10 +27,10 @@ public class PacketSyncCosArmor extends NetworkPacket
 
     public PacketSyncCosArmor(EntityPlayer player, int slot)
     {
-        this.entityId = player.getEntityId();
+        this.uuid = player.getUniqueID();
         this.slot = slot;
-        this.isSkinArmor = CosmeticArmorReworked.invMan.isSkinArmor(player, slot);
-        this.itemCosArmor = CosmeticArmorReworked.invMan.getCosArmorSlot(player, slot);
+        this.isSkinArmor = CosmeticArmorReworked.invMan.getCosArmorInventory(this.uuid).isSkinArmor(slot);
+        this.itemCosArmor = CosmeticArmorReworked.invMan.getCosArmorInventory(this.uuid).getStackInSlot(slot);
     }
 
     @Override
@@ -41,14 +41,10 @@ public class PacketSyncCosArmor extends NetworkPacket
         if (mc.theWorld == null)
             return;
 
-        Entity entity = mc.theWorld.getEntityByID(entityId);
-        if (entity != null && entity instanceof EntityPlayer)
-        {
-            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventory((EntityPlayer) entity);
-            inv.setInventorySlotContents(slot, itemCosArmor);
-            inv.setSkinArmor(slot, isSkinArmor);
-            inv.markDirty();
-        }
+        InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(uuid);
+        inv.setInventorySlotContents(slot, itemCosArmor);
+        inv.setSkinArmor(slot, isSkinArmor);
+        inv.markDirty();
     }
 
     @Override
@@ -61,7 +57,7 @@ public class PacketSyncCosArmor extends NetworkPacket
     {
         PacketBuffer pb = new PacketBuffer(buf);
 
-        entityId = pb.readInt();
+        uuid = new UUID(pb.readLong(), pb.readLong());
         slot = pb.readByte();
         isSkinArmor = pb.readBoolean();
         try
@@ -78,7 +74,8 @@ public class PacketSyncCosArmor extends NetworkPacket
     {
         PacketBuffer pb = new PacketBuffer(buf);
 
-        pb.writeInt(entityId);
+        pb.writeLong(uuid.getMostSignificantBits());
+        pb.writeLong(uuid.getLeastSignificantBits());
         pb.writeByte(slot);
         pb.writeBoolean(isSkinArmor);
         try

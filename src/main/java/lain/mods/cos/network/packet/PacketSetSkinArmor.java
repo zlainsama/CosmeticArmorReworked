@@ -21,7 +21,7 @@ public class PacketSetSkinArmor extends NetworkPacket
     public PacketSetSkinArmor(EntityPlayer player, int slot)
     {
         this.slot = slot;
-        this.isSkinArmor = CosmeticArmorReworked.invMan.isSkinArmor(player, slot);
+        this.isSkinArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(player.getUniqueID()).isSkinArmor(slot);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class PacketSetSkinArmor extends NetworkPacket
     @Override
     public void handlePacketServer(EntityPlayerMP player)
     {
-        InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventory(player);
+        InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventory(player.getUniqueID());
         inv.setSkinArmor(slot, isSkinArmor);
         inv.markDirty();
     }
