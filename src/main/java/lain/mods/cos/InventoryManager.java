@@ -38,6 +38,7 @@ public class InventoryManager
         public InventoryCosArmor load(UUID owner) throws Exception
         {
             InventoryCosArmor inv = new InventoryCosArmor();
+
             try
             {
                 forceLoad(owner, inv);
@@ -48,6 +49,9 @@ public class InventoryManager
                 e.printStackTrace();
                 inv = new InventoryCosArmor();
             }
+
+            inv.markDirty();
+
             return inv;
         }
 
@@ -218,6 +222,29 @@ public class InventoryManager
                         CosmeticArmorReworked.network.sendToAll(new PacketSyncCosArmor(event.player, i));
                     inv.markClean();
                 }
+            }
+        }
+    }
+
+    void onServerStarting()
+    {
+        cache.invalidateAll();
+    }
+
+    void onServerStopping()
+    {
+        System.out.println("Server is stopping... force saving all loaded CosmeticArmor data.");
+        for (UUID uuid : cache.asMap().keySet())
+        {
+            System.out.println(uuid);
+            try
+            {
+                forceSave(uuid, getCosArmorInventory(uuid));
+            }
+            catch (IOException e)
+            {
+                System.err.println("Error saving CosmeticArmor data file: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }

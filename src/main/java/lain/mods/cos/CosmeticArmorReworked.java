@@ -13,6 +13,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -51,6 +53,18 @@ public class CosmeticArmorReworked
 
         MinecraftForge.EVENT_BUS.register(invMan);
         FMLCommonHandler.instance().bus().register(invMan);
+    }
+
+    @Mod.EventHandler
+    public void onServerStarting(FMLServerStartingEvent event)
+    {
+        invMan.onServerStarting();
+    }
+
+    @Mod.EventHandler
+    public void onServerStopping(FMLServerStoppingEvent event)
+    {
+        invMan.onServerStopping();
     }
 
 }
