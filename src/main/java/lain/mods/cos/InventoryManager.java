@@ -77,7 +77,7 @@ public class InventoryManager
 
     public InventoryCosArmor getCosArmorInventory(UUID uuid)
     {
-        return cache.getUnchecked(PlayerUtils.getOfflineID(uuid));
+        return cache.getUnchecked(uuid);
     }
 
     public InventoryCosArmor getCosArmorInventoryClient(UUID uuid)
