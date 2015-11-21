@@ -37,6 +37,8 @@ public class CosmeticArmorReworked
     @Mod.EventHandler
     public void init(FMLPreInitializationEvent event)
     {
+        PlayerUtils.registerListener();
+
         network.registerPacket(1, PacketSyncCosArmor.class);
         network.registerPacket(2, PacketSetSkinArmor.class);
         network.registerPacket(3, PacketOpenCosArmorInventory.class);

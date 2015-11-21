@@ -15,7 +15,7 @@ public class GuiHandler implements IGuiHandler
         switch (id)
         {
             case 1:
-                return new GuiCosArmorInventory(new ContainerCosArmor(player.inventory, CosmeticArmorReworked.invMan.getCosArmorInventoryClient(player.getUniqueID()), player));
+                return new GuiCosArmorInventory(new ContainerCosArmor(player.inventory, CosmeticArmorReworked.invMan.getCosArmorInventoryClient(PlayerUtils.getPlayerID(player)), player));
         }
         return null;
     }
@@ -26,7 +26,7 @@ public class GuiHandler implements IGuiHandler
         switch (id)
         {
             case 1:
-                return new ContainerCosArmor(player.inventory, CosmeticArmorReworked.invMan.getCosArmorInventory(player.getUniqueID()), player);
+                return new ContainerCosArmor(player.inventory, CosmeticArmorReworked.invMan.getCosArmorInventory(PlayerUtils.getPlayerID(player)), player);
         }
         return null;
     }

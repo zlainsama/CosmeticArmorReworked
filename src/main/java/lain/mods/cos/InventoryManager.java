@@ -77,7 +77,7 @@ public class InventoryManager
 
     public InventoryCosArmor getCosArmorInventory(UUID uuid)
     {
-        return cache.getUnchecked(uuid);
+        return cache.getUnchecked(PlayerUtils.getOfflineID(uuid));
     }
 
     public InventoryCosArmor getCosArmorInventoryClient(UUID uuid)
@@ -103,7 +103,7 @@ public class InventoryManager
     {
         if (event.entityPlayer instanceof EntityPlayerMP && !event.entityPlayer.worldObj.isRemote && !event.entityPlayer.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
         {
-            InventoryCosArmor inv = getCosArmorInventory(event.entityPlayer.getUniqueID());
+            InventoryCosArmor inv = getCosArmorInventory(PlayerUtils.getPlayerID(event.entityPlayer));
             for (int i = 0; i < inv.getSizeInventory(); i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
@@ -129,7 +129,7 @@ public class InventoryManager
     public void handleEvent(PlayerEvent.LoadFromFile event)
     {
         UUID uuid = UUID.fromString(event.playerUUID);
-        InventoryCosArmor inv = cache.getUnchecked(uuid);
+        InventoryCosArmor inv = getCosArmorInventory(uuid);
 
         try
         {
@@ -143,7 +143,7 @@ public class InventoryManager
             System.err.println("Error loading CosmeticArmor data file: " + e.getMessage());
             e.printStackTrace();
             cache.refresh(uuid);
-            inv = cache.getUnchecked(uuid);
+            inv = getCosArmorInventory(uuid);
         }
 
         inv.markDirty();
@@ -153,7 +153,7 @@ public class InventoryManager
     public void handleEvent(PlayerEvent.SaveToFile event)
     {
         UUID uuid = UUID.fromString(event.playerUUID);
-        InventoryCosArmor inv = cache.getUnchecked(uuid);
+        InventoryCosArmor inv = getCosArmorInventory(uuid);
         NBTTagCompound compound = new NBTTagCompound();
         inv.writeToNBT(compound);
         try
@@ -173,7 +173,7 @@ public class InventoryManager
     {
         if (event.player instanceof EntityPlayerMP)
         {
-            InventoryCosArmor inv = getCosArmorInventory(event.player.getUniqueID());
+            InventoryCosArmor inv = getCosArmorInventory(PlayerUtils.getPlayerID(event.player));
             for (int i = 0; i < inv.getSizeInventory(); i++)
                 CosmeticArmorReworked.network.sendToAll(new PacketSyncCosArmor(event.player, i));
             inv.markClean();
@@ -182,7 +182,7 @@ public class InventoryManager
             {
                 if (other == event.player)
                     continue;
-                inv = getCosArmorInventory(other.getUniqueID());
+                inv = getCosArmorInventory(PlayerUtils.getPlayerID(other));
                 for (int i = 0; i < inv.getSizeInventory(); i++)
                     CosmeticArmorReworked.network.sendTo(new PacketSyncCosArmor(other, i), (EntityPlayerMP) event.player);
             }
@@ -194,7 +194,7 @@ public class InventoryManager
     {
         if (event.player instanceof EntityPlayerMP)
         {
-            UUID uuid = event.player.getUniqueID();
+            UUID uuid = PlayerUtils.getPlayerID(event.player);
             try
             {
                 forceSave(uuid, getCosArmorInventory(uuid));
@@ -215,7 +215,7 @@ public class InventoryManager
         {
             if (event.player instanceof EntityPlayerMP)
             {
-                InventoryCosArmor inv = getCosArmorInventory(event.player.getUniqueID());
+                InventoryCosArmor inv = getCosArmorInventory(PlayerUtils.getPlayerID(event.player));
                 if (inv.isDirty())
                 {
                     for (int i = 0; i < inv.getSizeInventory(); i++)

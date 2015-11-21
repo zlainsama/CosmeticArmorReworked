@@ -2,6 +2,7 @@ package lain.mods.cos.client;
 
 import java.util.UUID;
 import lain.mods.cos.InventoryManager;
+import lain.mods.cos.PlayerUtils;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -26,7 +27,7 @@ public class InventoryManagerClient extends InventoryManager
     @Override
     public InventoryCosArmor getCosArmorInventoryClient(UUID uuid)
     {
-        return cacheClient.getUnchecked(uuid);
+        return cacheClient.getUnchecked(PlayerUtils.getOfflineID(uuid));
     }
 
     @SubscribeEvent
