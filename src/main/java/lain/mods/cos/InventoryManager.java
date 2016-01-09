@@ -18,15 +18,15 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 public class InventoryManager
 {
@@ -101,7 +101,7 @@ public class InventoryManager
     @SubscribeEvent
     public void handleEvent(PlayerDropsEvent event)
     {
-        if (event.entityPlayer instanceof EntityPlayerMP && !event.entityPlayer.worldObj.isRemote && !event.entityPlayer.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
+        if (event.entityPlayer instanceof EntityPlayerMP && !event.entityPlayer.worldObj.isRemote && !event.entityPlayer.worldObj.getGameRules().getBoolean("keepInventory"))
         {
             InventoryCosArmor inv = getCosArmorInventory(PlayerUtils.getPlayerID(event.entityPlayer));
             for (int i = 0; i < inv.getSizeInventory(); i++)
@@ -110,7 +110,7 @@ public class InventoryManager
                 if (stack != null)
                 {
                     EntityItem ent = new EntityItem(event.entityPlayer.worldObj, event.entityPlayer.posX, event.entityPlayer.posY + event.entityPlayer.getEyeHeight(), event.entityPlayer.posZ, stack.copy());
-                    ent.delayBeforeCanPickup = 40;
+                    ent.setPickupDelay(40);
                     float f1 = event.entityPlayer.worldObj.rand.nextFloat() * 0.5F;
                     float f2 = event.entityPlayer.worldObj.rand.nextFloat() * (float) Math.PI * 2.0F;
                     ent.motionX = (double) (-MathHelper.sin(f2) * f1);
@@ -167,7 +167,6 @@ public class InventoryManager
         }
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public void handleEvent(PlayerLoggedInEvent event)
     {

@@ -4,7 +4,7 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.minecraft.network.NetHandlerPlayServer;
-import cpw.mods.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 @Sharable
 public class NetworkPacketHandler extends SimpleChannelInboundHandler<NetworkPacket>
