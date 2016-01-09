@@ -1,9 +1,11 @@
 package lain.mods.cos.client;
 
+import java.io.IOException;
 import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.PlayerUtils;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.packet.PacketSetSkinArmor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiAchievements;
 import net.minecraft.client.gui.achievement.GuiStats;
@@ -47,9 +49,10 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         p_147046_5_.rotationYawHead = p_147046_5_.rotationYaw;
         p_147046_5_.prevRotationYawHead = p_147046_5_.rotationYaw;
 
-        GL11.glTranslatef(0.0F, p_147046_5_.yOffset, 0.0F);
-        RenderManager.instance.playerViewY = 180.0F;
-        RenderManager.instance.renderEntityWithPosYaw(p_147046_5_, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+        GL11.glTranslated(0.0D, p_147046_5_.getYOffset(), 0.0D);
+        RenderManager rm = Minecraft.getMinecraft().getRenderManager();
+        rm.playerViewY = 180.0F;
+        rm.renderEntityWithPosYaw(p_147046_5_, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
 
         p_147046_5_.renderYawOffset = f1;
         p_147046_5_.rotationYaw = f2;
@@ -123,7 +126,6 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         ySizeFloat = p_drawScreen_2_;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui()
     {
@@ -144,7 +146,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
     }
 
     @Override
-    protected void keyTyped(char par1, int par2)
+    protected void keyTyped(char par1, int par2) throws IOException
     {
         if (par2 == CosmeticArmorReworked.keyHandler.keyOpenCosArmorInventory.getKeyCode())
             mc.thePlayer.closeScreen();

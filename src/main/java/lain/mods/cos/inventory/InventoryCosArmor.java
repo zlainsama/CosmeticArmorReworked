@@ -5,6 +5,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 
 public class InventoryCosArmor implements IInventory
 {
@@ -14,7 +17,14 @@ public class InventoryCosArmor implements IInventory
     boolean isDirty = false;
 
     @Override
-    public void closeInventory()
+    public void clear()
+    {
+        for (int i = 0; i < stacks.length; i++)
+            stacks[i] = null;
+    }
+
+    @Override
+    public void closeInventory(EntityPlayer player)
     {
     }
 
@@ -37,21 +47,43 @@ public class InventoryCosArmor implements IInventory
         return stack;
     }
 
+    @Override
+    public IChatComponent getDisplayName()
+    {
+        if (hasCustomName())
+        {
+            return new ChatComponentText(getName());
+        }
+        return new ChatComponentTranslation(getName());
+    }
+
+    @Override
+    public int getField(int arg0)
+    {
+        return 0;
+    }
+
+    @Override
+    public int getFieldCount()
+    {
+        return 0;
+    }
+
     public ItemStack[] getInventory()
     {
         return stacks;
     }
 
     @Override
-    public String getInventoryName()
-    {
-        return "";
-    }
-
-    @Override
     public int getInventoryStackLimit()
     {
         return 1;
+    }
+
+    @Override
+    public String getName()
+    {
+        return "";
     }
 
     @Override
@@ -75,18 +107,7 @@ public class InventoryCosArmor implements IInventory
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot)
-    {
-        if (stacks == null || slot < 0 || slot >= stacks.length)
-            return null;
-
-        ItemStack stack = stacks[slot];
-        stacks[slot] = null;
-        return stack;
-    }
-
-    @Override
-    public boolean hasCustomInventoryName()
+    public boolean hasCustomName()
     {
         return false;
     }
@@ -128,7 +149,7 @@ public class InventoryCosArmor implements IInventory
     }
 
     @Override
-    public void openInventory()
+    public void openInventory(EntityPlayer player)
     {
     }
 
@@ -146,6 +167,22 @@ public class InventoryCosArmor implements IInventory
                 stacks[j] = stack;
             isSkinArmor[j] = invSlot.getBoolean("isSkinArmor");
         }
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int slot)
+    {
+        if (stacks == null || slot < 0 || slot >= stacks.length)
+            return null;
+
+        ItemStack stack = stacks[slot];
+        stacks[slot] = null;
+        return stack;
+    }
+
+    @Override
+    public void setField(int arg0, int arg1)
+    {
     }
 
     public void setInventory(ItemStack[] stacks)
@@ -190,4 +227,5 @@ public class InventoryCosArmor implements IInventory
         }
         compound.setTag("CosArmor.Inventory", tagList);
     }
+
 }

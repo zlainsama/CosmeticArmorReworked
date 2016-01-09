@@ -4,11 +4,11 @@ import java.util.UUID;
 import lain.mods.cos.InventoryManager;
 import lain.mods.cos.PlayerUtils;
 import lain.mods.cos.inventory.InventoryCosArmor;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 
 public class InventoryManagerClient extends InventoryManager
 {

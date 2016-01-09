@@ -11,9 +11,8 @@ import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.util.IIcon;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerCosArmor extends Container
 {
@@ -42,17 +41,17 @@ public class ContainerCosArmor extends Container
             addSlotToContainer(new Slot(invPlayer, invPlayer.getSizeInventory() - 1 - i, 8, 8 + i * 18)
             {
 
-                @SideOnly(Side.CLIENT)
-                @Override
-                public IIcon getBackgroundIconIndex()
-                {
-                    return ItemArmor.func_94602_b(j);
-                }
-
                 @Override
                 public int getSlotStackLimit()
                 {
                     return 1;
+                }
+
+                @SideOnly(Side.CLIENT)
+                @Override
+                public String getSlotTexture()
+                {
+                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[j];
                 }
 
                 @Override
@@ -75,17 +74,17 @@ public class ContainerCosArmor extends Container
             addSlotToContainer(new Slot(invCosArmor, invCosArmor.getSizeInventory() - 1 - i, 80, 8 + i * 18)
             {
 
-                @SideOnly(Side.CLIENT)
-                @Override
-                public IIcon getBackgroundIconIndex()
-                {
-                    return ItemArmor.func_94602_b(j);
-                }
-
                 @Override
                 public int getSlotStackLimit()
                 {
                     return 1;
+                }
+
+                @SideOnly(Side.CLIENT)
+                @Override
+                public String getSlotTexture()
+                {
+                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[j];
                 }
 
                 @Override
@@ -119,9 +118,9 @@ public class ContainerCosArmor extends Container
     }
 
     @Override
-    public boolean func_94530_a(ItemStack stack, Slot slot)
+    public boolean canMergeSlot(ItemStack stack, Slot slot)
     {
-        return (slot.inventory != craftResult) && (super.func_94530_a(stack, slot));
+        return (slot.inventory != craftResult) && (super.canMergeSlot(stack, slot));
     }
 
     @Override
@@ -131,7 +130,7 @@ public class ContainerCosArmor extends Container
 
         for (int i = 0; i < 4; i++)
         {
-            ItemStack stack = craftMatrix.getStackInSlotOnClosing(i);
+            ItemStack stack = craftMatrix.removeStackFromSlot(i);
 
             if (stack != null)
                 player.dropPlayerItemWithRandomChoice(stack, false);

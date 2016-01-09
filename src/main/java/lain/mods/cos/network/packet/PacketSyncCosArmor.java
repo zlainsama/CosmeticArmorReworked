@@ -12,7 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import cpw.mods.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class PacketSyncCosArmor extends NetworkPacket
 {
@@ -79,13 +79,7 @@ public class PacketSyncCosArmor extends NetworkPacket
         pb.writeLong(uuid.getLeastSignificantBits());
         pb.writeByte(slot);
         pb.writeBoolean(isSkinArmor);
-        try
-        {
-            pb.writeItemStackToBuffer(itemCosArmor);
-        }
-        catch (IOException ignored)
-        {
-        }
+        pb.writeItemStackToBuffer(itemCosArmor);
     }
 
 }

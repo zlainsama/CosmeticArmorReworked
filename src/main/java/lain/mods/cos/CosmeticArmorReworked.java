@@ -9,15 +9,14 @@ import lain.mods.cos.network.packet.PacketOpenNormalInventory;
 import lain.mods.cos.network.packet.PacketSetSkinArmor;
 import lain.mods.cos.network.packet.PacketSyncCosArmor;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(modid = "cosmeticarmorreworked", useMetadata = true)
 public class CosmeticArmorReworked
@@ -49,12 +48,13 @@ public class CosmeticArmorReworked
         if (event.getSide().isClient())
         {
             MinecraftForge.EVENT_BUS.register(new PlayerRenderHandler());
-            FMLCommonHandler.instance().bus().register(keyHandler = new KeyHandler());
+            MinecraftForge.EVENT_BUS.register(keyHandler = new KeyHandler());
+            // FMLCommonHandler.instance().bus().register(keyHandler = new KeyHandler());
             MinecraftForge.EVENT_BUS.register(new GuiEvents());
         }
 
         MinecraftForge.EVENT_BUS.register(invMan);
-        FMLCommonHandler.instance().bus().register(invMan);
+        // FMLCommonHandler.instance().bus().register(invMan);
     }
 
     @Mod.EventHandler
