@@ -3,7 +3,7 @@ package lain.mods.cos.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.opengl.GL11;
 
@@ -22,24 +22,24 @@ public class GuiCosArmorButton extends GuiButton
         {
             FontRenderer fontrenderer = mc.fontRendererObj;
             mc.getTextureManager().bindTexture(GuiCosArmorInventory.texture);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
-            int state = this.getHoverState(this.hovered);
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            hovered = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
+            int state = this.getHoverState(hovered);
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             if (state == 1)
             {
-                this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 166, 10, 10);
+                drawTexturedModalRect(this.xPosition, this.yPosition, 0, 166, 10, 10);
             }
             else
             {
-                this.drawTexturedModalRect(this.xPosition, this.yPosition, 10, 166, 10, 10);
-                this.drawCenteredString(fontrenderer, I18n.format(this.displayString), this.xPosition + 5, this.yPosition + this.height, 0xffffff);
+                drawTexturedModalRect(this.xPosition, this.yPosition, 10, 166, 10, 10);
+                drawCenteredString(fontrenderer, I18n.format(this.displayString), this.xPosition + 5, this.yPosition + this.height, 0xffffff);
             }
 
-            this.mouseDragged(mc, x, y);
+            mouseDragged(mc, x, y);
         }
     }
 

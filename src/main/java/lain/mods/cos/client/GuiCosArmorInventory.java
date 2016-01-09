@@ -5,68 +5,18 @@ import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.PlayerUtils;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.packet.PacketSetSkinArmor;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiAchievements;
 import net.minecraft.client.gui.achievement.GuiStats;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public class GuiCosArmorInventory extends InventoryEffectRenderer
 {
-
-    public static void drawPlayerModel(int p_147046_0_, int p_147046_1_, int p_147046_2_, float p_147046_3_, float p_147046_4_, EntityLivingBase p_147046_5_)
-    {
-        GL11.glEnable(2903);
-
-        GL11.glPushMatrix();
-        GL11.glTranslatef(p_147046_0_, p_147046_1_, 50.0F);
-        GL11.glScalef(-p_147046_2_, p_147046_2_, p_147046_2_);
-        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-
-        float f1 = p_147046_5_.renderYawOffset;
-        float f2 = p_147046_5_.rotationYaw;
-        float f3 = p_147046_5_.rotationPitch;
-        float f4 = p_147046_5_.prevRotationYawHead;
-        float f5 = p_147046_5_.rotationYawHead;
-
-        GL11.glRotatef(135.0F, 0.0F, 1.0F, 0.0F);
-        RenderHelper.enableStandardItemLighting();
-        GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
-
-        GL11.glRotatef(-(float) Math.atan(p_147046_4_ / 40.0F) * 20.0F, 1.0F, 0.0F, 0.0F);
-
-        p_147046_5_.renderYawOffset = ((float) Math.atan(p_147046_3_ / 40.0F) * 20.0F);
-        p_147046_5_.rotationYaw = ((float) Math.atan(p_147046_3_ / 40.0F) * 40.0F);
-        p_147046_5_.rotationPitch = (-(float) Math.atan(p_147046_4_ / 40.0F) * 20.0F);
-        p_147046_5_.rotationYawHead = p_147046_5_.rotationYaw;
-        p_147046_5_.prevRotationYawHead = p_147046_5_.rotationYaw;
-
-        GL11.glTranslated(0.0D, p_147046_5_.getYOffset(), 0.0D);
-        RenderManager rm = Minecraft.getMinecraft().getRenderManager();
-        rm.playerViewY = 180.0F;
-        rm.renderEntityWithPosYaw(p_147046_5_, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
-
-        p_147046_5_.renderYawOffset = f1;
-        p_147046_5_.rotationYaw = f2;
-        p_147046_5_.rotationPitch = f3;
-        p_147046_5_.prevRotationYawHead = f4;
-        p_147046_5_.rotationYawHead = f5;
-        GL11.glPopMatrix();
-        RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(32826);
-
-        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GL11.glDisable(3553);
-        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
-    }
 
     public static final ResourceLocation texture = new ResourceLocation("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
 
@@ -109,7 +59,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         int j = guiTop;
         drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
 
-        drawPlayerModel(i + 51, j + 75, 30, i + 51 - xSizeFloat, j + 75 - 50 - ySizeFloat, mc.thePlayer);
+        GuiInventory.drawEntityOnScreen(i + 51, j + 75, 30, i + 51 - xSizeFloat, j + 75 - 50 - ySizeFloat, mc.thePlayer);
     }
 
     @Override
