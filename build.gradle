@@ -1,29 +1,26 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
+apply plugin: 'net.minecraftforge.gradle.forge'
 
-apply plugin: 'forge'
-
-version = "1.7.10-v5b"
+version = "1.8.9-v1"
 group= "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
 
 minecraft {
-    version = "1.7.10-10.13.4.1448-1.7.10"
+    version = "1.8.9-11.15.0.1688"
     runDir = "eclipse"
+
+    mappings = "stable_20"
 }
 
 processResources
