@@ -39,8 +39,9 @@ public class PacketSyncCosArmor extends NetworkPacket
     {
         Minecraft mc = FMLClientHandler.instance().getClient();
 
-        if (mc.theWorld == null)
-            return;
+        // This will make sure the client has offline info for the current user
+        if (mc.thePlayer != null)
+            PlayerUtils.getPlayerID(mc.thePlayer);
 
         InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(uuid);
         inv.setInventorySlotContents(slot, itemCosArmor);
