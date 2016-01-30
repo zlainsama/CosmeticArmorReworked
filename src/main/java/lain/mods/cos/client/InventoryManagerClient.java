@@ -4,6 +4,8 @@ import java.util.UUID;
 import lain.mods.cos.InventoryManager;
 import lain.mods.cos.PlayerUtils;
 import lain.mods.cos.inventory.InventoryCosArmor;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import com.google.common.cache.CacheBuilder;
@@ -24,9 +26,20 @@ public class InventoryManagerClient extends InventoryManager
 
     });
 
+    boolean forceCached = false;
+
     @Override
     public InventoryCosArmor getCosArmorInventoryClient(UUID uuid)
     {
+        if (!forceCached)
+        {
+            Minecraft mc = FMLClientHandler.instance().getClient();
+            if (mc.thePlayer != null)
+            {
+                PlayerUtils.getPlayerID(mc.thePlayer); // This will make sure the client has offline info for the current user
+                forceCached = true;
+            }
+        }
         return cacheClient.getUnchecked(PlayerUtils.getOfflineID(uuid));
     }
 
@@ -35,6 +48,7 @@ public class InventoryManagerClient extends InventoryManager
     {
         PlayerRenderHandler.HideCosArmor = false;
         cacheClient.invalidateAll();
+        forceCached = false;
     }
 
 }
