@@ -7,12 +7,10 @@ import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.PlayerUtils;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.NetworkPacket;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import cpw.mods.fml.client.FMLClientHandler;
 
 public class PacketSyncCosArmor extends NetworkPacket
 {
@@ -37,12 +35,6 @@ public class PacketSyncCosArmor extends NetworkPacket
     @Override
     public void handlePacketClient()
     {
-        Minecraft mc = FMLClientHandler.instance().getClient();
-
-        // This will make sure the client has offline info for the current user
-        if (mc.thePlayer != null)
-            PlayerUtils.getPlayerID(mc.thePlayer);
-
         InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(uuid);
         inv.setInventorySlotContents(slot, itemCosArmor);
         inv.setSkinArmor(slot, isSkinArmor);
