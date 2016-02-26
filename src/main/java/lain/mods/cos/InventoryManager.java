@@ -103,7 +103,7 @@ public class InventoryManager
     {
         if (event.entityPlayer instanceof EntityPlayerMP && !event.entityPlayer.worldObj.isRemote && !event.entityPlayer.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
         {
-            InventoryCosArmor inv = getCosArmorInventory(PlayerUtils.getPlayerID(event.entityPlayer));
+            InventoryCosArmor inv = getCosArmorInventory(event.entityPlayer.getUniqueID());
             for (int i = 0; i < inv.getSizeInventory(); i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
@@ -173,7 +173,7 @@ public class InventoryManager
     {
         if (event.player instanceof EntityPlayerMP)
         {
-            InventoryCosArmor inv = getCosArmorInventory(PlayerUtils.getPlayerID(event.player));
+            InventoryCosArmor inv = getCosArmorInventory(event.player.getUniqueID());
             for (int i = 0; i < inv.getSizeInventory(); i++)
                 CosmeticArmorReworked.network.sendToAll(new PacketSyncCosArmor(event.player, i));
             inv.markClean();
@@ -182,7 +182,7 @@ public class InventoryManager
             {
                 if (other == event.player)
                     continue;
-                inv = getCosArmorInventory(PlayerUtils.getPlayerID(other));
+                inv = getCosArmorInventory(other.getUniqueID());
                 for (int i = 0; i < inv.getSizeInventory(); i++)
                     CosmeticArmorReworked.network.sendTo(new PacketSyncCosArmor(other, i), (EntityPlayerMP) event.player);
             }
@@ -194,7 +194,7 @@ public class InventoryManager
     {
         if (event.player instanceof EntityPlayerMP)
         {
-            UUID uuid = PlayerUtils.getPlayerID(event.player);
+            UUID uuid = event.player.getUniqueID();
             try
             {
                 forceSave(uuid, getCosArmorInventory(uuid));
@@ -215,7 +215,7 @@ public class InventoryManager
         {
             if (event.player instanceof EntityPlayerMP)
             {
-                InventoryCosArmor inv = getCosArmorInventory(PlayerUtils.getPlayerID(event.player));
+                InventoryCosArmor inv = getCosArmorInventory(event.player.getUniqueID());
                 if (inv.isDirty())
                 {
                     for (int i = 0; i < inv.getSizeInventory(); i++)
