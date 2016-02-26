@@ -181,7 +181,7 @@ public class InventoryManager
             {
                 if (other == event.player)
                     continue;
-                inv = getCosArmorInventory(event.player.getUniqueID());
+                inv = getCosArmorInventory(other.getUniqueID());
                 for (int i = 0; i < inv.getSizeInventory(); i++)
                     CosmeticArmorReworked.network.sendTo(new PacketSyncCosArmor(other, i), (EntityPlayerMP) event.player);
             }
