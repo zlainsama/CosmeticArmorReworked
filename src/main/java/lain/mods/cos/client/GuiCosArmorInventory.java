@@ -2,7 +2,6 @@ package lain.mods.cos.client;
 
 import java.io.IOException;
 import lain.mods.cos.CosmeticArmorReworked;
-import lain.mods.cos.PlayerUtils;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.packet.PacketSetSkinArmor;
 import net.minecraft.client.gui.GuiButton;
@@ -42,7 +41,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         if (button.id >= 80 && button.id < 84)
         {
             int i = button.id - 80;
-            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(PlayerUtils.getPlayerID(mc.thePlayer));
+            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.thePlayer.getUniqueID());
             inv.setSkinArmor(i, !inv.isSkinArmor(i));
             inv.markDirty();
             ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(i) ? 1 : 0;
@@ -90,7 +89,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         {
             int j = 3 - i;
             GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97 + offset, guiTop + 7 + 18 * i, 5, 5, "");
-            t.state = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(PlayerUtils.getPlayerID(mc.thePlayer)).isSkinArmor(j) ? 1 : 0;
+            t.state = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.thePlayer.getUniqueID()).isSkinArmor(j) ? 1 : 0;
             buttonList.add(t);
         }
     }

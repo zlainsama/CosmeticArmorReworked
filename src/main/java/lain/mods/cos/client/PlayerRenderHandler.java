@@ -2,7 +2,6 @@ package lain.mods.cos.client;
 
 import java.util.concurrent.TimeUnit;
 import lain.mods.cos.CosmeticArmorReworked;
-import lain.mods.cos.PlayerUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -61,7 +60,7 @@ public class PlayerRenderHandler
     public void handleEvent(RenderPlayerEvent.Pre event)
     {
         ItemStack[] cachedArmor = cache.getUnchecked(event.entityPlayer);
-        ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(PlayerUtils.getPlayerID(event.entityPlayer)).getInventory();
+        ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.entityPlayer.getUniqueID()).getInventory();
         ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
 
         if (armor == null || armor.length != cachedArmor.length)
@@ -77,7 +76,7 @@ public class PlayerRenderHandler
         {
             for (int i = 0; i < cachedArmor.length; i++)
             {
-                if (CosmeticArmorReworked.invMan.getCosArmorInventoryClient(PlayerUtils.getPlayerID(event.entityPlayer)).isSkinArmor(i))
+                if (CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.entityPlayer.getUniqueID()).isSkinArmor(i))
                     armor[i] = null;
                 else if (cosArmor[i] != null)
                     armor[i] = cosArmor[i];

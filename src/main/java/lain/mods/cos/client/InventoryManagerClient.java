@@ -1,16 +1,18 @@
 package lain.mods.cos.client;
 
+import java.util.Map;
 import java.util.UUID;
 import lain.mods.cos.InventoryManager;
-import lain.mods.cos.PlayerUtils;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
+import org.apache.commons.io.Charsets;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Maps;
 
 public class InventoryManagerClient extends InventoryManager
 {
@@ -26,21 +28,20 @@ public class InventoryManagerClient extends InventoryManager
 
     });
 
-    boolean forceCached = false;
+    Map<UUID, UUID> map = Maps.newHashMap();
 
     @Override
     public InventoryCosArmor getCosArmorInventoryClient(UUID uuid)
     {
-        if (!forceCached)
+        if (map.isEmpty())
         {
             Minecraft mc = FMLClientHandler.instance().getClient();
             if (mc.thePlayer != null)
-            {
-                PlayerUtils.getPlayerID(mc.thePlayer); // This will make sure the client has offline info for the current user
-                forceCached = true;
-            }
+                map.put(UUID.nameUUIDFromBytes(("OfflinePlayer:" + mc.thePlayer.getGameProfile().getName()).getBytes(Charsets.UTF_8)), mc.thePlayer.getUniqueID());
         }
-        return cacheClient.getUnchecked(PlayerUtils.getOfflineID(uuid));
+        if (map.containsKey(uuid))
+            uuid = map.get(uuid);
+        return cacheClient.getUnchecked(uuid);
     }
 
     @SubscribeEvent
@@ -48,7 +49,7 @@ public class InventoryManagerClient extends InventoryManager
     {
         PlayerRenderHandler.HideCosArmor = false;
         cacheClient.invalidateAll();
-        forceCached = false;
+        map.clear();
     }
 
 }

@@ -12,7 +12,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.8.9-v2a"
+version = "1.8.9-v2b"
 group= "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
 

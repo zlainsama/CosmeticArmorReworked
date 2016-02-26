@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.UUID;
 import lain.mods.cos.CosmeticArmorReworked;
-import lain.mods.cos.PlayerUtils;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.NetworkPacket;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,7 +25,7 @@ public class PacketSyncCosArmor extends NetworkPacket
 
     public PacketSyncCosArmor(EntityPlayer player, int slot)
     {
-        this.uuid = PlayerUtils.getPlayerID(player);
+        this.uuid = player.getUniqueID();
         this.slot = slot;
         this.isSkinArmor = CosmeticArmorReworked.invMan.getCosArmorInventory(this.uuid).isSkinArmor(slot);
         this.itemCosArmor = CosmeticArmorReworked.invMan.getCosArmorInventory(this.uuid).getStackInSlot(slot);
