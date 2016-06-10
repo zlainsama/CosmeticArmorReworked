@@ -1,5 +1,6 @@
 package lain.mods.cos.inventory;
 
+import lain.mods.cos.ref.ArmorRef;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
@@ -38,22 +39,8 @@ public class SlotCustomArmor extends Slot {
 
 	@Override
 	public boolean isItemValid(ItemStack stack) {
-		if (stack == null) return false;
-		EntityEquipmentSlot slotCheck;
-		switch(armorIndex) {
-		case 0:
-			slotCheck = EntityEquipmentSlot.HEAD;
-			break;
-		case 1:
-			slotCheck = EntityEquipmentSlot.CHEST;
-			break;
-		case 2:
-			slotCheck = EntityEquipmentSlot.LEGS;
-			break;
-		default:
-			slotCheck = EntityEquipmentSlot.FEET;
-		}
-		return stack.getItem().isValidArmor(stack, slotCheck, owner);
+		if(stack == null) return false;
+		return stack.getItem().isValidArmor(stack, ArmorRef.getArmorSlot(armorIndex), owner);
 	}
 
 }
