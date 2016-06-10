@@ -3,6 +3,7 @@ package lain.mods.cos.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
@@ -60,7 +61,7 @@ public class ContainerCosArmor extends Container
                     if (stack == null)
                         return false;
 
-                    return stack.getItem().isValidArmor(stack, j, k);
+                    return stack.getItem().isValidArmor(stack, EntityEquipmentSlot.values()[j], k);
                 }
 
             });
@@ -93,7 +94,7 @@ public class ContainerCosArmor extends Container
                     if (stack == null)
                         return false;
 
-                    return stack.getItem().isValidArmor(stack, j, k);
+                    return stack.getItem().isValidArmor(stack, EntityEquipmentSlot.values()[j], k);
                 }
 
             });
@@ -173,9 +174,9 @@ public class ContainerCosArmor extends Container
                 if (!mergeItemStack(stack1, 13, 49, false))
                     return null;
             }
-            else if (((stack1.getItem() instanceof ItemArmor)) && (!((Slot) inventorySlots.get(5 + ((ItemArmor) stack1.getItem()).armorType)).getHasStack()))
+            else if (((stack1.getItem() instanceof ItemArmor)) && (!((Slot) inventorySlots.get(5 + ((ItemArmor) stack1.getItem()).armorType.func_188452_c())).getHasStack()))
             {
-                int j = 5 + ((ItemArmor) stack1.getItem()).armorType;
+                int j = 5 + ((ItemArmor) stack1.getItem()).armorType.func_188452_c(); // getSlotIndex()
 
                 if (!mergeItemStack(stack1, j, j + 1, false) && !mergeItemStack(stack1, j + 4, j + 4 + 1, false))
                     return null;

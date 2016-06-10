@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -94,29 +94,29 @@ public class InventoryManager
     {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (FMLCommonHandler.instance().getSide().isClient())
-            return new File(server.getFile("saves"), server.worldServerForDimension(0).getSaveHandler().getWorldDirectoryName());
+            return new File(server.getFile("saves"), server.worldServerForDimension(0).getSaveHandler().getWorldDirectory().getName());
         return server.getFile(server.getFolderName());
     }
 
     @SubscribeEvent
     public void handleEvent(PlayerDropsEvent event)
     {
-        if (event.entityPlayer instanceof EntityPlayerMP && !event.entityPlayer.worldObj.isRemote && !event.entityPlayer.worldObj.getGameRules().getBoolean("keepInventory"))
+        if (event.getEntityPlayer() instanceof EntityPlayerMP && !event.getEntityPlayer().worldObj.isRemote && !event.getEntityPlayer().worldObj.getGameRules().getBoolean("keepInventory"))
         {
-            InventoryCosArmor inv = getCosArmorInventory(event.entityPlayer.getUniqueID());
+            InventoryCosArmor inv = getCosArmorInventory(event.getEntityPlayer().getUniqueID());
             for (int i = 0; i < inv.getSizeInventory(); i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
                 if (stack != null)
                 {
-                    EntityItem ent = new EntityItem(event.entityPlayer.worldObj, event.entityPlayer.posX, event.entityPlayer.posY + event.entityPlayer.getEyeHeight(), event.entityPlayer.posZ, stack.copy());
+                    EntityItem ent = new EntityItem(event.getEntityPlayer().worldObj, event.getEntityPlayer().posX, event.getEntityPlayer().posY + event.getEntityPlayer().getEyeHeight(), event.getEntityPlayer().posZ, stack.copy());
                     ent.setPickupDelay(40);
-                    float f1 = event.entityPlayer.worldObj.rand.nextFloat() * 0.5F;
-                    float f2 = event.entityPlayer.worldObj.rand.nextFloat() * (float) Math.PI * 2.0F;
+                    float f1 = event.getEntityPlayer().worldObj.rand.nextFloat() * 0.5F;
+                    float f2 = event.getEntityPlayer().worldObj.rand.nextFloat() * (float) Math.PI * 2.0F;
                     ent.motionX = (double) (-MathHelper.sin(f2) * f1);
                     ent.motionZ = (double) (MathHelper.cos(f2) * f1);
                     ent.motionY = 0.20000000298023224D;
-                    event.drops.add(ent);
+                    event.getDrops().add(ent);
                     inv.setInventorySlotContents(i, null);
                     inv.markDirty();
                 }
@@ -128,7 +128,7 @@ public class InventoryManager
     @SubscribeEvent
     public void handleEvent(PlayerEvent.LoadFromFile event)
     {
-        UUID uuid = UUID.fromString(event.playerUUID);
+        UUID uuid = UUID.fromString(event.getPlayerUUID());
         InventoryCosArmor inv = getCosArmorInventory(uuid);
 
         try
@@ -152,7 +152,7 @@ public class InventoryManager
     @SubscribeEvent
     public void handleEvent(PlayerEvent.SaveToFile event)
     {
-        UUID uuid = UUID.fromString(event.playerUUID);
+        UUID uuid = UUID.fromString(event.getPlayerUUID());
         InventoryCosArmor inv = getCosArmorInventory(uuid);
         NBTTagCompound compound = new NBTTagCompound();
         inv.writeToNBT(compound);
@@ -177,7 +177,7 @@ public class InventoryManager
                 CosmeticArmorReworked.network.sendToAll(new PacketSyncCosArmor(event.player, i));
             inv.markClean();
 
-            for (EntityPlayerMP other : (List<EntityPlayerMP>) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
+            for (EntityPlayerMP other : (List<EntityPlayerMP>) FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList())
             {
                 if (other == event.player)
                     continue;
