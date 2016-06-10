@@ -3,7 +3,6 @@ package lain.mods.cos.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
@@ -12,11 +11,8 @@ import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerCosArmor extends Container
-{
+public class ContainerCosArmor extends Container {
 
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public IInventory craftResult = new InventoryCraftResult();
@@ -35,69 +31,13 @@ public class ContainerCosArmor extends Container
                 addSlotToContainer(new Slot(craftMatrix, j + i * 2, 106 + j * 18, 26 + i * 18));
 
         // NormalArmor
-        for (int i = 0; i < 4; i++)
-        {
-            final int j = i;
-            final EntityPlayer k = player;
-            addSlotToContainer(new Slot(invPlayer, invPlayer.getSizeInventory() - 1 - i, 8, 8 + i * 18)
-            {
-
-                @Override
-                public int getSlotStackLimit()
-                {
-                    return 1;
-                }
-
-                @SideOnly(Side.CLIENT)
-                @Override
-                public String getSlotTexture()
-                {
-                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[j];
-                }
-
-                @Override
-                public boolean isItemValid(ItemStack stack)
-                {
-                    if (stack == null)
-                        return false;
-
-                    return stack.getItem().isValidArmor(stack, EntityEquipmentSlot.values()[j], k);
-                }
-
-            });
+        for (int i = 0; i < 4; i++) {
+            addSlotToContainer(new SlotCustomArmor(player, invPlayer.getSizeInventory() - 1 - (3 - i), 8, 8 + i * 18, i));
         }
 
         // CosmeticArmor
-        for (int i = 0; i < 4; i++)
-        {
-            final int j = i;
-            final EntityPlayer k = player;
-            addSlotToContainer(new Slot(invCosArmor, invCosArmor.getSizeInventory() - 1 - i, 80, 8 + i * 18)
-            {
-
-                @Override
-                public int getSlotStackLimit()
-                {
-                    return 1;
-                }
-
-                @SideOnly(Side.CLIENT)
-                @Override
-                public String getSlotTexture()
-                {
-                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[j];
-                }
-
-                @Override
-                public boolean isItemValid(ItemStack stack)
-                {
-                    if (stack == null)
-                        return false;
-
-                    return stack.getItem().isValidArmor(stack, EntityEquipmentSlot.values()[j], k);
-                }
-
-            });
+        for (int i = 0; i < 4; i++) {
+            addSlotToContainer(new SlotCustomArmor(player, invCosArmor, invCosArmor.getSizeInventory() - 1 - i, 80, 8 + i * 18, i));
         }
 
         // PlayerInventory

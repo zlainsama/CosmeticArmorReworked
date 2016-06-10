@@ -8,6 +8,7 @@ import lain.mods.cos.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.network.packet.PacketOpenNormalInventory;
 import lain.mods.cos.network.packet.PacketSetSkinArmor;
 import lain.mods.cos.network.packet.PacketSyncCosArmor;
+import lain.mods.cos.ref.RefStrings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -18,9 +19,8 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = "cosmeticarmorreworked", useMetadata = true, acceptedMinecraftVersions = "[1.9],[1.9.4]")
-public class CosmeticArmorReworked
-{
+@Mod(modid = RefStrings.MODID, acceptedMinecraftVersions = RefStrings.MCVERSIONS)
+public class CosmeticArmorReworked {
 
     @Mod.Instance("cosmeticarmorreworked")
     public static CosmeticArmorReworked instance;
@@ -28,14 +28,13 @@ public class CosmeticArmorReworked
     @SideOnly(Side.CLIENT)
     public static KeyHandler keyHandler;
 
-    @SidedProxy(serverSide = "lain.mods.cos.InventoryManager", clientSide = "lain.mods.cos.client.InventoryManagerClient")
+    @SidedProxy(serverSide = RefStrings.SERVERSIDE, clientSide = RefStrings.CLIENTSIDE)
     public static InventoryManager invMan;
 
-    public static final NetworkManager network = new NetworkManager("lain|nm|cos");
+    public static final NetworkManager network = new NetworkManager(RefStrings.SHORTNAME);
 
     @Mod.EventHandler
-    public void init(FMLPreInitializationEvent event)
-    {
+    public void init(FMLPreInitializationEvent event) {
         network.registerPacket(1, PacketSyncCosArmor.class);
         network.registerPacket(2, PacketSetSkinArmor.class);
         network.registerPacket(3, PacketOpenCosArmorInventory.class);
@@ -43,27 +42,22 @@ public class CosmeticArmorReworked
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
-        if (event.getSide().isClient())
-        {
+        if (event.getSide().isClient()) {
             MinecraftForge.EVENT_BUS.register(new PlayerRenderHandler());
             MinecraftForge.EVENT_BUS.register(keyHandler = new KeyHandler());
-            // FMLCommonHandler.instance().bus().register(keyHandler = new KeyHandler());
             MinecraftForge.EVENT_BUS.register(new GuiEvents());
         }
 
         MinecraftForge.EVENT_BUS.register(invMan);
-        // FMLCommonHandler.instance().bus().register(invMan);
     }
 
     @Mod.EventHandler
-    public void onServerStarting(FMLServerStartingEvent event)
-    {
+    public void onServerStarting(FMLServerStartingEvent event) {
         invMan.onServerStarting();
     }
 
     @Mod.EventHandler
-    public void onServerStopping(FMLServerStoppingEvent event)
-    {
+    public void onServerStopping(FMLServerStoppingEvent event) {
         invMan.onServerStopping();
     }
 
