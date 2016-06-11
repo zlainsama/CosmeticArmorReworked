@@ -90,7 +90,6 @@ public class ContainerCosArmor extends Container {
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotNumber)
     {
-    	System.out.println(slotNumber);
         ItemStack stack = null;
         Slot slot = (Slot) inventorySlots.get(slotNumber);
 
