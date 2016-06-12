@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = RefStrings.MODID, acceptedMinecraftVersions = RefStrings.MCVERSIONS)
+@Mod(modid = RefStrings.MODID, name = RefStrings.NAME, version = RefStrings.VERSION, acceptedMinecraftVersions = RefStrings.MCVERSIONS)
 public class CosmeticArmorReworked {
 
     @Mod.Instance("cosmeticarmorreworked")

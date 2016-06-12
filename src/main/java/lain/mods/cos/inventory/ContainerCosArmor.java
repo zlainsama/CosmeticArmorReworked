@@ -33,7 +33,7 @@ public class ContainerCosArmor extends Container {
 
         // NormalArmor
         for (int i = 0; i < 4; i++) {
-            addSlotToContainer(new SlotCustomArmor(player, invPlayer.getSizeInventory() - 1 - (3 - i), 8, 8 + i * 18, i));
+            addSlotToContainer(new SlotCustomArmor(player, invPlayer.getSizeInventory() - 2 - i, 8, 8 + i * 18, i));
         }
 
         // CosmeticArmor

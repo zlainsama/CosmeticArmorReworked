@@ -14,12 +14,15 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.9-1.0.1"
+version = "1.9-1.0.2"
 group= "lain.mods.cos" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "CosmeticArmorReworked"
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 minecraft {
-    version = "1.9-12.16.1.1887"
+    version = "1.9-12.16.1.1907"
     runDir = "run"
     mappings = "snapshot_20160312"
 }
