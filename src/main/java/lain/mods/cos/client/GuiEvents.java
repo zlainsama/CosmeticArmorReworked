@@ -38,13 +38,13 @@ public class GuiEvents
     @SubscribeEvent
     public void guiPostAction(GuiScreenEvent.ActionPerformedEvent.Post event)
     {
-        if (event.gui instanceof GuiInventory || event.gui instanceof GuiCosArmorInventory)
+        if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiCosArmorInventory)
         {
-            if (event.button.id == 76)
+            if (event.getButton().id == 76)
             {
-                if (event.gui instanceof GuiCosArmorInventory)
+                if (event.getGui() instanceof GuiCosArmorInventory)
                 {
-                    event.gui.mc.displayGuiScreen(new GuiInventory(event.gui.mc.thePlayer));
+                    event.getGui().mc.displayGuiScreen(new GuiInventory(event.getGui().mc.thePlayer));
                     CosmeticArmorReworked.network.sendToServer(new PacketOpenNormalInventory());
                 }
                 else
@@ -52,10 +52,10 @@ public class GuiEvents
                     CosmeticArmorReworked.network.sendToServer(new PacketOpenCosArmorInventory());
                 }
             }
-            else if (event.button.id == 77)
+            else if (event.getButton().id == 77)
             {
                 PlayerRenderHandler.HideCosArmor = !PlayerRenderHandler.HideCosArmor;
-                ((GuiCosArmorToggleButton) event.button).state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
+                ((GuiCosArmorToggleButton) event.getButton()).state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
             }
         }
     }
@@ -64,23 +64,23 @@ public class GuiEvents
     @SubscribeEvent
     public void guiPostInit(GuiScreenEvent.InitGuiEvent.Post event)
     {
-        if (event.gui instanceof GuiInventory || event.gui instanceof GuiCosArmorInventory)
+        if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiCosArmorInventory)
         {
             int xSize = 176;
             int ySize = 166;
 
-            int guiLeft = (event.gui.width - xSize) / 2;
-            int guiTop = (event.gui.height - ySize) / 2;
+            int guiLeft = (event.getGui().width - xSize) / 2;
+            int guiTop = (event.getGui().height - ySize) / 2;
 
-            if (!event.gui.mc.thePlayer.getActivePotionEffects().isEmpty() && isNeiHidden())
+            if (!event.getGui().mc.thePlayer.getActivePotionEffects().isEmpty() && isNeiHidden())
             {
-                guiLeft = 160 + (event.gui.width - xSize - 200) / 2;
+                guiLeft = 160 + (event.getGui().width - xSize - 200) / 2;
             }
 
-            event.buttonList.add(new GuiCosArmorButton(76, guiLeft + 66, guiTop + 67, 10, 10, event.gui instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
+            event.getButtonList().add(new GuiCosArmorButton(76, guiLeft + 66, guiTop + 67, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
             GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(77, guiLeft + 60, guiTop + 72, 5, 5, "");
             t.state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
-            event.buttonList.add(t);
+            event.getButtonList().add(t);
         }
     }
 

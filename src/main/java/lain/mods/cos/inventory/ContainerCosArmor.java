@@ -1,5 +1,6 @@
 package lain.mods.cos.inventory;
 
+import lain.mods.cos.ref.ArmorRef;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -11,11 +12,8 @@ import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerCosArmor extends Container
-{
+public class ContainerCosArmor extends Container {
 
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public IInventory craftResult = new InventoryCraftResult();
@@ -34,69 +32,13 @@ public class ContainerCosArmor extends Container
                 addSlotToContainer(new Slot(craftMatrix, j + i * 2, 106 + j * 18, 26 + i * 18));
 
         // NormalArmor
-        for (int i = 0; i < 4; i++)
-        {
-            final int j = i;
-            final EntityPlayer k = player;
-            addSlotToContainer(new Slot(invPlayer, invPlayer.getSizeInventory() - 1 - i, 8, 8 + i * 18)
-            {
-
-                @Override
-                public int getSlotStackLimit()
-                {
-                    return 1;
-                }
-
-                @SideOnly(Side.CLIENT)
-                @Override
-                public String getSlotTexture()
-                {
-                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[j];
-                }
-
-                @Override
-                public boolean isItemValid(ItemStack stack)
-                {
-                    if (stack == null)
-                        return false;
-
-                    return stack.getItem().isValidArmor(stack, j, k);
-                }
-
-            });
+        for (int i = 0; i < 4; i++) {
+            addSlotToContainer(new SlotCustomArmor(player, invPlayer.getSizeInventory() - 2 - i, 8, 8 + i * 18, i));
         }
 
         // CosmeticArmor
-        for (int i = 0; i < 4; i++)
-        {
-            final int j = i;
-            final EntityPlayer k = player;
-            addSlotToContainer(new Slot(invCosArmor, invCosArmor.getSizeInventory() - 1 - i, 80, 8 + i * 18)
-            {
-
-                @Override
-                public int getSlotStackLimit()
-                {
-                    return 1;
-                }
-
-                @SideOnly(Side.CLIENT)
-                @Override
-                public String getSlotTexture()
-                {
-                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[j];
-                }
-
-                @Override
-                public boolean isItemValid(ItemStack stack)
-                {
-                    if (stack == null)
-                        return false;
-
-                    return stack.getItem().isValidArmor(stack, j, k);
-                }
-
-            });
+        for (int i = 0; i < 4; i++) {
+            addSlotToContainer(new SlotCustomArmor(player, invCosArmor, invCosArmor.getSizeInventory() - 1 - i, 80, 8 + i * 18, i));
         }
 
         // PlayerInventory
@@ -173,11 +115,12 @@ public class ContainerCosArmor extends Container
                 if (!mergeItemStack(stack1, 13, 49, false))
                     return null;
             }
-            else if (((stack1.getItem() instanceof ItemArmor)) && (!((Slot) inventorySlots.get(5 + ((ItemArmor) stack1.getItem()).armorType)).getHasStack()))
+            else if ((stack1.getItem() instanceof ItemArmor) && 
+            		(!((Slot)inventorySlots.get(5 + ArmorRef.getArmorIndex(((ItemArmor)stack1.getItem()).armorType))).getHasStack() ||
+            		!((Slot)inventorySlots.get(12 - ArmorRef.getArmorIndex(((ItemArmor)stack1.getItem()).armorType))).getHasStack()))
             {
-                int j = 5 + ((ItemArmor) stack1.getItem()).armorType;
 
-                if (!mergeItemStack(stack1, j, j + 1, false) && !mergeItemStack(stack1, j + 4, j + 4 + 1, false))
+                if (!mergeItemStack(stack1, 5, 13, false))
                     return null;
             }
             else if ((slotNumber >= 13) && (slotNumber < 40)) // PlayerInventory
