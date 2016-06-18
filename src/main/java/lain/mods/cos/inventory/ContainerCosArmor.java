@@ -1,5 +1,6 @@
 package lain.mods.cos.inventory;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -9,7 +10,6 @@ import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fml.relauncher.Side;
@@ -158,6 +158,7 @@ public class ContainerCosArmor extends Container
         {
             ItemStack stack1 = slot.getStack();
             stack = stack1.copy();
+            EntityEquipmentSlot desiredSlot = EntityLiving.getSlotForItemStack(stack);
 
             if (slotNumber == 0) // CraftingResult
             {
@@ -176,11 +177,18 @@ public class ContainerCosArmor extends Container
                 if (!mergeItemStack(stack1, 13, 49, false))
                     return null;
             }
-            else if (((stack1.getItem() instanceof ItemArmor)) && (!((Slot) inventorySlots.get(5 + ((ItemArmor) stack1.getItem()).armorType.getIndex())).getHasStack()))
+            else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(8 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check NormalArmor slots
             {
-                int j = 5 + ((ItemArmor) stack1.getItem()).armorType.getIndex();
+                int j = 8 - desiredSlot.getIndex();
 
-                if (!mergeItemStack(stack1, j, j + 1, false) && !mergeItemStack(stack1, j + 4, j + 4 + 1, false))
+                if (!mergeItemStack(stack1, j, j + 1, false))
+                    return null;
+            }
+            else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(12 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check CosmeticArmor slots
+            {
+                int j = 12 - desiredSlot.getIndex();
+
+                if (!mergeItemStack(stack1, j, j + 1, false))
                     return null;
             }
             else if ((slotNumber >= 13) && (slotNumber < 40)) // PlayerInventory
@@ -211,5 +219,4 @@ public class ContainerCosArmor extends Container
 
         return stack;
     }
-
 }
