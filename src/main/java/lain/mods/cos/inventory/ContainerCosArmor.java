@@ -3,6 +3,7 @@ package lain.mods.cos.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
@@ -16,6 +17,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerCosArmor extends Container
 {
+
+    private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = { EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
 
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public IInventory craftResult = new InventoryCraftResult();
@@ -60,7 +63,7 @@ public class ContainerCosArmor extends Container
                     if (stack == null)
                         return false;
 
-                    return stack.getItem().isValidArmor(stack, j, k);
+                    return stack.getItem().isValidArmor(stack, VALID_EQUIPMENT_SLOTS[j], k);
                 }
 
             });
@@ -93,7 +96,7 @@ public class ContainerCosArmor extends Container
                     if (stack == null)
                         return false;
 
-                    return stack.getItem().isValidArmor(stack, j, k);
+                    return stack.getItem().isValidArmor(stack, VALID_EQUIPMENT_SLOTS[j], k);
                 }
 
             });
@@ -133,7 +136,7 @@ public class ContainerCosArmor extends Container
             ItemStack stack = craftMatrix.removeStackFromSlot(i);
 
             if (stack != null)
-                player.dropPlayerItemWithRandomChoice(stack, false);
+                player.dropItem(stack, false);
         }
 
         craftResult.setInventorySlotContents(0, null);
@@ -173,9 +176,9 @@ public class ContainerCosArmor extends Container
                 if (!mergeItemStack(stack1, 13, 49, false))
                     return null;
             }
-            else if (((stack1.getItem() instanceof ItemArmor)) && (!((Slot) inventorySlots.get(5 + ((ItemArmor) stack1.getItem()).armorType)).getHasStack()))
+            else if (((stack1.getItem() instanceof ItemArmor)) && (!((Slot) inventorySlots.get(5 + ((ItemArmor) stack1.getItem()).armorType.getIndex())).getHasStack()))
             {
-                int j = 5 + ((ItemArmor) stack1.getItem()).armorType;
+                int j = 5 + ((ItemArmor) stack1.getItem()).armorType.getIndex();
 
                 if (!mergeItemStack(stack1, j, j + 1, false) && !mergeItemStack(stack1, j + 4, j + 4 + 1, false))
                     return null;

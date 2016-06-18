@@ -33,8 +33,8 @@ public class PlayerRenderHandler
         if (!event.isCanceled())
             return;
 
-        ItemStack[] cachedArmor = cache.getUnchecked(event.entityPlayer);
-        ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
+        ItemStack[] cachedArmor = cache.getUnchecked(event.getEntityPlayer());
+        ItemStack[] armor = event.getEntityPlayer().inventory.armorInventory;
 
         if (armor == null || armor.length != cachedArmor.length)
             return; // Incompatible
@@ -46,8 +46,8 @@ public class PlayerRenderHandler
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void handleEvent(RenderPlayerEvent.Post event)
     {
-        ItemStack[] cachedArmor = cache.getUnchecked(event.entityPlayer);
-        ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
+        ItemStack[] cachedArmor = cache.getUnchecked(event.getEntityPlayer());
+        ItemStack[] armor = event.getEntityPlayer().inventory.armorInventory;
 
         if (armor == null || armor.length != cachedArmor.length)
             return; // Incompatible
@@ -59,9 +59,9 @@ public class PlayerRenderHandler
     @SubscribeEvent(priority = EventPriority.HIGH, receiveCanceled = true)
     public void handleEvent(RenderPlayerEvent.Pre event)
     {
-        ItemStack[] cachedArmor = cache.getUnchecked(event.entityPlayer);
-        ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.entityPlayer.getUniqueID()).getInventory();
-        ItemStack[] armor = event.entityPlayer.inventory.armorInventory;
+        ItemStack[] cachedArmor = cache.getUnchecked(event.getEntityPlayer());
+        ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID()).getInventory();
+        ItemStack[] armor = event.getEntityPlayer().inventory.armorInventory;
 
         if (armor == null || armor.length != cachedArmor.length)
             return; // Incompatible
@@ -76,7 +76,7 @@ public class PlayerRenderHandler
         {
             for (int i = 0; i < cachedArmor.length; i++)
             {
-                if (CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.entityPlayer.getUniqueID()).isSkinArmor(i))
+                if (CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID()).isSkinArmor(i))
                     armor[i] = null;
                 else if (cosArmor[i] != null)
                     armor[i] = cosArmor[i];
