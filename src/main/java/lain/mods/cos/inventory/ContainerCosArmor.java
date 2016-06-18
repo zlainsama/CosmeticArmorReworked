@@ -41,7 +41,7 @@ public class ContainerCosArmor extends Container
         {
             final int j = i;
             final EntityPlayer k = player;
-            addSlotToContainer(new Slot(invPlayer, invPlayer.getSizeInventory() - 1 - i, 8, 8 + i * 18)
+            addSlotToContainer(new Slot(invPlayer, invPlayer.getSizeInventory() - 1 - invPlayer.offHandInventory.length - i, 8, 8 + i * 18)
             {
 
                 @Override
@@ -54,7 +54,7 @@ public class ContainerCosArmor extends Container
                 @Override
                 public String getSlotTexture()
                 {
-                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[j];
+                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[VALID_EQUIPMENT_SLOTS[j].getIndex()];
                 }
 
                 @Override
@@ -87,7 +87,7 @@ public class ContainerCosArmor extends Container
                 @Override
                 public String getSlotTexture()
                 {
-                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[j];
+                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[VALID_EQUIPMENT_SLOTS[j].getIndex()];
                 }
 
                 @Override
