@@ -1,14 +1,15 @@
 package lain.mods.cos.inventory;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,6 +17,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerCosArmor extends Container
 {
+
+    private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = { EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
 
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public IInventory craftResult = new InventoryCraftResult();
@@ -38,7 +41,7 @@ public class ContainerCosArmor extends Container
         {
             final int j = i;
             final EntityPlayer k = player;
-            addSlotToContainer(new Slot(invPlayer, invPlayer.getSizeInventory() - 1 - i, 8, 8 + i * 18)
+            addSlotToContainer(new Slot(invPlayer, invPlayer.getSizeInventory() - 1 - invPlayer.offHandInventory.length - i, 8, 8 + i * 18)
             {
 
                 @Override
@@ -51,7 +54,7 @@ public class ContainerCosArmor extends Container
                 @Override
                 public String getSlotTexture()
                 {
-                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[j];
+                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[VALID_EQUIPMENT_SLOTS[j].getIndex()];
                 }
 
                 @Override
@@ -60,7 +63,7 @@ public class ContainerCosArmor extends Container
                     if (stack == null)
                         return false;
 
-                    return stack.getItem().isValidArmor(stack, j, k);
+                    return stack.getItem().isValidArmor(stack, VALID_EQUIPMENT_SLOTS[j], k);
                 }
 
             });
@@ -84,7 +87,7 @@ public class ContainerCosArmor extends Container
                 @Override
                 public String getSlotTexture()
                 {
-                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[j];
+                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[VALID_EQUIPMENT_SLOTS[j].getIndex()];
                 }
 
                 @Override
@@ -93,7 +96,7 @@ public class ContainerCosArmor extends Container
                     if (stack == null)
                         return false;
 
-                    return stack.getItem().isValidArmor(stack, j, k);
+                    return stack.getItem().isValidArmor(stack, VALID_EQUIPMENT_SLOTS[j], k);
                 }
 
             });
@@ -133,7 +136,7 @@ public class ContainerCosArmor extends Container
             ItemStack stack = craftMatrix.removeStackFromSlot(i);
 
             if (stack != null)
-                player.dropPlayerItemWithRandomChoice(stack, false);
+                player.dropItem(stack, false);
         }
 
         craftResult.setInventorySlotContents(0, null);
@@ -155,6 +158,7 @@ public class ContainerCosArmor extends Container
         {
             ItemStack stack1 = slot.getStack();
             stack = stack1.copy();
+            EntityEquipmentSlot desiredSlot = EntityLiving.getSlotForItemStack(stack);
 
             if (slotNumber == 0) // CraftingResult
             {
@@ -173,11 +177,18 @@ public class ContainerCosArmor extends Container
                 if (!mergeItemStack(stack1, 13, 49, false))
                     return null;
             }
-            else if (((stack1.getItem() instanceof ItemArmor)) && (!((Slot) inventorySlots.get(5 + ((ItemArmor) stack1.getItem()).armorType)).getHasStack()))
+            else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(8 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check NormalArmor slots
             {
-                int j = 5 + ((ItemArmor) stack1.getItem()).armorType;
+                int j = 8 - desiredSlot.getIndex();
 
-                if (!mergeItemStack(stack1, j, j + 1, false) && !mergeItemStack(stack1, j + 4, j + 4 + 1, false))
+                if (!mergeItemStack(stack1, j, j + 1, false))
+                    return null;
+            }
+            else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(12 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check CosmeticArmor slots
+            {
+                int j = 12 - desiredSlot.getIndex();
+
+                if (!mergeItemStack(stack1, j, j + 1, false))
                     return null;
             }
             else if ((slotNumber >= 13) && (slotNumber < 40)) // PlayerInventory
@@ -208,5 +219,4 @@ public class ContainerCosArmor extends Container
 
         return stack;
     }
-
 }
