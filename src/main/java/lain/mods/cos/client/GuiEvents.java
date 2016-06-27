@@ -77,8 +77,8 @@ public class GuiEvents
                 guiLeft = 160 + (event.getGui().width - xSize - 200) / 2;
             }
 
-            event.getButtonList().add(new GuiCosArmorButton(76, guiLeft + 66, guiTop + 67, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
-            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(77, guiLeft + 60, guiTop + 72, 5, 5, "");
+            event.getButtonList().add(new GuiCosArmorButton(76, guiLeft + 65, guiTop + 67, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
+            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(77, guiLeft + 59, guiTop + 72, 5, 5, "");
             t.state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
             event.getButtonList().add(t);
         }

@@ -10,6 +10,7 @@ import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,12 +30,12 @@ public class ContainerCosArmor extends Container
         this.player = player;
 
         // CraftingResult
-        addSlotToContainer(new SlotCrafting(player, craftMatrix, craftResult, 0, 144, 36));
+        addSlotToContainer(new SlotCrafting(player, craftMatrix, craftResult, 0, 154, 28));
 
         // CraftingGrid
         for (int i = 0; i < 2; i++)
             for (int j = 0; j < 2; j++)
-                addSlotToContainer(new Slot(craftMatrix, j + i * 2, 106 + j * 18, 26 + i * 18));
+                addSlotToContainer(new Slot(craftMatrix, j + i * 2, 98 + j * 18, 18 + i * 18));
 
         // NormalArmor
         for (int i = 0; i < 4; i++)
@@ -54,7 +55,7 @@ public class ContainerCosArmor extends Container
                 @Override
                 public String getSlotTexture()
                 {
-                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[VALID_EQUIPMENT_SLOTS[j].getIndex()];
+                    return ItemArmor.EMPTY_SLOT_NAMES[VALID_EQUIPMENT_SLOTS[j].getIndex()];
                 }
 
                 @Override
@@ -74,7 +75,7 @@ public class ContainerCosArmor extends Container
         {
             final int j = i;
             final EntityPlayer k = player;
-            addSlotToContainer(new Slot(invCosArmor, invCosArmor.getSizeInventory() - 1 - i, 80, 8 + i * 18)
+            addSlotToContainer(new Slot(invCosArmor, invCosArmor.getSizeInventory() - 1 - i, 98 + i * 18, 62)
             {
 
                 @Override
@@ -87,7 +88,7 @@ public class ContainerCosArmor extends Container
                 @Override
                 public String getSlotTexture()
                 {
-                    return net.minecraft.item.ItemArmor.EMPTY_SLOT_NAMES[VALID_EQUIPMENT_SLOTS[j].getIndex()];
+                    return ItemArmor.EMPTY_SLOT_NAMES[VALID_EQUIPMENT_SLOTS[j].getIndex()];
                 }
 
                 @Override
@@ -110,6 +111,19 @@ public class ContainerCosArmor extends Container
         // PlayerHotBar
         for (int i = 0; i < 9; i++)
             addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
+
+        // Off-Hand Slot
+        addSlotToContainer(new Slot(invPlayer, 40, 77, 62)
+        {
+
+            @SideOnly(Side.CLIENT)
+            @Override
+            public String getSlotTexture()
+            {
+                return "minecraft:items/empty_armor_slot_shield";
+            }
+
+        });
 
         onCraftMatrixChanged(craftMatrix);
     }

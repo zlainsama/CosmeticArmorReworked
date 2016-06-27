@@ -64,7 +64,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
     @Override
     protected void drawGuiContainerForegroundLayer(int p_drawGuiContainerForegroundLayer_1_, int p_drawGuiContainerForegroundLayer_2_)
     {
-        fontRendererObj.drawString(I18n.format("container.crafting", new Object[0]), 106, 16, 4210752);
+        fontRendererObj.drawString(I18n.format("container.crafting", new Object[0]), 97, 8, 4210752);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         for (int i = 0; i < 4; i++)
         {
             int j = 3 - i;
-            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97 + offset, guiTop + 7 + 18 * i, 5, 5, "");
+            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97 + offset + 18 * i, guiTop + 56, 5, 5, "");
             t.state = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.thePlayer.getUniqueID()).isSkinArmor(j) ? 1 : 0;
             buttonList.add(t);
         }
