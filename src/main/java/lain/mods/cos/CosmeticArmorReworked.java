@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = "cosmeticarmorreworked", useMetadata = true, acceptedMinecraftVersions = "[1.10]")
+@Mod(modid = "cosmeticarmorreworked", useMetadata = true, acceptedMinecraftVersions = "[1.10],[1.10.2]")
 public class CosmeticArmorReworked
 {
 
