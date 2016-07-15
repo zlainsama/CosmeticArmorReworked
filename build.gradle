@@ -12,7 +12,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.9.4-v2"
+version = "1.9.4-v2a"
 group= "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
 
@@ -21,6 +21,13 @@ minecraft {
     runDir = "run"
 
     mappings = "snapshot_20160518"
+}
+
+jar
+{
+    manifest {
+        attributes 'FMLAT': 'cosmeticarmorreworked_at.cfg'
+    }
 }
 
 processResources
@@ -41,6 +48,8 @@ processResources
     {
         exclude 'mcmod.info'
     }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
 sourceCompatibility = '1.7'
