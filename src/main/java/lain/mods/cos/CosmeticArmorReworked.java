@@ -9,6 +9,7 @@ import lain.mods.cos.network.packet.PacketOpenNormalInventory;
 import lain.mods.cos.network.packet.PacketSetSkinArmor;
 import lain.mods.cos.network.packet.PacketSyncCosArmor;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -18,7 +19,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = "cosmeticarmorreworked", useMetadata = true, acceptedMinecraftVersions = "[1.10],[1.10.2]")
+@Mod(modid = "cosmeticarmorreworked", useMetadata = true, acceptedMinecraftVersions = "[1.10],[1.10.2]", guiFactory = "lain.mods.cos.client.GuiFactoryCos")
 public class CosmeticArmorReworked
 {
 
@@ -45,6 +46,10 @@ public class CosmeticArmorReworked
 
         if (event.getSide().isClient())
         {
+            Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+            config.load();
+            GuiEvents.loadConfigs(config);
+
             MinecraftForge.EVENT_BUS.register(new PlayerRenderHandler());
             MinecraftForge.EVENT_BUS.register(keyHandler = new KeyHandler());
             // FMLCommonHandler.instance().bus().register(keyHandler = new KeyHandler());
