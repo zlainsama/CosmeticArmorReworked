@@ -25,28 +25,38 @@ public class GuiEvents
     {
         lastConfig = config;
 
-        Property prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Left", 65);
-        prop.setComment("The distance from left of the gui for CosArmorGuiButton. (default: 65)");
+        Property prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Hidden", false);
+        prop.setComment("Hide CosArmorGuiButton? (default: false)");
+        CosArmorGuiButton_Hidden = prop.getBoolean();
+
+        prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Left", 65);
+        prop.setComment("The distance from left of the inventory gui for CosArmorGuiButton. (default: 65)");
         CosArmorGuiButton_Left = prop.getInt();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Top", 67);
-        prop.setComment("The distance from top of the gui for CosArmorGuiButton. (default: 67)");
+        prop.setComment("The distance from top of the inventory gui for CosArmorGuiButton. (default: 67)");
         CosArmorGuiButton_Top = prop.getInt();
 
+        prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Hidden", false);
+        prop.setComment("Hide CosArmorToggleButton? (default: false)");
+        CosArmorToggleButton_Hidden = prop.getBoolean();
+
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Left", 59);
-        prop.setComment("The distance from left of the gui for CosArmorToggleButton. (default: 59)");
+        prop.setComment("The distance from left of the inventory gui for CosArmorToggleButton. (default: 59)");
         CosArmorToggleButton_Left = prop.getInt();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Top", 72);
-        prop.setComment("The distance from top of the gui for CosArmorToggleButton. (default: 72)");
+        prop.setComment("The distance from top of the inventory gui for CosArmorToggleButton. (default: 72)");
         CosArmorToggleButton_Top = prop.getInt();
 
         if (config.hasChanged())
             config.save();
     }
 
+    public static boolean CosArmorGuiButton_Hidden = false;
     public static int CosArmorGuiButton_Left = 65;
     public static int CosArmorGuiButton_Top = 67;
+    public static boolean CosArmorToggleButton_Hidden = false;
     public static int CosArmorToggleButton_Left = 59;
     public static int CosArmorToggleButton_Top = 72;
 
@@ -85,10 +95,12 @@ public class GuiEvents
         if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiCosArmorInventory)
         {
             GuiContainer gui = (GuiContainer) event.getGui();
-            event.getButtonList().add(new GuiCosArmorButton(76, gui.guiLeft + CosArmorGuiButton_Left/* 65 */, gui.guiTop + CosArmorGuiButton_Top/* 67 */, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
+            if (!CosArmorGuiButton_Hidden)
+                event.getButtonList().add(new GuiCosArmorButton(76, gui.guiLeft + CosArmorGuiButton_Left/* 65 */, gui.guiTop + CosArmorGuiButton_Top/* 67 */, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
             GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(77, gui.guiLeft + CosArmorToggleButton_Left/* 59 */, gui.guiTop + CosArmorToggleButton_Top/* 72 */, 5, 5, "");
             t.state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
-            event.getButtonList().add(t);
+            if (!CosArmorToggleButton_Hidden)
+                event.getButtonList().add(t);
         }
     }
 
@@ -96,7 +108,7 @@ public class GuiEvents
     public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
     {
         if ("cosmeticarmorreworked".equals(event.getModID()) == true)
-            loadConfigs(lastConfig);
+            loadConfigs(getLastConfig());
     }
 
 }
