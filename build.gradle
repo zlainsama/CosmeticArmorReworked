@@ -1,10 +1,7 @@
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
@@ -12,14 +9,13 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.10.2-v1a"
+version = "1.10.2-v2-test"
 group= "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
 
 minecraft {
-    version = "1.10.2-12.18.0.2006-1.10.0"
+    version = "1.10.2-12.18.2.2099"
     runDir = "run"
-
     mappings = "snapshot_20160518"
 }
 
@@ -52,5 +48,7 @@ processResources
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
+sourceCompatibility = targetCompatibility = "1.7"
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.7"
+}
