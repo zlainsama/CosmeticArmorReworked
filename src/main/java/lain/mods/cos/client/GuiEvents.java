@@ -26,27 +26,27 @@ public class GuiEvents
         lastConfig = config;
 
         Property prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Hidden", false);
-        prop.setComment("Hide CosArmorGuiButton? (default: false)");
+        prop.setComment("Hide CosArmorGuiButton?");
         CosArmorGuiButton_Hidden = prop.getBoolean();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Left", 65);
-        prop.setComment("The distance from left of the inventory gui for CosArmorGuiButton. (default: 65)");
+        prop.setComment("The distance from left of the inventory gui for CosArmorGuiButton.");
         CosArmorGuiButton_Left = prop.getInt();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Top", 67);
-        prop.setComment("The distance from top of the inventory gui for CosArmorGuiButton. (default: 67)");
+        prop.setComment("The distance from top of the inventory gui for CosArmorGuiButton.");
         CosArmorGuiButton_Top = prop.getInt();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Hidden", false);
-        prop.setComment("Hide CosArmorToggleButton? (default: false)");
+        prop.setComment("Hide CosArmorToggleButton?");
         CosArmorToggleButton_Hidden = prop.getBoolean();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Left", 59);
-        prop.setComment("The distance from left of the inventory gui for CosArmorToggleButton. (default: 59)");
+        prop.setComment("The distance from left of the inventory gui for CosArmorToggleButton.");
         CosArmorToggleButton_Left = prop.getInt();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Top", 72);
-        prop.setComment("The distance from top of the inventory gui for CosArmorToggleButton. (default: 72)");
+        prop.setComment("The distance from top of the inventory gui for CosArmorToggleButton.");
         CosArmorToggleButton_Top = prop.getInt();
 
         if (config.hasChanged())
