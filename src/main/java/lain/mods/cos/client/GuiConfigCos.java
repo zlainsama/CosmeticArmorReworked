@@ -13,4 +13,5 @@ public class GuiConfigCos extends GuiConfig
     {
         super(parent, Lists.newArrayList(new ConfigElement(GuiEvents.getLastConfig().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements()), "cosmeticarmorreworked", false, false, GuiConfig.getAbridgedConfigPath(GuiEvents.getLastConfig().getConfigFile().toString()));
     }
+
 }

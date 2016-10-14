@@ -14,15 +14,29 @@ import com.google.common.cache.LoadingCache;
 public class PlayerRenderHandler
 {
 
+    private static class CachedInventory
+    {
+
+        ItemStack[] stacks;
+        int state;
+
+        CachedInventory(int size)
+        {
+            stacks = new ItemStack[size];
+            state = 0;
+        }
+
+    }
+
     public static boolean HideCosArmor = false;
 
-    private final LoadingCache<EntityPlayer, ItemStack[]> cache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build(new CacheLoader<EntityPlayer, ItemStack[]>()
+    private final LoadingCache<EntityPlayer, CachedInventory> cache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build(new CacheLoader<EntityPlayer, CachedInventory>()
     {
 
         @Override
-        public ItemStack[] load(EntityPlayer owner) throws Exception
+        public CachedInventory load(EntityPlayer owner) throws Exception
         {
-            return new ItemStack[owner.inventory.armorInventory.length];
+            return new CachedInventory(owner.inventory.armorInventory.length);
         }
 
     });
@@ -33,41 +47,60 @@ public class PlayerRenderHandler
         if (!event.isCanceled())
             return;
 
-        ItemStack[] cachedArmor = cache.getUnchecked(event.getEntityPlayer());
+        CachedInventory cachedInv = cache.getUnchecked(event.getEntityPlayer());
+        ItemStack[] cachedArmor = cachedInv.stacks;
         ItemStack[] armor = event.getEntityPlayer().inventory.armorInventory;
 
         if (armor == null || armor.length != cachedArmor.length)
             return; // Incompatible
 
-        for (int i = 0; i < cachedArmor.length; i++)
-            armor[i] = cachedArmor[i];
+        if (cachedInv.state != 0)
+        {
+            for (int i = 0; i < cachedArmor.length; i++)
+                armor[i] = cachedArmor[i];
+            cachedInv.state = 0;
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void handleEvent(RenderPlayerEvent.Post event)
     {
-        ItemStack[] cachedArmor = cache.getUnchecked(event.getEntityPlayer());
+        CachedInventory cachedInv = cache.getUnchecked(event.getEntityPlayer());
+        ItemStack[] cachedArmor = cachedInv.stacks;
         ItemStack[] armor = event.getEntityPlayer().inventory.armorInventory;
 
         if (armor == null || armor.length != cachedArmor.length)
             return; // Incompatible
 
-        for (int i = 0; i < cachedArmor.length; i++)
-            armor[i] = cachedArmor[i];
+        if (cachedInv.state != 0)
+        {
+            for (int i = 0; i < cachedArmor.length; i++)
+                armor[i] = cachedArmor[i];
+            cachedInv.state = 0;
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH, receiveCanceled = true)
     public void handleEvent(RenderPlayerEvent.Pre event)
     {
-        ItemStack[] cachedArmor = cache.getUnchecked(event.getEntityPlayer());
+        CachedInventory cachedInv = cache.getUnchecked(event.getEntityPlayer());
+        ItemStack[] cachedArmor = cachedInv.stacks;
         ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID()).getInventory();
         ItemStack[] armor = event.getEntityPlayer().inventory.armorInventory;
 
         if (armor == null || armor.length != cachedArmor.length)
             return; // Incompatible
 
+        if (cachedInv.state != 0)
+        {
+            for (int i = 0; i < cachedArmor.length; i++)
+                armor[i] = cachedArmor[i];
+            cachedInv.state = 0;
+        }
+
         for (int i = 0; i < cachedArmor.length; i++)
             cachedArmor[i] = armor[i];
+        cachedInv.state = 1;
 
         if (HideCosArmor)
             return;
@@ -76,6 +109,9 @@ public class PlayerRenderHandler
         {
             for (int i = 0; i < cachedArmor.length; i++)
             {
+                if (i >= cosArmor.length)
+                    break;
+
                 if (CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID()).isSkinArmor(i))
                     armor[i] = null;
                 else if (cosArmor[i] != null)
