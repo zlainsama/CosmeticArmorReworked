@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 import lain.mods.cos.CosmeticArmorReworked;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -17,12 +18,12 @@ public class PlayerRenderHandler
     private static class CachedInventory
     {
 
-        ItemStack[] stacks;
+        NonNullList<ItemStack> stacks;
         int state;
 
         CachedInventory(int size)
         {
-            stacks = new ItemStack[size];
+            stacks = NonNullList.func_191197_a(size, ItemStack.field_190927_a);
             state = 0;
         }
 
@@ -36,7 +37,7 @@ public class PlayerRenderHandler
         @Override
         public CachedInventory load(EntityPlayer owner) throws Exception
         {
-            return new CachedInventory(owner.inventory.armorInventory.length);
+            return new CachedInventory(owner.inventory.armorInventory.size());
         }
 
     });
@@ -48,16 +49,16 @@ public class PlayerRenderHandler
             return;
 
         CachedInventory cachedInv = cache.getUnchecked(event.getEntityPlayer());
-        ItemStack[] cachedArmor = cachedInv.stacks;
-        ItemStack[] armor = event.getEntityPlayer().inventory.armorInventory;
+        NonNullList<ItemStack> cachedArmor = cachedInv.stacks;
+        NonNullList<ItemStack> armor = event.getEntityPlayer().inventory.armorInventory;
 
-        if (armor == null || armor.length != cachedArmor.length)
+        if (armor == null || armor.size() != cachedArmor.size())
             return; // Incompatible
 
         if (cachedInv.state != 0)
         {
-            for (int i = 0; i < cachedArmor.length; i++)
-                armor[i] = cachedArmor[i];
+            for (int i = 0; i < cachedArmor.size(); i++)
+                armor.set(i, cachedArmor.get(i));
             cachedInv.state = 0;
         }
     }
@@ -66,16 +67,16 @@ public class PlayerRenderHandler
     public void handleEvent(RenderPlayerEvent.Post event)
     {
         CachedInventory cachedInv = cache.getUnchecked(event.getEntityPlayer());
-        ItemStack[] cachedArmor = cachedInv.stacks;
-        ItemStack[] armor = event.getEntityPlayer().inventory.armorInventory;
+        NonNullList<ItemStack> cachedArmor = cachedInv.stacks;
+        NonNullList<ItemStack> armor = event.getEntityPlayer().inventory.armorInventory;
 
-        if (armor == null || armor.length != cachedArmor.length)
+        if (armor == null || armor.size() != cachedArmor.size())
             return; // Incompatible
 
         if (cachedInv.state != 0)
         {
-            for (int i = 0; i < cachedArmor.length; i++)
-                armor[i] = cachedArmor[i];
+            for (int i = 0; i < cachedArmor.size(); i++)
+                armor.set(i, cachedArmor.get(i));
             cachedInv.state = 0;
         }
     }
@@ -84,22 +85,22 @@ public class PlayerRenderHandler
     public void handleEvent(RenderPlayerEvent.Pre event)
     {
         CachedInventory cachedInv = cache.getUnchecked(event.getEntityPlayer());
-        ItemStack[] cachedArmor = cachedInv.stacks;
-        ItemStack[] cosArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID()).getInventory();
-        ItemStack[] armor = event.getEntityPlayer().inventory.armorInventory;
+        NonNullList<ItemStack> cachedArmor = cachedInv.stacks;
+        NonNullList<ItemStack> cosArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID()).getInventory();
+        NonNullList<ItemStack> armor = event.getEntityPlayer().inventory.armorInventory;
 
-        if (armor == null || armor.length != cachedArmor.length)
+        if (armor == null || armor.size() != cachedArmor.size())
             return; // Incompatible
 
         if (cachedInv.state != 0)
         {
-            for (int i = 0; i < cachedArmor.length; i++)
-                armor[i] = cachedArmor[i];
+            for (int i = 0; i < cachedArmor.size(); i++)
+                armor.set(i, cachedArmor.get(i));
             cachedInv.state = 0;
         }
 
-        for (int i = 0; i < cachedArmor.length; i++)
-            cachedArmor[i] = armor[i];
+        for (int i = 0; i < cachedArmor.size(); i++)
+            cachedArmor.set(i, armor.get(i));
         cachedInv.state = 1;
 
         if (HideCosArmor)
@@ -107,17 +108,16 @@ public class PlayerRenderHandler
 
         if (cosArmor != null)
         {
-            for (int i = 0; i < cachedArmor.length; i++)
+            for (int i = 0; i < cachedArmor.size(); i++)
             {
-                if (i >= cosArmor.length)
+                if (i >= cosArmor.size())
                     break;
 
                 if (CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID()).isSkinArmor(i))
-                    armor[i] = null;
-                else if (cosArmor[i] != null)
-                    armor[i] = cosArmor[i];
+                    armor.set(i, ItemStack.field_190927_a);
+                else if (!cosArmor.get(i).func_190926_b())
+                    armor.set(i, cosArmor.get(i));
             }
         }
     }
-
 }

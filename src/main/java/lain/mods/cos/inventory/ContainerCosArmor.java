@@ -42,7 +42,7 @@ public class ContainerCosArmor extends Container
         {
             final int j = i;
             final EntityPlayer k = player;
-            addSlotToContainer(new Slot(invPlayer, invPlayer.getSizeInventory() - 1 - invPlayer.offHandInventory.length - i, 8, 8 + i * 18)
+            addSlotToContainer(new Slot(invPlayer, invPlayer.getSizeInventory() - 1 - invPlayer.offHandInventory.size() - i, 8, 8 + i * 18)
             {
 
                 @Override
@@ -61,7 +61,7 @@ public class ContainerCosArmor extends Container
                 @Override
                 public boolean isItemValid(ItemStack stack)
                 {
-                    if (stack == null)
+                    if (stack == null || stack.func_190926_b())
                         return false;
 
                     return stack.getItem().isValidArmor(stack, VALID_EQUIPMENT_SLOTS[j], k);
@@ -94,7 +94,7 @@ public class ContainerCosArmor extends Container
                 @Override
                 public boolean isItemValid(ItemStack stack)
                 {
-                    if (stack == null)
+                    if (stack == null || stack.func_190926_b())
                         return false;
 
                     return stack.getItem().isValidArmor(stack, VALID_EQUIPMENT_SLOTS[j], k);
@@ -153,7 +153,7 @@ public class ContainerCosArmor extends Container
                 player.dropItem(stack, false);
         }
 
-        craftResult.setInventorySlotContents(0, null);
+        craftResult.setInventorySlotContents(0, ItemStack.field_190927_a);
     }
 
     @Override
@@ -177,58 +177,61 @@ public class ContainerCosArmor extends Container
             if (slotNumber == 0) // CraftingResult
             {
                 if (!mergeItemStack(stack1, 13, 49, true))
-                    return null;
+                    return ItemStack.field_190927_a;
 
                 slot.onSlotChange(stack1, stack);
             }
             else if ((slotNumber >= 1) && (slotNumber < 5)) // CraftingGrid
             {
                 if (!mergeItemStack(stack1, 13, 49, false))
-                    return null;
+                    return ItemStack.field_190927_a;
             }
             else if ((slotNumber >= 5) && (slotNumber < 13)) // NormalArmor & CosmeticArmor
             {
                 if (!mergeItemStack(stack1, 13, 49, false))
-                    return null;
+                    return ItemStack.field_190927_a;
             }
             else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(8 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check NormalArmor slots
             {
                 int j = 8 - desiredSlot.getIndex();
 
                 if (!mergeItemStack(stack1, j, j + 1, false))
-                    return null;
+                    return ItemStack.field_190927_a;
             }
             else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(12 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check CosmeticArmor slots
             {
                 int j = 12 - desiredSlot.getIndex();
 
                 if (!mergeItemStack(stack1, j, j + 1, false))
-                    return null;
+                    return ItemStack.field_190927_a;
             }
             else if ((slotNumber >= 13) && (slotNumber < 40)) // PlayerInventory
             {
                 if (!mergeItemStack(stack1, 40, 49, false))
-                    return null;
+                    return ItemStack.field_190927_a;
             }
             else if ((slotNumber >= 40) && (slotNumber < 49)) // PlayerHotBar
             {
                 if (!mergeItemStack(stack1, 13, 40, false))
-                    return null;
+                    return ItemStack.field_190927_a;
             }
             else if (!mergeItemStack(stack1, 13, 49, false))
             {
-                return null;
+                return ItemStack.field_190927_a;
             }
 
-            if (stack1.stackSize == 0)
-                slot.putStack(null);
+            if (stack1.func_190916_E() == 0)
+                slot.putStack(ItemStack.field_190927_a);
             else
                 slot.onSlotChanged();
 
-            if (stack1.stackSize == stack.stackSize)
-                return null;
+            if (stack1.func_190916_E() == stack.func_190916_E())
+                return ItemStack.field_190927_a;
 
-            slot.onPickupFromSlot(player, stack1);
+            slot.func_190901_a(player, stack1);
+
+            if (slotNumber == 0)
+                player.dropItem(stack1, false);
         }
 
         return stack;
