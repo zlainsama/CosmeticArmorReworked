@@ -5,6 +5,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -12,15 +13,15 @@ import net.minecraft.util.text.TextComponentTranslation;
 public class InventoryCosArmor implements IInventory
 {
 
-    ItemStack[] stacks = new ItemStack[4];
+    NonNullList<ItemStack> stacks = NonNullList.func_191197_a(4, ItemStack.field_190927_a);
     boolean[] isSkinArmor = new boolean[4];
     boolean isDirty = false;
 
     @Override
     public void clear()
     {
-        for (int i = 0; i < stacks.length; i++)
-            stacks[i] = null;
+        for (int i = 0; i < stacks.size(); i++)
+            stacks.set(i, ItemStack.field_190927_a);
     }
 
     @Override
@@ -31,20 +32,29 @@ public class InventoryCosArmor implements IInventory
     @Override
     public ItemStack decrStackSize(int slot, int num)
     {
-        if (stacks == null || slot < 0 || slot >= stacks.length)
-            return null;
+        if (stacks == null || slot < 0 || slot >= stacks.size())
+            return ItemStack.field_190927_a;
 
-        ItemStack stack = stacks[slot];
+        ItemStack stack = stacks.get(slot);
 
-        if (stack == null)
-            return null;
+        if (stack.func_190926_b())
+            return ItemStack.field_190927_a;
 
-        if (stack.stackSize <= num)
-            stacks[slot] = null;
+        if (stack.func_190916_E() <= num)
+            stacks.set(slot, ItemStack.field_190927_a);
         else
             stack = stack.splitStack(num);
 
         return stack;
+    }
+
+    @Override
+    public boolean func_191420_l()
+    {
+        for (int i = 0; i < stacks.size(); i++)
+            if (!stacks.get(i).func_190926_b())
+                return false;
+        return true;
     }
 
     @Override
@@ -69,7 +79,7 @@ public class InventoryCosArmor implements IInventory
         return 0;
     }
 
-    public ItemStack[] getInventory()
+    public NonNullList<ItemStack> getInventory()
     {
         return stacks;
     }
@@ -89,7 +99,7 @@ public class InventoryCosArmor implements IInventory
     @Override
     public int getSizeInventory()
     {
-        return stacks == null ? 0 : stacks.length;
+        return stacks == null ? 0 : stacks.size();
     }
 
     public boolean[] getSkinArmor()
@@ -100,10 +110,10 @@ public class InventoryCosArmor implements IInventory
     @Override
     public ItemStack getStackInSlot(int slot)
     {
-        if (stacks == null || slot < 0 || slot >= stacks.length)
-            return null;
+        if (stacks == null || slot < 0 || slot >= stacks.size())
+            return ItemStack.field_190927_a;
 
-        return stacks[slot];
+        return stacks.get(slot);
     }
 
     @Override
@@ -155,16 +165,16 @@ public class InventoryCosArmor implements IInventory
 
     public void readFromNBT(NBTTagCompound compound)
     {
-        stacks = new ItemStack[compound.getInteger("CosArmor.Inventory.Size")];
-        isSkinArmor = new boolean[stacks.length];
+        stacks = NonNullList.func_191197_a(compound.getInteger("CosArmor.Inventory.Size"), ItemStack.field_190927_a);
+        isSkinArmor = new boolean[stacks.size()];
         NBTTagList tagList = compound.getTagList("CosArmor.Inventory", 10);
         for (int i = 0; i < tagList.tagCount(); i++)
         {
             NBTTagCompound invSlot = (NBTTagCompound) tagList.getCompoundTagAt(i);
             int j = invSlot.getByte("Slot") & 255;
-            ItemStack stack = ItemStack.loadItemStackFromNBT(invSlot);
+            ItemStack stack = new ItemStack(invSlot);
             if (stack != null)
-                stacks[j] = stack;
+                stacks.set(j, stack);
             isSkinArmor[j] = invSlot.getBoolean("isSkinArmor");
         }
     }
@@ -172,11 +182,11 @@ public class InventoryCosArmor implements IInventory
     @Override
     public ItemStack removeStackFromSlot(int slot)
     {
-        if (stacks == null || slot < 0 || slot >= stacks.length)
+        if (stacks == null || slot < 0 || slot >= stacks.size())
             return null;
 
-        ItemStack stack = stacks[slot];
-        stacks[slot] = null;
+        ItemStack stack = stacks.get(slot);
+        stacks.set(slot, ItemStack.field_190927_a);
         return stack;
     }
 
@@ -185,7 +195,7 @@ public class InventoryCosArmor implements IInventory
     {
     }
 
-    public void setInventory(ItemStack[] stacks)
+    public void setInventory(NonNullList<ItemStack> stacks)
     {
         this.stacks = stacks;
     }
@@ -193,10 +203,10 @@ public class InventoryCosArmor implements IInventory
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack)
     {
-        if (stacks == null || slot < 0 || slot >= stacks.length)
+        if (stacks == null || slot < 0 || slot >= stacks.size())
             return;
 
-        stacks[slot] = stack;
+        stacks.set(slot, stack);
     }
 
     public void setSkinArmor(boolean[] isSkinArmor)
@@ -214,14 +224,14 @@ public class InventoryCosArmor implements IInventory
 
     public void writeToNBT(NBTTagCompound compound)
     {
-        compound.setInteger("CosArmor.Inventory.Size", stacks.length);
+        compound.setInteger("CosArmor.Inventory.Size", stacks.size());
         NBTTagList tagList = new NBTTagList();
-        for (int i = 0; i < stacks.length; i++)
+        for (int i = 0; i < stacks.size(); i++)
         {
             NBTTagCompound invSlot = new NBTTagCompound();
             invSlot.setByte("Slot", (byte) i);
-            if (stacks[i] != null)
-                stacks[i].writeToNBT(invSlot);
+            if (!stacks.get(i).func_190926_b())
+                stacks.get(i).writeToNBT(invSlot);
             invSlot.setBoolean("isSkinArmor", isSkinArmor[i]);
             tagList.appendTag(invSlot);
         }
