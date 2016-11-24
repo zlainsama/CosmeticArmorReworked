@@ -106,7 +106,7 @@ public class InventoryManager
             for (int i = 0; i < inv.getSizeInventory(); i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
-                if (stack != null)
+                if (!stack.func_190926_b())
                 {
                     EntityItem ent = new EntityItem(event.getEntityPlayer().worldObj, event.getEntityPlayer().posX, event.getEntityPlayer().posY + event.getEntityPlayer().getEyeHeight(), event.getEntityPlayer().posZ, stack.copy());
                     ent.setPickupDelay(40);
@@ -116,7 +116,7 @@ public class InventoryManager
                     ent.motionZ = (double) (MathHelper.cos(f2) * f1);
                     ent.motionY = 0.20000000298023224D;
                     event.getDrops().add(ent);
-                    inv.setInventorySlotContents(i, null);
+                    inv.setInventorySlotContents(i, ItemStack.field_190927_a);
                     inv.markDirty();
                 }
             }
