@@ -36,8 +36,8 @@ public class InventoryManagerClient extends InventoryManager
         if (map.isEmpty())
         {
             Minecraft mc = FMLClientHandler.instance().getClient();
-            if (mc.thePlayer != null)
-                map.put(UUID.nameUUIDFromBytes(("OfflinePlayer:" + mc.thePlayer.getGameProfile().getName()).getBytes(Charsets.UTF_8)), mc.thePlayer.getUniqueID());
+            if (mc.player != null)
+                map.put(UUID.nameUUIDFromBytes(("OfflinePlayer:" + mc.player.getGameProfile().getName()).getBytes(Charsets.UTF_8)), mc.player.getUniqueID());
         }
         if (map.containsKey(uuid))
             uuid = map.get(uuid);

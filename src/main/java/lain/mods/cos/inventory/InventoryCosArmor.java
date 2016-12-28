@@ -13,7 +13,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public class InventoryCosArmor implements IInventory
 {
 
-    NonNullList<ItemStack> stacks = NonNullList.func_191197_a(4, ItemStack.field_190927_a);
+    NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
     boolean[] isSkinArmor = new boolean[4];
     boolean isDirty = false;
 
@@ -21,7 +21,7 @@ public class InventoryCosArmor implements IInventory
     public void clear()
     {
         for (int i = 0; i < stacks.size(); i++)
-            stacks.set(i, ItemStack.field_190927_a);
+            stacks.set(i, ItemStack.EMPTY);
     }
 
     @Override
@@ -33,28 +33,19 @@ public class InventoryCosArmor implements IInventory
     public ItemStack decrStackSize(int slot, int num)
     {
         if (stacks == null || slot < 0 || slot >= stacks.size())
-            return ItemStack.field_190927_a;
+            return ItemStack.EMPTY;
 
         ItemStack stack = stacks.get(slot);
 
-        if (stack.func_190926_b())
-            return ItemStack.field_190927_a;
+        if (stack.isEmpty())
+            return ItemStack.EMPTY;
 
-        if (stack.func_190916_E() <= num)
-            stacks.set(slot, ItemStack.field_190927_a);
+        if (stack.getCount() <= num)
+            stacks.set(slot, ItemStack.EMPTY);
         else
             stack = stack.splitStack(num);
 
         return stack;
-    }
-
-    @Override
-    public boolean func_191420_l()
-    {
-        for (int i = 0; i < stacks.size(); i++)
-            if (!stacks.get(i).func_190926_b())
-                return false;
-        return true;
     }
 
     @Override
@@ -111,7 +102,7 @@ public class InventoryCosArmor implements IInventory
     public ItemStack getStackInSlot(int slot)
     {
         if (stacks == null || slot < 0 || slot >= stacks.size())
-            return ItemStack.field_190927_a;
+            return ItemStack.EMPTY;
 
         return stacks.get(slot);
     }
@@ -125,6 +116,15 @@ public class InventoryCosArmor implements IInventory
     public boolean isDirty()
     {
         return isDirty;
+    }
+
+    @Override
+    public boolean isEmpty()
+    {
+        for (int i = 0; i < stacks.size(); i++)
+            if (!stacks.get(i).isEmpty())
+                return false;
+        return true;
     }
 
     @Override
@@ -142,7 +142,7 @@ public class InventoryCosArmor implements IInventory
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
         return true;
     }
@@ -165,7 +165,7 @@ public class InventoryCosArmor implements IInventory
 
     public void readFromNBT(NBTTagCompound compound)
     {
-        stacks = NonNullList.func_191197_a(compound.getInteger("CosArmor.Inventory.Size"), ItemStack.field_190927_a);
+        stacks = NonNullList.withSize(compound.getInteger("CosArmor.Inventory.Size"), ItemStack.EMPTY);
         isSkinArmor = new boolean[stacks.size()];
         NBTTagList tagList = compound.getTagList("CosArmor.Inventory", 10);
         for (int i = 0; i < tagList.tagCount(); i++)
@@ -186,7 +186,7 @@ public class InventoryCosArmor implements IInventory
             return null;
 
         ItemStack stack = stacks.get(slot);
-        stacks.set(slot, ItemStack.field_190927_a);
+        stacks.set(slot, ItemStack.EMPTY);
         return stack;
     }
 
@@ -230,7 +230,7 @@ public class InventoryCosArmor implements IInventory
         {
             NBTTagCompound invSlot = new NBTTagCompound();
             invSlot.setByte("Slot", (byte) i);
-            if (!stacks.get(i).func_190926_b())
+            if (!stacks.get(i).isEmpty())
                 stacks.get(i).writeToNBT(invSlot);
             invSlot.setBoolean("isSkinArmor", isSkinArmor[i]);
             tagList.appendTag(invSlot);

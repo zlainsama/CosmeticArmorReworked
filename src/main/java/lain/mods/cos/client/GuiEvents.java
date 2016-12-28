@@ -72,7 +72,7 @@ public class GuiEvents
             {
                 if (event.getGui() instanceof GuiCosArmorInventory)
                 {
-                    event.getGui().mc.displayGuiScreen(new GuiInventory(event.getGui().mc.thePlayer));
+                    event.getGui().mc.displayGuiScreen(new GuiInventory(event.getGui().mc.player));
                     CosmeticArmorReworked.network.sendToServer(new PacketOpenNormalInventory());
                 }
                 else

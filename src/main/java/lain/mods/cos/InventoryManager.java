@@ -100,23 +100,23 @@ public class InventoryManager
     @SubscribeEvent
     public void handleEvent(PlayerDropsEvent event)
     {
-        if (event.getEntityPlayer() instanceof EntityPlayerMP && !event.getEntityPlayer().worldObj.isRemote && !event.getEntityPlayer().worldObj.getGameRules().getBoolean("keepInventory"))
+        if (event.getEntityPlayer() instanceof EntityPlayerMP && !event.getEntityPlayer().world.isRemote && !event.getEntityPlayer().world.getGameRules().getBoolean("keepInventory"))
         {
             InventoryCosArmor inv = getCosArmorInventory(event.getEntityPlayer().getUniqueID());
             for (int i = 0; i < inv.getSizeInventory(); i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
-                if (!stack.func_190926_b())
+                if (!stack.isEmpty())
                 {
-                    EntityItem ent = new EntityItem(event.getEntityPlayer().worldObj, event.getEntityPlayer().posX, event.getEntityPlayer().posY + event.getEntityPlayer().getEyeHeight(), event.getEntityPlayer().posZ, stack.copy());
+                    EntityItem ent = new EntityItem(event.getEntityPlayer().world, event.getEntityPlayer().posX, event.getEntityPlayer().posY + event.getEntityPlayer().getEyeHeight(), event.getEntityPlayer().posZ, stack.copy());
                     ent.setPickupDelay(40);
-                    float f1 = event.getEntityPlayer().worldObj.rand.nextFloat() * 0.5F;
-                    float f2 = event.getEntityPlayer().worldObj.rand.nextFloat() * (float) Math.PI * 2.0F;
+                    float f1 = event.getEntityPlayer().world.rand.nextFloat() * 0.5F;
+                    float f2 = event.getEntityPlayer().world.rand.nextFloat() * (float) Math.PI * 2.0F;
                     ent.motionX = (double) (-MathHelper.sin(f2) * f1);
                     ent.motionZ = (double) (MathHelper.cos(f2) * f1);
                     ent.motionY = 0.20000000298023224D;
                     event.getDrops().add(ent);
-                    inv.setInventorySlotContents(i, ItemStack.field_190927_a);
+                    inv.setInventorySlotContents(i, ItemStack.EMPTY);
                     inv.markDirty();
                 }
             }
@@ -176,7 +176,7 @@ public class InventoryManager
                 CosmeticArmorReworked.network.sendToAll(new PacketSyncCosArmor(event.player, i));
             inv.markClean();
 
-            for (EntityPlayerMP other : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList())
+            for (EntityPlayerMP other : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers())
             {
                 if (other == event.player)
                     continue;

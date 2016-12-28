@@ -33,19 +33,19 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
     {
         if (button.id == 0)
         {
-            mc.displayGuiScreen(new GuiAchievements(this, mc.thePlayer.getStatFileWriter()));
+            mc.displayGuiScreen(new GuiAchievements(this, mc.player.getStatFileWriter()));
         }
         if (button.id == 1)
-            mc.displayGuiScreen(new GuiStats(this, mc.thePlayer.getStatFileWriter()));
+            mc.displayGuiScreen(new GuiStats(this, mc.player.getStatFileWriter()));
 
         if (button.id >= 80 && button.id < 84)
         {
             int i = button.id - 80;
-            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.thePlayer.getUniqueID());
+            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.player.getUniqueID());
             inv.setSkinArmor(i, !inv.isSkinArmor(i));
             inv.markDirty();
             ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(i) ? 1 : 0;
-            CosmeticArmorReworked.network.sendToServer(new PacketSetSkinArmor(mc.thePlayer, i));
+            CosmeticArmorReworked.network.sendToServer(new PacketSetSkinArmor(mc.player, i));
         }
     }
 
@@ -58,7 +58,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         int j = guiTop;
         drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
 
-        GuiInventory.drawEntityOnScreen(i + 51, j + 75, 30, i + 51 - xSizeFloat, j + 75 - 50 - ySizeFloat, mc.thePlayer);
+        GuiInventory.drawEntityOnScreen(i + 51, j + 75, 30, i + 51 - xSizeFloat, j + 75 - 50 - ySizeFloat, mc.player);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         {
             int j = 3 - i;
             GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97 + 18 * i, guiTop + 56, 5, 5, "");
-            t.state = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.thePlayer.getUniqueID()).isSkinArmor(j) ? 1 : 0;
+            t.state = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.player.getUniqueID()).isSkinArmor(j) ? 1 : 0;
             buttonList.add(t);
         }
     }
@@ -94,7 +94,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
     protected void keyTyped(char par1, int par2) throws IOException
     {
         if (par2 == CosmeticArmorReworked.keyHandler.keyOpenCosArmorInventory.getKeyCode())
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
         else
             super.keyTyped(par1, par2);
     }

@@ -23,7 +23,7 @@ public class PlayerRenderHandler
 
         CachedInventory(int size)
         {
-            stacks = NonNullList.func_191197_a(size, ItemStack.field_190927_a);
+            stacks = NonNullList.withSize(size, ItemStack.EMPTY);
             state = 0;
         }
 
@@ -114,8 +114,8 @@ public class PlayerRenderHandler
                     break;
 
                 if (CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID()).isSkinArmor(i))
-                    armor.set(i, ItemStack.field_190927_a);
-                else if (!cosArmor.get(i).func_190926_b())
+                    armor.set(i, ItemStack.EMPTY);
+                else if (!cosArmor.get(i).isEmpty())
                     armor.set(i, cosArmor.get(i));
             }
         }

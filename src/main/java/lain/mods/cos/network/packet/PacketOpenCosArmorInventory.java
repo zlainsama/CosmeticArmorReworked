@@ -16,7 +16,7 @@ public class PacketOpenCosArmorInventory extends NetworkPacket
     @Override
     public void handlePacketServer(EntityPlayerMP player)
     {
-        player.openGui(CosmeticArmorReworked.instance, 1, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+        player.openGui(CosmeticArmorReworked.instance, 1, player.world, (int) player.posX, (int) player.posY, (int) player.posZ);
     }
 
     @Override

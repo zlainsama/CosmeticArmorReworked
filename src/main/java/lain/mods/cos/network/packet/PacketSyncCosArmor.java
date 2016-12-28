@@ -55,7 +55,7 @@ public class PacketSyncCosArmor extends NetworkPacket
         isSkinArmor = pb.readBoolean();
         try
         {
-            itemCosArmor = pb.readItemStackFromBuffer();
+            itemCosArmor = pb.readItemStack();
         }
         catch (IOException ignored)
         {
@@ -71,7 +71,7 @@ public class PacketSyncCosArmor extends NetworkPacket
         pb.writeLong(uuid.getLeastSignificantBits());
         pb.writeByte(slot);
         pb.writeBoolean(isSkinArmor);
-        pb.writeItemStackToBuffer(itemCosArmor);
+        pb.writeItemStack(itemCosArmor);
     }
 
 }
