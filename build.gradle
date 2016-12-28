@@ -9,20 +9,20 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.11-v1a"
+version = "1.11.2-v1"
 group= "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
-
-minecraft {
-    version = "1.11-13.19.0.2138"
-    runDir = "run"
-
-    mappings = "snapshot_20161111"
-}
 
 sourceCompatibility = targetCompatibility = "1.6"
 compileJava {
     sourceCompatibility = targetCompatibility = "1.6"
+}
+
+minecraft {
+    version = "1.11.2-13.20.0.2201"
+    runDir = "run"
+
+    mappings = "snapshot_20161220"
 }
 
 jar
