@@ -1,5 +1,6 @@
 package lain.mods.cos.client;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import lain.mods.cos.InventoryManager;
@@ -8,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
-import org.apache.commons.io.Charsets;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -37,7 +37,7 @@ public class InventoryManagerClient extends InventoryManager
         {
             Minecraft mc = FMLClientHandler.instance().getClient();
             if (mc.player != null)
-                map.put(UUID.nameUUIDFromBytes(("OfflinePlayer:" + mc.player.getGameProfile().getName()).getBytes(Charsets.UTF_8)), mc.player.getUniqueID());
+                map.put(UUID.nameUUIDFromBytes(("OfflinePlayer:" + mc.player.getGameProfile().getName()).getBytes(StandardCharsets.UTF_8)), mc.player.getUniqueID());
         }
         if (map.containsKey(uuid))
             uuid = map.get(uuid);

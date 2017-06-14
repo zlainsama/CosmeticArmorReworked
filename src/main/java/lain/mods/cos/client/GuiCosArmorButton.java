@@ -16,7 +16,7 @@ public class GuiCosArmorButton extends GuiButton
     }
 
     @Override
-    public void drawButton(Minecraft mc, int x, int y)
+    public void func_191745_a(Minecraft mc, int x, int y, float f)
     {
         if (this.visible)
         {

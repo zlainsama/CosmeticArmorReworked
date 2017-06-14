@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = "cosmeticarmorreworked", useMetadata = true, acceptedMinecraftVersions = "[1.11],[1.11.2]", guiFactory = "lain.mods.cos.client.GuiFactoryCos")
+@Mod(modid = "cosmeticarmorreworked", useMetadata = true, acceptedMinecraftVersions = "[1.12]", guiFactory = "lain.mods.cos.client.GuiFactoryCos")
 public class CosmeticArmorReworked
 {
 

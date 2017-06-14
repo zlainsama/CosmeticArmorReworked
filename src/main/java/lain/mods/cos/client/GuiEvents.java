@@ -3,6 +3,7 @@ package lain.mods.cos.client;
 import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.network.packet.PacketOpenNormalInventory;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -68,11 +69,28 @@ public class GuiEvents
     {
         if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiCosArmorInventory)
         {
+            GuiContainer gui = (GuiContainer) event.getGui();
+
+            for (GuiButton t : event.getButtonList())
+            {
+                switch (t.id)
+                {
+                    case 76:
+                        t.xPosition = gui.guiLeft + CosArmorGuiButton_Left;
+                        t.yPosition = gui.guiTop + CosArmorGuiButton_Top;
+                        break;
+                    case 77:
+                        t.xPosition = gui.guiLeft + CosArmorToggleButton_Left;
+                        t.yPosition = gui.guiTop + CosArmorToggleButton_Top;
+                        break;
+                }
+            }
+
             if (event.getButton().id == 76)
             {
-                if (event.getGui() instanceof GuiCosArmorInventory)
+                if (gui instanceof GuiCosArmorInventory)
                 {
-                    event.getGui().mc.displayGuiScreen(new GuiInventory(event.getGui().mc.player));
+                    gui.mc.displayGuiScreen(new GuiInventory(gui.mc.player));
                     CosmeticArmorReworked.network.sendToServer(new PacketOpenNormalInventory());
                 }
                 else

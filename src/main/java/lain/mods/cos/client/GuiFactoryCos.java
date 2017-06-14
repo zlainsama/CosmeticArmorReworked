@@ -9,9 +9,21 @@ public class GuiFactoryCos implements IModGuiFactory
 {
 
     @Override
+    public GuiScreen createConfigGui(GuiScreen arg0)
+    {
+        return new GuiConfigCos(arg0);
+    }
+
+    @Override
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement arg0)
     {
         return null;
+    }
+
+    @Override
+    public boolean hasConfigGui()
+    {
+        return true;
     }
 
     @Override

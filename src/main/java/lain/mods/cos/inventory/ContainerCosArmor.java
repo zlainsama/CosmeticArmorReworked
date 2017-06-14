@@ -12,7 +12,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -22,7 +21,7 @@ public class ContainerCosArmor extends Container
     private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = { EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
 
     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
-    public IInventory craftResult = new InventoryCraftResult();
+    public InventoryCraftResult craftResult = new InventoryCraftResult();
     public EntityPlayer player;
 
     public ContainerCosArmor(InventoryPlayer invPlayer, InventoryCosArmor invCosArmor, EntityPlayer player)
@@ -144,22 +143,16 @@ public class ContainerCosArmor extends Container
     public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
+        craftResult.clear();
 
-        for (int i = 0; i < 4; i++)
-        {
-            ItemStack stack = craftMatrix.removeStackFromSlot(i);
-
-            if (stack != null)
-                player.dropItem(stack, false);
-        }
-
-        craftResult.setInventorySlotContents(0, ItemStack.EMPTY);
+        if (!player.world.isRemote)
+            func_193327_a(player, player.world, craftMatrix);
     }
 
     @Override
     public void onCraftMatrixChanged(IInventory inv)
     {
-        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, player.world));
+        func_192389_a(player.world, player, craftMatrix, craftResult);
     }
 
     @Override
