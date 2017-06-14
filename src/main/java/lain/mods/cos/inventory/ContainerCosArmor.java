@@ -3,71 +3,22 @@ package lain.mods.cos.inventory;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerCosArmor extends Container
+public class ContainerCosArmor extends ContainerPlayer
 {
 
     private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = { EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
 
-    public InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
-    public InventoryCraftResult craftResult = new InventoryCraftResult();
-    public EntityPlayer player;
-
     public ContainerCosArmor(InventoryPlayer invPlayer, InventoryCosArmor invCosArmor, EntityPlayer player)
     {
-        this.player = player;
-
-        // CraftingResult
-        addSlotToContainer(new SlotCrafting(player, craftMatrix, craftResult, 0, 154, 28));
-
-        // CraftingGrid
-        for (int i = 0; i < 2; i++)
-            for (int j = 0; j < 2; j++)
-                addSlotToContainer(new Slot(craftMatrix, j + i * 2, 98 + j * 18, 18 + i * 18));
-
-        // NormalArmor
-        for (int i = 0; i < 4; i++)
-        {
-            final int j = i;
-            final EntityPlayer k = player;
-            addSlotToContainer(new Slot(invPlayer, invPlayer.getSizeInventory() - 1 - invPlayer.offHandInventory.size() - i, 8, 8 + i * 18)
-            {
-
-                @Override
-                public int getSlotStackLimit()
-                {
-                    return 1;
-                }
-
-                @SideOnly(Side.CLIENT)
-                @Override
-                public String getSlotTexture()
-                {
-                    return ItemArmor.EMPTY_SLOT_NAMES[VALID_EQUIPMENT_SLOTS[j].getIndex()];
-                }
-
-                @Override
-                public boolean isItemValid(ItemStack stack)
-                {
-                    if (stack == null || stack.isEmpty())
-                        return false;
-
-                    return stack.getItem().isValidArmor(stack, VALID_EQUIPMENT_SLOTS[j], k);
-                }
-
-            });
-        }
+        super(invPlayer, !player.world.isRemote, player);
 
         // CosmeticArmor
         for (int i = 0; i < 4; i++)
@@ -101,58 +52,6 @@ public class ContainerCosArmor extends Container
 
             });
         }
-
-        // PlayerInventory
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 9; j++)
-                addSlotToContainer(new Slot(invPlayer, j + (i + 1) * 9, 8 + j * 18, 84 + i * 18));
-
-        // PlayerHotBar
-        for (int i = 0; i < 9; i++)
-            addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
-
-        // Off-Hand Slot
-        addSlotToContainer(new Slot(invPlayer, 40, 77, 62)
-        {
-
-            @SideOnly(Side.CLIENT)
-            @Override
-            public String getSlotTexture()
-            {
-                return "minecraft:items/empty_armor_slot_shield";
-            }
-
-        });
-
-        onCraftMatrixChanged(craftMatrix);
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer player)
-    {
-        return true;
-    }
-
-    @Override
-    public boolean canMergeSlot(ItemStack stack, Slot slot)
-    {
-        return (slot.inventory != craftResult) && (super.canMergeSlot(stack, slot));
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-        craftResult.clear();
-
-        if (!player.world.isRemote)
-            func_193327_a(player, player.world, craftMatrix);
-    }
-
-    @Override
-    public void onCraftMatrixChanged(IInventory inv)
-    {
-        func_192389_a(player.world, player, craftMatrix, craftResult);
     }
 
     @Override
@@ -169,19 +68,24 @@ public class ContainerCosArmor extends Container
 
             if (slotNumber == 0) // CraftingResult
             {
-                if (!mergeItemStack(stack1, 13, 49, true))
+                if (!mergeItemStack(stack1, 9, 45, true))
                     return ItemStack.EMPTY;
 
                 slot.onSlotChange(stack1, stack);
             }
             else if ((slotNumber >= 1) && (slotNumber < 5)) // CraftingGrid
             {
-                if (!mergeItemStack(stack1, 13, 49, false))
+                if (!mergeItemStack(stack1, 9, 45, false))
                     return ItemStack.EMPTY;
             }
-            else if ((slotNumber >= 5) && (slotNumber < 13)) // NormalArmor & CosmeticArmor
+            else if ((slotNumber >= 5) && (slotNumber < 9)) // NormalArmor
             {
-                if (!mergeItemStack(stack1, 13, 49, false))
+                if (!mergeItemStack(stack1, 9, 45, false))
+                    return ItemStack.EMPTY;
+            }
+            else if ((slotNumber >= 46) && (slotNumber < 50)) // CosmeticArmor
+            {
+                if (!mergeItemStack(stack1, 9, 45, false))
                     return ItemStack.EMPTY;
             }
             else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(8 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check NormalArmor slots
@@ -191,24 +95,24 @@ public class ContainerCosArmor extends Container
                 if (!mergeItemStack(stack1, j, j + 1, false))
                     return ItemStack.EMPTY;
             }
-            else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(12 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check CosmeticArmor slots
+            else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(49 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check CosmeticArmor slots
             {
-                int j = 12 - desiredSlot.getIndex();
+                int j = 49 - desiredSlot.getIndex();
 
                 if (!mergeItemStack(stack1, j, j + 1, false))
                     return ItemStack.EMPTY;
             }
-            else if ((slotNumber >= 13) && (slotNumber < 40)) // PlayerInventory
+            else if ((slotNumber >= 9) && (slotNumber < 36)) // PlayerInventory
             {
-                if (!mergeItemStack(stack1, 40, 49, false))
+                if (!mergeItemStack(stack1, 36, 45, false))
                     return ItemStack.EMPTY;
             }
-            else if ((slotNumber >= 40) && (slotNumber < 49)) // PlayerHotBar
+            else if ((slotNumber >= 36) && (slotNumber < 45)) // PlayerHotBar
             {
-                if (!mergeItemStack(stack1, 13, 40, false))
+                if (!mergeItemStack(stack1, 9, 36, false))
                     return ItemStack.EMPTY;
             }
-            else if (!mergeItemStack(stack1, 13, 49, false))
+            else if (!mergeItemStack(stack1, 9, 45, false))
             {
                 return ItemStack.EMPTY;
             }
