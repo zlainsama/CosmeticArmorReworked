@@ -93,7 +93,7 @@ public class InventoryManager
     {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (FMLCommonHandler.instance().getSide().isClient())
-            return server.worldServerForDimension(0).getSaveHandler().getWorldDirectory();
+            return server.getWorld(0).getSaveHandler().getWorldDirectory();
         return server.getFile(server.getFolderName());
     }
 

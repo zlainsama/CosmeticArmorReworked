@@ -16,18 +16,18 @@ public class GuiCosArmorToggleButton extends GuiButton
     }
 
     @Override
-    public void func_191745_a(Minecraft mc, int x, int y, float f)
+    public void drawButton(Minecraft mc, int x, int y, float f)
     {
         if (this.visible)
         {
             mc.getTextureManager().bindTexture(GuiCosArmorInventory.texture);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            hovered = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
+            hovered = x >= this.x && y >= this.y && x < this.x + this.width && y < this.y + this.height;
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0 + 5 * state, 176, 5, 5);
+            this.drawTexturedModalRect(this.x, this.y, 0 + 5 * state, 176, 5, 5);
 
             this.mouseDragged(mc, x, y);
         }

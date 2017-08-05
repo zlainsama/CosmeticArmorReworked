@@ -29,8 +29,8 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
     private float oldMouseY;
     private GuiButtonImage recipeBookButton;
     private final GuiRecipeBook recipeBook = new GuiRecipeBook();
-    private boolean flag1;
-    private boolean mouseHit;
+    private boolean widthTooNarrow;
+    private boolean buttonClicked;
 
     private Map<Integer, GuiCosArmorToggleButton> toggleButtons = Maps.newHashMapWithExpectedSize(4);
 
@@ -45,21 +45,21 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
     {
         if (button.id == 10)
         {
-            recipeBook.func_193014_a(flag1, ((ContainerCosArmor) inventorySlots).craftMatrix);
-            recipeBook.func_191866_a();
-            guiLeft = recipeBook.func_193011_a(flag1, width, xSize);
-            recipeBookButton.func_191746_c(guiLeft + 76, guiTop + 27);
+            recipeBook.initVisuals(widthTooNarrow, ((ContainerCosArmor) inventorySlots).craftMatrix);
+            recipeBook.toggleVisibility();
+            guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
+            recipeBookButton.setPosition(guiLeft + 76, guiTop + 27);
 
             for (int i = 0; i < 4; i++)
             {
                 GuiCosArmorToggleButton t = toggleButtons.get(i);
                 if (t == null)
                     continue;
-                t.xPosition = guiLeft + 97 + 18 * i;
-                t.yPosition = guiTop + 56;
+                t.x = guiLeft + 97 + 18 * i;
+                t.y = guiTop + 56;
             }
 
-            mouseHit = true;
+            buttonClicked = true;
         }
         else if (button.id >= 80 && button.id < 84)
         {
@@ -87,7 +87,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
     @Override
     protected void drawGuiContainerForegroundLayer(int p_drawGuiContainerForegroundLayer_1_, int p_drawGuiContainerForegroundLayer_2_)
     {
-        fontRendererObj.drawString(I18n.format("container.crafting", new Object[0]), 97, 8, 4210752);
+        fontRenderer.drawString(I18n.format("container.crafting", new Object[0]), 97, 8, 4210752);
     }
 
     @Override
@@ -95,45 +95,45 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
     {
         drawDefaultBackground();
 
-        hasActivePotionEffects = !recipeBook.func_191878_b();
+        hasActivePotionEffects = !recipeBook.isVisible();
 
-        if (recipeBook.func_191878_b() && flag1)
+        if (recipeBook.isVisible() && widthTooNarrow)
         {
             drawGuiContainerBackgroundLayer(p_drawScreen_3_, p_drawScreen_1_, p_drawScreen_2_);
-            recipeBook.func_191861_a(p_drawScreen_1_, p_drawScreen_2_, p_drawScreen_3_);
+            recipeBook.render(p_drawScreen_1_, p_drawScreen_2_, p_drawScreen_3_);
         }
         else
         {
-            recipeBook.func_191861_a(p_drawScreen_1_, p_drawScreen_2_, p_drawScreen_3_);
+            recipeBook.render(p_drawScreen_1_, p_drawScreen_2_, p_drawScreen_3_);
             super.drawScreen(p_drawScreen_1_, p_drawScreen_2_, p_drawScreen_3_);
-            recipeBook.func_191864_a(guiLeft, guiTop, false, p_drawScreen_3_);
+            recipeBook.renderGhostRecipe(guiLeft, guiTop, false, p_drawScreen_3_);
         }
 
-        func_191948_b(p_drawScreen_1_, p_drawScreen_2_);
-        recipeBook.func_191876_c(guiLeft, guiTop, p_drawScreen_1_, p_drawScreen_2_);
+        renderHoveredToolTip(p_drawScreen_1_, p_drawScreen_2_);
+        recipeBook.renderTooltip(guiLeft, guiTop, p_drawScreen_1_, p_drawScreen_2_);
 
         oldMouseX = p_drawScreen_1_;
         oldMouseY = p_drawScreen_2_;
     }
 
     @Override
-    public void func_192043_J_()
+    public GuiRecipeBook func_194310_f()
     {
-        recipeBook.func_193948_e();
-    }
-
-    @Override
-    protected boolean func_193983_c(int p_193983_1_, int p_193983_2_, int p_193983_3_, int p_193983_4_)
-    {
-        boolean flag = p_193983_1_ < p_193983_3_ || p_193983_2_ < p_193983_4_ || p_193983_1_ >= p_193983_3_ + xSize || p_193983_2_ >= p_193983_4_ + ySize;
-        return recipeBook.func_193955_c(p_193983_1_, p_193983_2_, guiLeft, guiTop, xSize, ySize) && flag;
+        return recipeBook;
     }
 
     @Override
     protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type)
     {
         super.handleMouseClick(slotIn, slotId, mouseButton, type);
-        recipeBook.func_191874_a(slotIn);
+        recipeBook.slotClicked(slotIn);
+    }
+
+    @Override
+    protected boolean hasClickedOutside(int p_193983_1_, int p_193983_2_, int p_193983_3_, int p_193983_4_)
+    {
+        boolean flag = p_193983_1_ < p_193983_3_ || p_193983_2_ < p_193983_4_ || p_193983_1_ >= p_193983_3_ + xSize || p_193983_2_ >= p_193983_4_ + ySize;
+        return recipeBook.hasClickedOutside(p_193983_1_, p_193983_2_, guiLeft, guiTop, xSize, ySize) && flag;
     }
 
     @Override
@@ -142,9 +142,9 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
         buttonList.clear();
         super.initGui();
 
-        flag1 = width < 379;
-        recipeBook.func_191856_a(width, height, mc, flag1, inventorySlots, ((ContainerCosArmor) inventorySlots).craftMatrix);
-        guiLeft = recipeBook.func_193011_a(flag1, width, xSize);
+        widthTooNarrow = width < 379;
+        recipeBook.func_194303_a(width, height, mc, widthTooNarrow, ((ContainerCosArmor) inventorySlots).craftMatrix);
+        guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
 
         recipeBookButton = new GuiButtonImage(10, guiLeft + 76, guiTop + 27, 20, 18, 178, 0, 19, INVENTORY_BACKGROUND);
         buttonList.add(recipeBookButton);
@@ -163,13 +163,13 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
     @Override
     protected boolean isPointInRegion(int p_isPointInRegion_1_, int p_isPointInRegion_2_, int p_isPointInRegion_3_, int p_isPointInRegion_4_, int p_isPointInRegion_5_, int p_isPointInRegion_6_)
     {
-        return (!flag1 || !recipeBook.func_191878_b()) && super.isPointInRegion(p_isPointInRegion_1_, p_isPointInRegion_2_, p_isPointInRegion_3_, p_isPointInRegion_4_, p_isPointInRegion_5_, p_isPointInRegion_6_);
+        return (!widthTooNarrow || !recipeBook.isVisible()) && super.isPointInRegion(p_isPointInRegion_1_, p_isPointInRegion_2_, p_isPointInRegion_3_, p_isPointInRegion_4_, p_isPointInRegion_5_, p_isPointInRegion_6_);
     }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
-        if (!recipeBook.func_191859_a(typedChar, keyCode))
+        if (!recipeBook.keyPressed(typedChar, keyCode))
         {
             if (keyCode == CosmeticArmorReworked.keyHandler.keyOpenCosArmorInventory.getKeyCode())
                 mc.player.closeScreen();
@@ -181,16 +181,16 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
     @Override
     protected void mouseClicked(int x, int y, int button) throws IOException
     {
-        if (!recipeBook.func_191862_a(x, y, button))
-            if (!flag1 || recipeBook.func_191878_b())
+        if (!recipeBook.mouseClicked(x, y, button))
+            if (!widthTooNarrow || recipeBook.isVisible())
                 super.mouseClicked(x, y, button);
     }
 
     @Override
     protected void mouseReleased(int x, int y, int state)
     {
-        if (mouseHit)
-            mouseHit = false;
+        if (buttonClicked)
+            buttonClicked = false;
         else
             super.mouseReleased(x, y, state);
     }
@@ -198,14 +198,20 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
     @Override
     public void onGuiClosed()
     {
-        recipeBook.func_191871_c();
+        recipeBook.removed();
         super.onGuiClosed();
+    }
+
+    @Override
+    public void recipesUpdated()
+    {
+        recipeBook.recipesUpdated();
     }
 
     @Override
     public void updateScreen()
     {
-        recipeBook.func_193957_d();
+        recipeBook.tick();
     }
 
 }

@@ -76,12 +76,12 @@ public class GuiEvents
                 switch (t.id)
                 {
                     case 76:
-                        t.xPosition = gui.guiLeft + CosArmorGuiButton_Left;
-                        t.yPosition = gui.guiTop + CosArmorGuiButton_Top;
+                        t.x = gui.guiLeft + CosArmorGuiButton_Left;
+                        t.y = gui.guiTop + CosArmorGuiButton_Top;
                         break;
                     case 77:
-                        t.xPosition = gui.guiLeft + CosArmorToggleButton_Left;
-                        t.yPosition = gui.guiTop + CosArmorToggleButton_Top;
+                        t.x = gui.guiLeft + CosArmorToggleButton_Left;
+                        t.y = gui.guiTop + CosArmorToggleButton_Top;
                         break;
                 }
             }

@@ -15,12 +15,6 @@ public class GuiFactoryCos implements IModGuiFactory
     }
 
     @Override
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement arg0)
-    {
-        return null;
-    }
-
-    @Override
     public boolean hasConfigGui()
     {
         return true;
@@ -29,12 +23,6 @@ public class GuiFactoryCos implements IModGuiFactory
     @Override
     public void initialize(Minecraft arg0)
     {
-    }
-
-    @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass()
-    {
-        return GuiConfigCos.class;
     }
 
     @Override
