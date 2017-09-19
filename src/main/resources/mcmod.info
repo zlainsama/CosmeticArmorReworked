@@ -7,7 +7,7 @@
     "version": "${version}",
     "mcversion": "${mcversion}",
     "url": "https://github.com/zlainsama/cosmeticarmorreworked",
-    "updateUrl": "https://github.com/zlainsama/cosmeticarmorreworked/releases",
+    "updateUrl": "",
     "authorList": ["zlainsama"],
     "credits": "dmillerw - original author; azanor - some code learned from baubles; izuminya - button icon; Deph0 and sblectric for their support when i'm absent",
     "logoFile": "",
