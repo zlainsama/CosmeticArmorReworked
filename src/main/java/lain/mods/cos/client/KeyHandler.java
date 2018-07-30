@@ -8,12 +8,11 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import org.lwjgl.input.Keyboard;
 
 public class KeyHandler
 {
 
-    public KeyBinding keyOpenCosArmorInventory = new KeyBinding("cos.key.openCosArmorInventory", Keyboard.KEY_C, "key.categories.inventory");
+    public KeyBinding keyOpenCosArmorInventory = new KeyBinding("cos.key.openCosArmorInventory", 0, "key.categories.inventory");
 
     public KeyHandler()
     {
