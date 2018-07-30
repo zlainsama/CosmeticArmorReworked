@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Map;
 import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.inventory.ContainerCosArmor;
-import lain.mods.cos.inventory.InventoryCosArmor;
-import lain.mods.cos.network.packet.PacketSetSkinArmor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -56,19 +54,10 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
                 if (t == null)
                     continue;
                 t.x = guiLeft + 97 + 18 * i;
-                t.y = guiTop + 56;
+                t.y = guiTop + 61;
             }
 
             buttonClicked = true;
-        }
-        else if (button.id >= 80 && button.id < 84)
-        {
-            int i = button.id - 80;
-            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.player.getUniqueID());
-            inv.setSkinArmor(i, !inv.isSkinArmor(i));
-            inv.markDirty();
-            ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(i) ? 1 : 0;
-            CosmeticArmorReworked.network.sendToServer(new PacketSetSkinArmor(mc.player, i));
         }
     }
 
@@ -153,7 +142,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
         for (int i = 0; i < 4; i++)
         {
             int j = 3 - i;
-            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97 + 18 * i, guiTop + 56, 5, 5, "");
+            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97 + 18 * i, guiTop + 61, 5, 5, "");
             t.state = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.player.getUniqueID()).isSkinArmor(j) ? 1 : 0;
             buttonList.add(t);
             toggleButtons.put(i, t);

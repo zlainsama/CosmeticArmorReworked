@@ -35,7 +35,7 @@ public class PlayerRenderHandler
 
     public static boolean HideCosArmor = false;
 
-    private static boolean isBaublesLoaded = Loader.isModLoaded("baubles");
+    private static final boolean isBaublesLoaded = Loader.isModLoaded("baubles");
 
     private final LoadingCache<EntityPlayer, CachedInventory> cache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build(new CacheLoader<EntityPlayer, CachedInventory>()
     {
