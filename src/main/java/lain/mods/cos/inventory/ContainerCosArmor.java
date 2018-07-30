@@ -25,7 +25,7 @@ public class ContainerCosArmor extends ContainerPlayer
         {
             final int j = i;
             final EntityPlayer k = player;
-            addSlotToContainer(new Slot(invCosArmor, invCosArmor.getSizeInventory() - 1 - i, 98 + i * 18, 62)
+            addSlotToContainer(new Slot(invCosArmor, 3 - i, 98 + i * 18, 62)
             {
 
                 @Override

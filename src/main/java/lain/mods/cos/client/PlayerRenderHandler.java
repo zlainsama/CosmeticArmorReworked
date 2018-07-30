@@ -2,6 +2,7 @@ package lain.mods.cos.client;
 
 import java.util.concurrent.TimeUnit;
 import lain.mods.cos.CosmeticArmorReworked;
+import lain.mods.cos.inventory.InventoryCosArmor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -86,7 +87,7 @@ public class PlayerRenderHandler
     {
         CachedInventory cachedInv = cache.getUnchecked(event.getEntityPlayer());
         NonNullList<ItemStack> cachedArmor = cachedInv.stacks;
-        NonNullList<ItemStack> cosArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID()).getInventory();
+        InventoryCosArmor cosArmor = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID());
         NonNullList<ItemStack> armor = event.getEntityPlayer().inventory.armorInventory;
 
         if (armor == null || armor.size() != cachedArmor.size())
@@ -106,18 +107,16 @@ public class PlayerRenderHandler
         if (HideCosArmor)
             return;
 
-        if (cosArmor != null)
+        for (int i = 0; i < cachedArmor.size(); i++)
         {
-            for (int i = 0; i < cachedArmor.size(); i++)
-            {
-                if (i >= cosArmor.size())
-                    break;
+            if (i >= cosArmor.getSizeInventory())
+                break;
 
-                if (CosmeticArmorReworked.invMan.getCosArmorInventoryClient(event.getEntityPlayer().getUniqueID()).isSkinArmor(i))
-                    armor.set(i, ItemStack.EMPTY);
-                else if (!cosArmor.get(i).isEmpty())
-                    armor.set(i, cosArmor.get(i));
-            }
+            if (cosArmor.isSkinArmor(i))
+                armor.set(i, ItemStack.EMPTY);
+            else if (!cosArmor.getStackInSlot(i).isEmpty())
+                armor.set(i, cosArmor.getStackInSlot(i));
         }
     }
+
 }
