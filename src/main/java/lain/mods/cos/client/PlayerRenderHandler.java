@@ -43,7 +43,7 @@ public class PlayerRenderHandler
         @Override
         public CachedInventory load(EntityPlayer owner) throws Exception
         {
-            return new CachedInventory(owner.inventory.armorInventory.size() + (isBaublesLoaded ? (InventoryCosArmor.MINSIZE - 4) : 0));
+            return new CachedInventory(owner.inventory.armorInventory.size() + (isBaublesLoaded ? (InventoryCosArmor.MinSize - 4) : 0));
         }
 
     });

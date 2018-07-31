@@ -76,7 +76,6 @@ public class CosmeticArmorTombManyGraves
                 TransitionInventory graveItems = new TransitionInventory((NBTTagList) compound);
                 IInventory currentInventory = CosmeticArmorReworked.invMan.getCosArmorInventory(player.getUniqueID());
 
-                boolean changed = false;
                 for (int i = 0; i < graveItems.getSizeInventory(); i++)
                 {
                     ItemStack graveItem = graveItems.getStackInSlot(i);
@@ -88,14 +87,12 @@ public class CosmeticArmorTombManyGraves
                         {
                             // No problem, just put the grave item in!
                             currentInventory.setInventorySlotContents(i, graveItem);
-                            changed = true;
                         }
                         else if (shouldForce)
                         {
                             // Slot is blocked, but we're forcing the grave item into place.
                             currentInventory.setInventorySlotContents(i, graveItem);
                             SpecialInventoryHelper.dropItem(player, playerItem);
-                            changed = true;
                         }
                         else
                         {
@@ -104,8 +101,6 @@ public class CosmeticArmorTombManyGraves
                         }
                     }
                 }
-                if (changed)
-                    currentInventory.markDirty();
             }
         }
 

@@ -3,6 +3,7 @@ package lain.mods.cos;
 import lain.mods.cos.client.GuiEvents;
 import lain.mods.cos.client.KeyHandler;
 import lain.mods.cos.client.PlayerRenderHandler;
+import lain.mods.cos.command.CommandClearCosArmor;
 import lain.mods.cos.network.NetworkManager;
 import lain.mods.cos.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.network.packet.PacketOpenNormalInventory;
@@ -44,12 +45,12 @@ public class CosmeticArmorReworked
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
+        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+        config.load();
+        ModConfigs.loadConfigs(config);
+
         if (event.getSide().isClient())
         {
-            Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-            config.load();
-            GuiEvents.loadConfigs(config);
-
             MinecraftForge.EVENT_BUS.register(new PlayerRenderHandler());
             MinecraftForge.EVENT_BUS.register(keyHandler = new KeyHandler());
             // FMLCommonHandler.instance().bus().register(keyHandler = new KeyHandler());
@@ -63,6 +64,8 @@ public class CosmeticArmorReworked
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event)
     {
+        event.registerServerCommand(new CommandClearCosArmor());
+
         invMan.onServerStarting();
     }
 

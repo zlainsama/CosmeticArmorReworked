@@ -37,7 +37,6 @@ public class PacketSyncCosArmor extends NetworkPacket
         InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(uuid);
         inv.setInventorySlotContents(slot, itemCosArmor);
         inv.setSkinArmor(slot, isSkinArmor);
-        inv.markDirty();
     }
 
     @Override

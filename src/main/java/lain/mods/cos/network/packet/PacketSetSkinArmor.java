@@ -34,7 +34,6 @@ public class PacketSetSkinArmor extends NetworkPacket
     {
         InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventory(player.getUniqueID());
         inv.setSkinArmor(slot, isSkinArmor);
-        inv.markDirty();
     }
 
     @Override

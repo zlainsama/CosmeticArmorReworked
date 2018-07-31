@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
+import lain.mods.cos.api.event.CosArmorDeathDrops;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.packet.PacketSyncCosArmor;
 import net.minecraft.entity.item.EntityItem;
@@ -15,6 +16,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -48,8 +50,6 @@ public class InventoryManager
                 e.printStackTrace();
                 inv = new InventoryCosArmor();
             }
-
-            inv.markDirty();
 
             return inv;
         }
@@ -102,7 +102,11 @@ public class InventoryManager
     {
         if (event.getEntityPlayer() instanceof EntityPlayerMP && !event.getEntityPlayer().world.isRemote && !event.getEntityPlayer().world.getGameRules().getBoolean("keepInventory"))
         {
+            if (ModConfigs.CosArmorKeepThroughDeath)
+                return;
             InventoryCosArmor inv = getCosArmorInventory(event.getEntityPlayer().getUniqueID());
+            if (MinecraftForge.EVENT_BUS.post(new CosArmorDeathDrops(event.getEntityPlayer(), inv.getStacks())))
+                return;
             for (int i = 0; i < inv.getSizeInventory(); i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
@@ -117,7 +121,6 @@ public class InventoryManager
                     ent.motionY = 0.20000000298023224D;
                     event.getDrops().add(ent);
                     inv.setInventorySlotContents(i, ItemStack.EMPTY);
-                    inv.markDirty();
                 }
             }
         }
@@ -144,8 +147,6 @@ public class InventoryManager
             cache.refresh(uuid);
             inv = getCosArmorInventory(uuid);
         }
-
-        inv.markDirty();
     }
 
     @SubscribeEvent

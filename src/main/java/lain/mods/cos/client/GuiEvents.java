@@ -1,6 +1,7 @@
 package lain.mods.cos.client;
 
 import lain.mods.cos.CosmeticArmorReworked;
+import lain.mods.cos.ModConfigs;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.network.packet.PacketOpenNormalInventory;
@@ -10,8 +11,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -23,57 +22,6 @@ import baubles.common.container.SlotBauble;
 
 public class GuiEvents
 {
-
-    public static Configuration getLastConfig()
-    {
-        return lastConfig;
-    }
-
-    public static void loadConfigs(Configuration config)
-    {
-        lastConfig = config;
-
-        Property prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Hidden", false);
-        prop.setComment("Hide CosArmorGuiButton?");
-        CosArmorGuiButton_Hidden = prop.getBoolean();
-
-        prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Left", 65);
-        prop.setComment("The distance from left of the inventory gui for CosArmorGuiButton.");
-        CosArmorGuiButton_Left = prop.getInt();
-
-        prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Top", 67);
-        prop.setComment("The distance from top of the inventory gui for CosArmorGuiButton.");
-        CosArmorGuiButton_Top = prop.getInt();
-
-        prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Hidden", false);
-        prop.setComment("Hide CosArmorToggleButton?");
-        CosArmorToggleButton_Hidden = prop.getBoolean();
-
-        prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Left", 59);
-        prop.setComment("The distance from left of the inventory gui for CosArmorToggleButton.");
-        CosArmorToggleButton_Left = prop.getInt();
-
-        prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Top", 72);
-        prop.setComment("The distance from top of the inventory gui for CosArmorToggleButton.");
-        CosArmorToggleButton_Top = prop.getInt();
-
-        prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Baubles", true);
-        prop.setComment("Add buttons to bauble slots so that you can hide them.");
-        CosArmorToggleButton_Baubles = prop.getBoolean();
-
-        if (config.hasChanged())
-            config.save();
-    }
-
-    public static boolean CosArmorGuiButton_Hidden = false;
-    public static int CosArmorGuiButton_Left = 65;
-    public static int CosArmorGuiButton_Top = 67;
-    public static boolean CosArmorToggleButton_Hidden = false;
-    public static int CosArmorToggleButton_Left = 59;
-    public static int CosArmorToggleButton_Top = 72;
-    public static boolean CosArmorToggleButton_Baubles = true;
-
-    private static Configuration lastConfig;
 
     private static final boolean isBaublesLoaded = Loader.isModLoaded("baubles");
 
@@ -90,12 +38,12 @@ public class GuiEvents
                 switch (t.id)
                 {
                     case 76:
-                        t.x = gui.guiLeft + CosArmorGuiButton_Left;
-                        t.y = gui.guiTop + CosArmorGuiButton_Top;
+                        t.x = gui.guiLeft + ModConfigs.CosArmorGuiButton_Left;
+                        t.y = gui.guiTop + ModConfigs.CosArmorGuiButton_Top;
                         break;
                     case 77:
-                        t.x = gui.guiLeft + CosArmorToggleButton_Left;
-                        t.y = gui.guiTop + CosArmorToggleButton_Top;
+                        t.x = gui.guiLeft + ModConfigs.CosArmorToggleButton_Left;
+                        t.y = gui.guiTop + ModConfigs.CosArmorToggleButton_Top;
                         break;
                 }
             }
@@ -127,15 +75,15 @@ public class GuiEvents
         if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiCosArmorInventory)
         {
             GuiContainer gui = (GuiContainer) event.getGui();
-            if (!CosArmorGuiButton_Hidden)
-                event.getButtonList().add(new GuiCosArmorButton(76, gui.guiLeft + CosArmorGuiButton_Left/* 65 */, gui.guiTop + CosArmorGuiButton_Top/* 67 */, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
-            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(77, gui.guiLeft + CosArmorToggleButton_Left/* 59 */, gui.guiTop + CosArmorToggleButton_Top/* 72 */, 5, 5, "");
+            if (!ModConfigs.CosArmorGuiButton_Hidden)
+                event.getButtonList().add(new GuiCosArmorButton(76, gui.guiLeft + ModConfigs.CosArmorGuiButton_Left/* 65 */, gui.guiTop + ModConfigs.CosArmorGuiButton_Top/* 67 */, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
+            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(77, gui.guiLeft + ModConfigs.CosArmorToggleButton_Left/* 59 */, gui.guiTop + ModConfigs.CosArmorToggleButton_Top/* 72 */, 5, 5, "");
             t.state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
-            if (!CosArmorToggleButton_Hidden)
+            if (!ModConfigs.CosArmorToggleButton_Hidden)
                 event.getButtonList().add(t);
         }
 
-        if (isBaublesLoaded && CosArmorToggleButton_Baubles)
+        if (isBaublesLoaded && ModConfigs.CosArmorToggleButton_Baubles)
         {
             try
             {
@@ -190,7 +138,6 @@ public class GuiEvents
                                     int i = id - 84;
                                     InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(gui.mc.player.getUniqueID());
                                     inv.setSkinArmor(4 + i, !inv.isSkinArmor(4 + i));
-                                    inv.markDirty();
                                     t.state = inv.isSkinArmor(4 + i) ? 1 : 0;
                                     CosmeticArmorReworked.network.sendToServer(new PacketSetSkinArmor(gui.mc.player, 4 + i));
                                 }
@@ -203,11 +150,12 @@ public class GuiEvents
         }
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
     {
         if ("cosmeticarmorreworked".equals(event.getModID()) == true)
-            loadConfigs(getLastConfig());
+            ModConfigs.loadConfigs(ModConfigs.getLastConfig());
     }
 
 }
