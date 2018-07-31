@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import lain.mods.cos.CosmeticArmorReworked;
+import lain.mods.cos.ModConfigs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -53,6 +54,8 @@ public class CosmeticArmorTombManyGraves
         @Override
         public NBTBase getNbtData(EntityPlayer player)
         {
+            if (ModConfigs.CosArmorKeepThroughDeath)
+                return null;
             return SpecialInventoryHelper.getTagListFromIInventory(CosmeticArmorReworked.invMan.getCosArmorInventory(player.getUniqueID()));
         }
 
