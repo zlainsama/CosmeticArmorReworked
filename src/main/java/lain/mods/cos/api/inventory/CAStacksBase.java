@@ -11,6 +11,14 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+/**
+ * This is the actual inventory associated with the player. <br>
+ * Changes made to server side CAStacks will be sync to the clients. <br>
+ * Do not make changes to client side CAStacks, it is not expected, and can cause problems. <br>
+ * <br>
+ * This class implements {@link IItemHandler}, {@link IItemHandlermodifiable}, {@link INBTSerializable}. <br>
+ *
+ */
 public class CAStacksBase implements IItemHandler, IItemHandlerModifiable, INBTSerializable<NBTTagCompound>
 {
 
