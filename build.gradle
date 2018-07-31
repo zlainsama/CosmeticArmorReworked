@@ -54,6 +54,33 @@ processResources
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+task apiZip(type: Jar) {
+    from(sourceSets.main.java) {
+        include "lain/mods/cos/api/**"
+    }
+    from(sourceSets.main.output) {
+        include "lain/mods/cos/api/**"
+    }
+
+    classifier = 'api'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+artifacts {
+    archives deobfJar
+    archives apiZip
+    archives sourcesJar
+}
+
 task signJar(type: SignJar, dependsOn: reobfJar) {
     onlyIf {
         project.hasProperty('mcModsStore')
