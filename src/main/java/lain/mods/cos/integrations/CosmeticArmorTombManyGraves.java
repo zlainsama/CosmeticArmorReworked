@@ -1,4 +1,4 @@
-package lain.mods.cos.inventory.integrations;
+package lain.mods.cos.integrations;
 
 import java.util.ArrayList;
 import java.util.List;
