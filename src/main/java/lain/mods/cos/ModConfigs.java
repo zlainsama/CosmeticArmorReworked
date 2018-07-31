@@ -16,31 +16,31 @@ public class ModConfigs
         lastConfig = config;
 
         Property prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Hidden", false);
-        prop.setComment("Hide CosArmorGuiButton? (this have no effect on the server side)");
+        prop.setComment("Hide CosArmorGuiButton? (this has no effect on the server side)");
         CosArmorGuiButton_Hidden = prop.getBoolean();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Left", 65);
-        prop.setComment("The distance from left of the inventory gui for CosArmorGuiButton. (this have no effect on the server side)");
+        prop.setComment("The distance from left of the inventory gui for CosArmorGuiButton. (this has no effect on the server side)");
         CosArmorGuiButton_Left = prop.getInt();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorGuiButton_Top", 67);
-        prop.setComment("The distance from top of the inventory gui for CosArmorGuiButton. (this have no effect on the server side)");
+        prop.setComment("The distance from top of the inventory gui for CosArmorGuiButton. (this has no effect on the server side)");
         CosArmorGuiButton_Top = prop.getInt();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Hidden", false);
-        prop.setComment("Hide CosArmorToggleButton? (this have no effect on the server side)");
+        prop.setComment("Hide CosArmorToggleButton? (this has no effect on the server side)");
         CosArmorToggleButton_Hidden = prop.getBoolean();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Left", 59);
-        prop.setComment("The distance from left of the inventory gui for CosArmorToggleButton. (this have no effect on the server side)");
+        prop.setComment("The distance from left of the inventory gui for CosArmorToggleButton. (this has no effect on the server side)");
         CosArmorToggleButton_Left = prop.getInt();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Top", 72);
-        prop.setComment("The distance from top of the inventory gui for CosArmorToggleButton. (this have no effect on the server side)");
+        prop.setComment("The distance from top of the inventory gui for CosArmorToggleButton. (this has no effect on the server side)");
         CosArmorToggleButton_Top = prop.getInt();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorToggleButton_Baubles", true);
-        prop.setComment("Add buttons to bauble slots so that you can hide them. (this have no effect on the server side)");
+        prop.setComment("Add buttons to bauble slots so that you can hide them. (this has no effect on the server side)");
         CosArmorToggleButton_Baubles = prop.getBoolean();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorKeepThroughDeath", false);
