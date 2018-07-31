@@ -124,7 +124,6 @@ public class InventoryManager
                 }
             }
         }
-
     }
 
     @SubscribeEvent

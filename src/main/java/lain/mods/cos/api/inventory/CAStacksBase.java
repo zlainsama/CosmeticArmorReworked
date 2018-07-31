@@ -17,7 +17,10 @@ import net.minecraftforge.items.ItemHandlerHelper;
  * Do not make changes to client side CAStacks, it is not expected, and can cause problems. <br>
  * <br>
  * This class implements {@link IItemHandler}, {@link IItemHandlermodifiable}, {@link INBTSerializable}. <br>
- *
+ * <br>
+ * Currently CosmeticArmorReworked uses 11 slots. <br>
+ * Slot 0-3 are {@link net.minecraft.inventory.EntityEquipmentSlot#FEET FEET}, {@link net.minecraft.inventory.EntityEquipmentSlot#LEGS LEGS}, {@link net.minecraft.inventory.EntityEquipmentSlot#CHEST CHEST}, {@link net.minecraft.inventory.EntityEquipmentSlot#HEAD HEAD}. <br>
+ * Slot 4-10 are Baubles, the player can only setSkinArmor for them. <br>
  */
 public class CAStacksBase implements IItemHandler, IItemHandlerModifiable, INBTSerializable<NBTTagCompound>
 {
