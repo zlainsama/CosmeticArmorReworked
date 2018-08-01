@@ -16,7 +16,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
  * Changes made to server side CAStacks will be sync to the clients. <br>
  * Do not make changes to client side CAStacks, it is not expected, and can cause problems. <br>
  * <br>
- * This class implements {@link IItemHandler}, {@link IItemHandlermodifiable}, {@link INBTSerializable}. <br>
+ * This class implements {@link IItemHandler}, {@link IItemHandlerModifiable}, {@link INBTSerializable}. <br>
  * <br>
  * CosmeticArmorReworked uses 11 slots. <br>
  * Slot 0-3 are {@link net.minecraft.inventory.EntityEquipmentSlot#FEET FEET}, {@link net.minecraft.inventory.EntityEquipmentSlot#LEGS LEGS}, {@link net.minecraft.inventory.EntityEquipmentSlot#CHEST CHEST}, {@link net.minecraft.inventory.EntityEquipmentSlot#HEAD HEAD}. <br>
