@@ -1,5 +1,7 @@
 package lain.mods.cos.client;
 
+import org.lwjgl.input.Mouse;
+import baubles.common.container.SlotBauble;
 import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.ModConfigs;
 import lain.mods.cos.inventory.InventoryCosArmor;
@@ -17,8 +19,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Mouse;
-import baubles.common.container.SlotBauble;
 
 public class GuiEvents
 {

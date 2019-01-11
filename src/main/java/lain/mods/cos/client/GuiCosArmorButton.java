@@ -1,11 +1,11 @@
 package lain.mods.cos.client;
 
+import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import org.lwjgl.opengl.GL11;
 
 public class GuiCosArmorButton extends GuiButton
 {

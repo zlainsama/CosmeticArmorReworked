@@ -2,6 +2,7 @@ package lain.mods.cos.client;
 
 import java.io.IOException;
 import java.util.Map;
+import com.google.common.collect.Maps;
 import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.inventory.ContainerCosArmor;
 import net.minecraft.client.gui.GuiButton;
@@ -16,7 +17,6 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
-import com.google.common.collect.Maps;
 
 public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRecipeShownListener
 {

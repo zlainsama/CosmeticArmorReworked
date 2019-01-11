@@ -10,8 +10,7 @@ public class CosArmorAPI
 {
 
     /**
-     * @param uuid
-     *            the UniqueID of a player (See also {@link net.minecraft.entity.player.EntityPlayer#getUniqueID() EntityPlayer.getUniqueID()})
+     * @param uuid the UniqueID of a player (See also {@link net.minecraft.entity.player.EntityPlayer#getUniqueID() EntityPlayer.getUniqueID()})
      * @return associated {@link CAStacksBase CAStacks} for the input uuid
      */
     public static CAStacksBase getCAStacks(UUID uuid)
@@ -20,8 +19,7 @@ public class CosArmorAPI
     }
 
     /**
-     * @param uuid
-     *            the UniqueID of a player (See also {@link net.minecraft.entity.player.EntityPlayer#getUniqueID() EntityPlayer.getUniqueID()})
+     * @param uuid the UniqueID of a player (See also {@link net.minecraft.entity.player.EntityPlayer#getUniqueID() EntityPlayer.getUniqueID()})
      * @return associated {@link CAStacksBase CAStacks} for the input uuid on the Client
      */
     @SideOnly(Side.CLIENT)

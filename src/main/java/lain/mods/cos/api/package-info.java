@@ -2,4 +2,3 @@
 package lain.mods.cos.api;
 
 import net.minecraftforge.fml.common.API;
-

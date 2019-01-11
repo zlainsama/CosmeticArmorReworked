@@ -1,6 +1,11 @@
 package lain.mods.cos.client;
 
 import java.util.concurrent.TimeUnit;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,11 +15,6 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 public class PlayerRenderHandler
 {

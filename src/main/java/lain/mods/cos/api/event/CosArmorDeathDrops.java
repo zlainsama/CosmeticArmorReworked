@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 /**
  * This event is fired whenever a player dies and the associated CAStacks is about to be dropped. <br>
  * <br>
- * 
+ *
  * {@link #player} contains the instance of EntityPlayer for the event.<br>
  * {@link #stacks} contains the instance of CAStacks for the player.<br>
  * <br>
@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * This event does not have a result. {@link HasResult}<br>
  * <br>
  * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
- * 
+ *
  */
 @Cancelable
 public class CosArmorDeathDrops extends Event

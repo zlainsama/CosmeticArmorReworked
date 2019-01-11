@@ -3,6 +3,9 @@ package lain.mods.cos.integrations;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import com.m4thg33k.tombmanygraves2api.api.inventory.AbstractSpecialInventory;
+import com.m4thg33k.tombmanygraves2api.api.inventory.SpecialInventoryHelper;
+import com.m4thg33k.tombmanygraves2api.api.inventory.TransitionInventory;
 import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.ModConfigs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,9 +16,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import com.m4thg33k.tombmanygraves2api.api.inventory.AbstractSpecialInventory;
-import com.m4thg33k.tombmanygraves2api.api.inventory.SpecialInventoryHelper;
-import com.m4thg33k.tombmanygraves2api.api.inventory.TransitionInventory;
 
 @Mod(modid = "cosmeticarmorreworked|tombmanygraves", useMetadata = true, acceptedMinecraftVersions = "[1.12.1, 1.13)", certificateFingerprint = "aaaf83332a11df02406e9f266b1b65c1306f0f76")
 public class CosmeticArmorTombManyGraves

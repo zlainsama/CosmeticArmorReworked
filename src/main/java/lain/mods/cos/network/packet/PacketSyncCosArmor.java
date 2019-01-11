@@ -1,8 +1,8 @@
 package lain.mods.cos.network.packet;
 
-import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.UUID;
+import io.netty.buffer.ByteBuf;
 import lain.mods.cos.CosmeticArmorReworked;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import lain.mods.cos.network.NetworkPacket;

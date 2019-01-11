@@ -3,16 +3,16 @@ package lain.mods.cos.client;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Maps;
 import lain.mods.cos.InventoryManager;
 import lain.mods.cos.inventory.InventoryCosArmor;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Maps;
 
 public class InventoryManagerClient extends InventoryManager
 {

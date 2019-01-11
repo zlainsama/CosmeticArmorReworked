@@ -6,6 +6,17 @@ import net.minecraftforge.common.config.Property;
 public class ModConfigs
 {
 
+    public static boolean CosArmorGuiButton_Hidden = false;
+    public static int CosArmorGuiButton_Left = 65;
+    public static int CosArmorGuiButton_Top = 67;
+    public static boolean CosArmorToggleButton_Hidden = false;
+    public static int CosArmorToggleButton_Left = 59;
+    public static int CosArmorToggleButton_Top = 72;
+    public static boolean CosArmorToggleButton_Baubles = true;
+    public static boolean CosArmorKeepThroughDeath = false;
+
+    private static Configuration lastConfig;
+
     public static Configuration getLastConfig()
     {
         return lastConfig;
@@ -50,16 +61,5 @@ public class ModConfigs
         if (config.hasChanged())
             config.save();
     }
-
-    public static boolean CosArmorGuiButton_Hidden = false;
-    public static int CosArmorGuiButton_Left = 65;
-    public static int CosArmorGuiButton_Top = 67;
-    public static boolean CosArmorToggleButton_Hidden = false;
-    public static int CosArmorToggleButton_Left = 59;
-    public static int CosArmorToggleButton_Top = 72;
-    public static boolean CosArmorToggleButton_Baubles = true;
-    public static boolean CosArmorKeepThroughDeath = false;
-
-    private static Configuration lastConfig;
 
 }
