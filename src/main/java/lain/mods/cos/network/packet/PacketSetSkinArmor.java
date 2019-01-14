@@ -7,6 +7,7 @@ import lain.mods.cos.network.NetworkPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class PacketSetSkinArmor extends NetworkPacket
 {
@@ -32,8 +33,10 @@ public class PacketSetSkinArmor extends NetworkPacket
     @Override
     public void handlePacketServer(EntityPlayerMP player)
     {
-        InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventory(player.getUniqueID());
-        inv.setSkinArmor(slot, isSkinArmor);
+        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
+            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventory(player.getUniqueID());
+            inv.setSkinArmor(slot, isSkinArmor);
+        });
     }
 
     @Override

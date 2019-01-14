@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class PacketSyncCosArmor extends NetworkPacket
 {
@@ -34,9 +35,11 @@ public class PacketSyncCosArmor extends NetworkPacket
     @Override
     public void handlePacketClient()
     {
-        InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(uuid);
-        inv.setInventorySlotContents(slot, itemCosArmor);
-        inv.setSkinArmor(slot, isSkinArmor);
+        FMLClientHandler.instance().getClient().addScheduledTask(() -> {
+            InventoryCosArmor inv = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(uuid);
+            inv.setInventorySlotContents(slot, itemCosArmor);
+            inv.setSkinArmor(slot, isSkinArmor);
+        });
     }
 
     @Override
