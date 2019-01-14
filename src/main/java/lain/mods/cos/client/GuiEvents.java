@@ -52,7 +52,10 @@ public class GuiEvents
             {
                 if (gui instanceof GuiCosArmorInventory)
                 {
-                    gui.mc.displayGuiScreen(new GuiInventory(gui.mc.player));
+                    GuiInventory newGui = new GuiInventory(gui.mc.player);
+                    newGui.oldMouseX = ((GuiCosArmorInventory) gui).oldMouseX;
+                    newGui.oldMouseY = ((GuiCosArmorInventory) gui).oldMouseY;
+                    gui.mc.displayGuiScreen(newGui);
                     CosmeticArmorReworked.network.sendToServer(new PacketOpenNormalInventory());
                 }
                 else

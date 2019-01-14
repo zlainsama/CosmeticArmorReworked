@@ -23,8 +23,8 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
 
     public static final ResourceLocation texture = new ResourceLocation("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
 
-    private float oldMouseX;
-    private float oldMouseY;
+    public float oldMouseX;
+    public float oldMouseY;
     private GuiButtonImage recipeBookButton;
     private final GuiRecipeBook recipeBook = new GuiRecipeBook();
     private boolean widthTooNarrow;
