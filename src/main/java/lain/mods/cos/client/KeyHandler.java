@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 public class KeyHandler
 {
 
-    public KeyBinding keyOpenCosArmorInventory = new KeyBinding("cos.key.openCosArmorInventory", 0, "key.categories.inventory");
+    public KeyBinding keyOpenCosArmorInventory = new KeyBinding("cos.key.opencosarmorinventory", 0, "key.categories.inventory");
 
     public KeyHandler()
     {

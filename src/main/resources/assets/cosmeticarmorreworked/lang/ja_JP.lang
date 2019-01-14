@@ -1,5 +1,5 @@
-cos.key.openCosArmorInventory=コスメチックインベントリを開く
-cos.gui.buttonCos=コスメチック
-cos.gui.buttonNormal=ノーマル
-cos.command.clearCosArmor=/clearCosArmor [プレイヤー名]
-cos.command.clearCosArmor.success=%s のコスメチックインベントリを消去しました
+cos.key.opencosarmorinventory=コスメチックインベントリを開く
+cos.gui.buttoncos=コスメチック
+cos.gui.buttonnormal=ノーマル
+cos.command.clearcosarmor=/clearcosarmor [プレイヤー名]
+cos.command.clearcosarmor.success=%s のコスメチックインベントリを消去しました

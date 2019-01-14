@@ -79,7 +79,7 @@ public class GuiEvents
         {
             GuiContainer gui = (GuiContainer) event.getGui();
             if (!ModConfigs.CosArmorGuiButton_Hidden)
-                event.getButtonList().add(new GuiCosArmorButton(76, gui.guiLeft + ModConfigs.CosArmorGuiButton_Left/* 65 */, gui.guiTop + ModConfigs.CosArmorGuiButton_Top/* 67 */, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
+                event.getButtonList().add(new GuiCosArmorButton(76, gui.guiLeft + ModConfigs.CosArmorGuiButton_Left/* 65 */, gui.guiTop + ModConfigs.CosArmorGuiButton_Top/* 67 */, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonnormal" : "cos.gui.buttoncos"));
             GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(77, gui.guiLeft + ModConfigs.CosArmorToggleButton_Left/* 59 */, gui.guiTop + ModConfigs.CosArmorToggleButton_Top/* 72 */, 5, 5, "");
             t.state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
             if (!ModConfigs.CosArmorToggleButton_Hidden)

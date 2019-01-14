@@ -19,13 +19,13 @@ public class CommandClearCosArmor extends CommandBase
     {
         EntityPlayerMP target = args.length == 0 ? getCommandSenderAsPlayer(sender) : getPlayer(server, sender, args[0]);
         CosmeticArmorReworked.invMan.getCosArmorInventory(target.getUniqueID()).clear();
-        notifyCommandListener(sender, this, "cos.command.clearCosArmor.success", target.getName());
+        notifyCommandListener(sender, this, "cos.command.clearcosarmor.success", target.getName());
     }
 
     @Override
     public String getName()
     {
-        return "clearCosArmor";
+        return "clearcosarmor";
     }
 
     @Override
@@ -45,7 +45,7 @@ public class CommandClearCosArmor extends CommandBase
     @Override
     public String getUsage(ICommandSender sender)
     {
-        return "cos.command.clearCosArmor";
+        return "cos.command.clearcosarmor";
     }
 
     @Override
