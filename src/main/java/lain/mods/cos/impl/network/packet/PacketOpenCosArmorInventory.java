@@ -5,6 +5,8 @@ import lain.mods.cos.impl.client.gui.GuiCosArmorInventory;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IThreadListener;
@@ -41,7 +43,14 @@ public class PacketOpenCosArmorInventory implements NetworkPacket
         else
         {
             Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
-            mc.displayGuiScreen(new GuiCosArmorInventory(new ContainerCosArmor(mc.player.inventory, ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUniqueID()), mc.player)));
+            GuiCosArmorInventory newGui = new GuiCosArmorInventory(new ContainerCosArmor(mc.player.inventory, ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUniqueID()), mc.player));
+            GuiScreen gui = mc.currentScreen;
+            if (gui instanceof GuiInventory)
+            {
+                newGui.oldMouseX = ((GuiInventory) gui).oldMouseX;
+                newGui.oldMouseY = ((GuiInventory) gui).oldMouseY;
+            }
+            mc.displayGuiScreen(newGui);
             mc.player.openContainer.windowId = windowId;
         }
     }
