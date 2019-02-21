@@ -102,7 +102,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
                 GuiCosArmorInventory.this.recipeBook.func_201518_a(GuiCosArmorInventory.this.widthTooNarrow);
                 GuiCosArmorInventory.this.recipeBook.toggleVisibility();
                 GuiCosArmorInventory.this.guiLeft = GuiCosArmorInventory.this.recipeBook.updateScreenPosition(GuiCosArmorInventory.this.widthTooNarrow, GuiCosArmorInventory.this.width, GuiCosArmorInventory.this.xSize);
-                setPosition(GuiCosArmorInventory.this.guiLeft + 104, GuiCosArmorInventory.this.height / 2 - 22);
+                setPosition(GuiCosArmorInventory.this.guiLeft + 76, GuiCosArmorInventory.this.guiTop + 27);
                 GuiCosArmorInventory.this.buttonClicked = true;
                 int leftDiff = GuiCosArmorInventory.this.guiLeft - lastLeft;
                 GuiCosArmorInventory.this.buttons.stream().filter(b -> GuiCosArmorInventory.ToggleButtonIds.contains(b.id)).forEach(b -> b.x += leftDiff);
