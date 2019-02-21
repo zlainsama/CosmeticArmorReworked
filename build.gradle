@@ -1,87 +1,50 @@
 buildscript {
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        mavenCentral()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
 
-version = "1.12.2-v4"
+import net.minecraftforge.gradle.common.task.SignJar
+
+version = "1.13.2-v1"
 group= "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
 
-sourceCompatibility = targetCompatibility = "1.8"
-compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
-}
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    version = "1.12.2-14.23.0.2486"
-    runDir = "run"
-
-    mappings = "snapshot_20170624"
+    mappings channel: 'snapshot', version: '20180921-1.13'
+    accessTransformer = file("$rootDir/src/main/resources/META-INF/accesstransformer.cfg")
 }
 
-jar
-{
-    manifest {
-        attributes 'FMLAT': 'cosmeticarmorreworked_at.cfg'
-    }
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.13.2-25.0.36'
 }
 
-processResources
-{
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
+processResources {
     from 'LICENSE.txt'
+}
 
-    from(sourceSets.main.resources.srcDirs)
-    {
-        include 'mcmod.info'
-
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+jar {
+    manifest {
+        attributes(["Specification-Title": "CleanView",
+                    "Specification-Vendor": "zlainsama",
+                    "Specification-Version": "1",
+                    "Implementation-Title": project.name,
+                    "Implementation-Version": "${version}",
+                    "Implementation-Vendor" :"zlainsama",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
     }
-
-    from(sourceSets.main.resources.srcDirs)
-    {
-        exclude 'mcmod.info'
-    }
-
-    rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'deobf'
-}
-
-task apiZip(type: Jar) {
-    from(sourceSets.main.java) {
-        include "lain/mods/cos/api/**"
-    }
-    from(sourceSets.main.output) {
-        include "lain/mods/cos/api/**"
-    }
-
-    classifier = 'api'
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    classifier = 'sources'
-}
-
-artifacts {
-    archives deobfJar
-    archives apiZip
-    archives sourcesJar
-}
-
-task signJar(type: SignJar, dependsOn: reobfJar) {
+task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
         project.hasProperty('mcModsStore')
     }

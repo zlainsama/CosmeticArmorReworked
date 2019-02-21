@@ -1,0 +1,21 @@
+modLoader="javafml"
+loaderVersion="[25,)"
+issueTrackerURL="https://github.com/zlainsama/CosmeticArmorReworked/issues"
+displayURL="https://github.com/zlainsama/CosmeticArmorReworked"
+#logoFile=""
+credits=""
+authors="zlainsama"
+[[mods]]
+modId="cosmeticarmorreworked"
+version="${file.jarVersion}"
+displayName="CosmeticArmorReworked"
+#updateJSONURL=""
+description='''
+This mod allows you to wear two sets of armor, one for display, one for function. You can also hide armor for your skin. For PVP, you can stop the mod from functioning on your client side.
+'''
+[[dependencies.cosmeticarmorreworked]]
+modId="forge"
+mandatory=true
+versionRange="[25,)"
+ordering="NONE"
+side="BOTH"

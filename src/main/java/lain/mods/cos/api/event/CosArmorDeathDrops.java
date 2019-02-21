@@ -3,8 +3,8 @@ package lain.mods.cos.api.event;
 import lain.mods.cos.api.inventory.CAStacksBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  * This event is fired whenever a player dies and the associated CAStacks is about to be dropped. <br>
