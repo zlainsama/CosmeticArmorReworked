@@ -2,6 +2,7 @@ package lain.mods.cos.impl.network.packet;
 
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IThreadListener;
 import net.minecraftforge.fml.LogicalSide;
@@ -29,7 +30,8 @@ public class PacketOpenNormalInventory implements NetworkPacket
         }
         else
         {
-            player.openContainer.onContainerClosed(player);
+            if (!(player.openContainer instanceof ContainerPlayer))
+                player.openContainer.onContainerClosed(player);
             player.openContainer = player.inventoryContainer;
         }
     }

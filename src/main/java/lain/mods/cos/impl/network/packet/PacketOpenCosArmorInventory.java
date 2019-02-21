@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IThreadListener;
 import net.minecraftforge.common.MinecraftForge;
@@ -67,6 +68,8 @@ public class PacketOpenCosArmorInventory implements NetworkPacket
         }
         else
         {
+            if (!(player.openContainer instanceof ContainerPlayer))
+                player.openContainer.onContainerClosed(player);
             player.getNextWindowId();
             ModObjects.network.sendTo(new PacketOpenCosArmorInventory(player.currentWindowId), player);
             player.openContainer = new ContainerCosArmor(player.inventory, ModObjects.invMan.getCosArmorInventory(player.getUniqueID()), player);
