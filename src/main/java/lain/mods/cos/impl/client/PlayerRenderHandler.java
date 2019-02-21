@@ -87,6 +87,7 @@ public enum PlayerRenderHandler
 
             for (int i = 0; i < armor.size(); i++)
                 armorCached.set(i, armor.get(i));
+            cached.getRight().setValue(1);
             // TODO add baubles integration
 
             if (Disabled)
