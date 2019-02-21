@@ -78,6 +78,12 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory
     }
 
     @Override
+    public ItemStack getStackInSlot(int slot)
+    {
+        return super.getStackInSlot(slot);
+    }
+
+    @Override
     public boolean hasCustomName()
     {
         return false;
