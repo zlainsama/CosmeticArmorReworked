@@ -123,7 +123,7 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
                     InventoryCosArmor inv = ModObjects.invMan.getCosArmorInventoryClient(GuiCosArmorInventory.this.mc.player.getUniqueID());
                     inv.setSkinArmor(j, !inv.isSkinArmor(j));
                     state = inv.isSkinArmor(j) ? 1 : 0;
-                    ModObjects.network.sendToServer(new PacketSetSkinArmor(GuiCosArmorInventory.this.mc.player.getUniqueID(), j));
+                    ModObjects.network.sendToServer(new PacketSetSkinArmor(j, inv.isSkinArmor(j)));
                 }
 
             });

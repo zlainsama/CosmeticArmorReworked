@@ -1,6 +1,5 @@
 package lain.mods.cos.impl.network.packet;
 
-import java.util.UUID;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,12 +18,10 @@ public class PacketSetSkinArmor implements NetworkPacket
     {
     }
 
-    public PacketSetSkinArmor(UUID uuid, int slot)
+    public PacketSetSkinArmor(int slot, boolean isSkinArmor)
     {
-        if (uuid == null)
-            throw new IllegalArgumentException();
         this.slot = slot;
-        this.isSkinArmor = ModObjects.invMan.getCosArmorInventoryClient(uuid).isSkinArmor(slot);
+        this.isSkinArmor = isSkinArmor;
     }
 
     @Override

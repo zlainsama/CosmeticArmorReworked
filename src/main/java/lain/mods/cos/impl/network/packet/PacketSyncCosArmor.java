@@ -23,14 +23,14 @@ public class PacketSyncCosArmor implements NetworkPacket
     {
     }
 
-    public PacketSyncCosArmor(UUID uuid, int slot)
+    public PacketSyncCosArmor(UUID uuid, InventoryCosArmor inventory, int slot)
     {
         if (uuid == null)
             throw new IllegalArgumentException();
         this.uuid = uuid;
         this.slot = slot;
-        this.isSkinArmor = ModObjects.invMan.getCosArmorInventory(this.uuid).isSkinArmor(slot);
-        this.itemCosArmor = ModObjects.invMan.getCosArmorInventory(this.uuid).getStackInSlot(slot);
+        this.isSkinArmor = inventory.isSkinArmor(slot);
+        this.itemCosArmor = inventory.getStackInSlot(slot);
     }
 
     @Override

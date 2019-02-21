@@ -179,7 +179,7 @@ public class InventoryManager
                 UUID uuid = other.getUniqueID();
                 InventoryCosArmor inv = getCosArmorInventory(uuid);
                 for (int i = 0; i < inv.getSlots(); i++)
-                    ModObjects.network.sendTo(new PacketSyncCosArmor(uuid, i), player);
+                    ModObjects.network.sendTo(new PacketSyncCosArmor(uuid, inv, i), player);
             }
         }
     }
@@ -261,7 +261,7 @@ public class InventoryManager
 
     protected void onInventoryChanged(UUID uuid, InventoryCosArmor inventory, int slot)
     {
-        ModObjects.network.sendToAll(new PacketSyncCosArmor(uuid, slot));
+        ModObjects.network.sendToAll(new PacketSyncCosArmor(uuid, inventory, slot));
     }
 
     public void registerEvents()
