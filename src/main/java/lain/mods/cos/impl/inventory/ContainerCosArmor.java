@@ -1,5 +1,6 @@
 package lain.mods.cos.impl.inventory;
 
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -22,9 +23,15 @@ public class ContainerCosArmor extends ContainerPlayer
         for (int i = 0; i < 4; i++)
         {
             final int j = i;
-            final EntityPlayer k = player;
             addSlot(new Slot(invCosArmor, 3 - i, 98 + i * 18, 62)
             {
+
+                @Override
+                public boolean canTakeStack(EntityPlayer player)
+                {
+                    ItemStack itemstack = this.getStack();
+                    return !itemstack.isEmpty() && !player.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack) ? false : super.canTakeStack(player);
+                }
 
                 @Override
                 public int getSlotStackLimit()
@@ -41,10 +48,7 @@ public class ContainerCosArmor extends ContainerPlayer
                 @Override
                 public boolean isItemValid(ItemStack stack)
                 {
-                    if (stack == null || stack.isEmpty())
-                        return false;
-
-                    return stack.getItem().canEquip(stack, VALID_EQUIPMENT_SLOTS[j], k);
+                    return stack.canEquip(VALID_EQUIPMENT_SLOTS[j], player);
                 }
 
             });
