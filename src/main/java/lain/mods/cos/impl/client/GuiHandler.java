@@ -23,6 +23,7 @@ public enum GuiHandler
 
     private int lastLeft = -1;
 
+    // TODO move to use ActionPerformedEvent.Post when they are back
     private void handleGuiDrawPre(GuiScreenEvent.DrawScreenEvent.Pre event)
     {
         if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiCosArmorInventory)
