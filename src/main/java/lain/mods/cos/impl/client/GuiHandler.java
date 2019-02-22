@@ -1,5 +1,7 @@
 package lain.mods.cos.impl.client;
 
+import java.util.Set;
+import com.google.common.collect.ImmutableSet;
 import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.client.gui.GuiCosArmorButton;
@@ -7,7 +9,6 @@ import lain.mods.cos.impl.client.gui.GuiCosArmorInventory;
 import lain.mods.cos.impl.client.gui.GuiCosArmorToggleButton;
 import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.impl.network.packet.PacketOpenNormalInventory;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -18,22 +19,20 @@ public enum GuiHandler
 
     INSTANCE;
 
-    private void handleGuiActionPost(GuiScreenEvent.ActionPerformedEvent.Post event)
+    public static final Set<Integer> ButtonIds = ImmutableSet.of(76, 77);
+
+    private int lastLeft = -1;
+
+    private void handleGuiDrawPre(GuiScreenEvent.DrawScreenEvent.Pre event)
     {
         if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiCosArmorInventory)
         {
             GuiContainer gui = (GuiContainer) event.getGui();
-            for (GuiButton button : gui.buttons)
+            if (lastLeft != gui.guiLeft)
             {
-                switch (button.id)
-                {
-                    case 76:
-                        button.x = gui.guiLeft + ModConfigs.CosArmorGuiButton_Left.get();
-                        break;
-                    case 77:
-                        button.x = gui.guiLeft + ModConfigs.CosArmorToggleButton_Left.get();
-                        break;
-                }
+                int diffLeft = gui.guiLeft - lastLeft;
+                lastLeft = gui.guiLeft;
+                gui.buttons.stream().filter(b -> ButtonIds.contains(b.id)).forEach(b -> b.x += diffLeft);
             }
         }
     }
@@ -43,6 +42,7 @@ public enum GuiHandler
         if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiCosArmorInventory)
         {
             GuiContainer gui = (GuiContainer) event.getGui();
+            lastLeft = gui.guiLeft;
             if (!ModConfigs.CosArmorGuiButton_Hidden.get())
                 event.addButton(new GuiCosArmorButton(76, gui.guiLeft + ModConfigs.CosArmorGuiButton_Left.get()/* 65 */, gui.guiTop + ModConfigs.CosArmorGuiButton_Top.get()/* 67 */, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonnormal" : "cos.gui.buttoncos")
                 {
@@ -83,7 +83,7 @@ public enum GuiHandler
 
     public void registerEvents()
     {
-        MinecraftForge.EVENT_BUS.addListener(this::handleGuiActionPost);
+        MinecraftForge.EVENT_BUS.addListener(this::handleGuiDrawPre);
         MinecraftForge.EVENT_BUS.addListener(this::handleGuiInitPost);
     }
 
