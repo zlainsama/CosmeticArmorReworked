@@ -18,6 +18,7 @@ public class ModConfigs
     public static BooleanValue CosArmorToggleButton_Baubles;
     public static BooleanValue CosArmorKeepThroughDeath;
 
+    // TODO add translations to assets when things are implemented
     public static void registerConfigs()
     {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, new ForgeConfigSpec.Builder()
