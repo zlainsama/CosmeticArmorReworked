@@ -26,6 +26,8 @@ minecraft {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.13.2-25.0.36'
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 processResources {
