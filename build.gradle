@@ -46,6 +46,17 @@ jar {
     }
 }
 
+task apiZip(type: Jar) {
+    from(sourceSets.main.java) {
+        include "lain/mods/cos/api/**"
+    }
+    from(sourceSets.main.output) {
+        include "lain/mods/cos/api/**"
+    }
+
+    classifier = 'api'
+}
+
 task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
         project.hasProperty('mcModsStore')
@@ -59,6 +70,10 @@ task signJar(type: SignJar, dependsOn: jar) {
         inputFile = jar.archivePath
         outputFile = jar.archivePath
     }
+}
+
+artifacts {
+    archives apiZip
 }
 
 build.dependsOn signJar
