@@ -215,7 +215,7 @@ public class InventoryManager
                 count += inv.extractItem(i, Integer.MAX_VALUE, false).getCount();
             s.getSource().sendFeedback(new TextComponentTranslation("cos.command.clearcosarmor.success.single", count, player.getDisplayName()), true);
             return count;
-        }).then(Commands.argument("targets", EntityArgument.multiplePlayers())).executes(s -> {
+        }).then(Commands.argument("targets", EntityArgument.multiplePlayers()).executes(s -> {
             int count = 0;
             Collection<EntityPlayerMP> players = EntityArgument.getPlayers(s, "targets");
             for (EntityPlayerMP player : players)
@@ -229,7 +229,7 @@ public class InventoryManager
             else
                 s.getSource().sendFeedback(new TextComponentTranslation("cos.command.clearcosarmor.success.multiple", count, players.size()), true);
             return count;
-        }));
+        })));
     }
 
     private void handleServerStopping(FMLServerStoppingEvent event)
