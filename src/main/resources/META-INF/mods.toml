@@ -3,7 +3,7 @@ loaderVersion="[25,)"
 issueTrackerURL="https://github.com/zlainsama/CosmeticArmorReworked/issues"
 displayURL="https://github.com/zlainsama/CosmeticArmorReworked"
 #logoFile=""
-credits=""
+credits="dmillerw - original author; azanor - some code learned from baubles; izuminya - button icon; Deph0 and sblectric for their support when i'm absent"
 authors="zlainsama"
 [[mods]]
 modId="cosmeticarmorreworked"
