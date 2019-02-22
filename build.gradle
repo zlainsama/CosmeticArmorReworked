@@ -36,7 +36,7 @@ processResources {
 
 jar {
     manifest {
-        attributes(["Specification-Title": "CleanView",
+        attributes(["Specification-Title": "CosmeticArmorReworked",
                     "Specification-Vendor": "zlainsama",
                     "Specification-Version": "1",
                     "Implementation-Title": project.name,
