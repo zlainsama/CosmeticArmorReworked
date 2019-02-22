@@ -234,9 +234,9 @@ public class InventoryManager
 
     private void handleServerStopping(FMLServerStoppingEvent event)
     {
-        ModObjects.logger.info("Server is stopping... try to save all still loaded CosmeticArmor data");
+        ModObjects.logger.debug("Server is stopping... try to save all still loaded CosmeticArmor data");
         CommonCache.asMap().entrySet().forEach(e -> {
-            ModObjects.logger.info(e.getKey());
+            ModObjects.logger.debug(e.getKey());
             saveInventory(e.getKey(), e.getValue());
         });
         CommonCache.invalidateAll();
