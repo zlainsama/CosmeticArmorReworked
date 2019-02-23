@@ -1,7 +1,6 @@
 package lain.mods.cos.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Random;
@@ -248,10 +247,9 @@ public class InventoryManager
             return;
         try
         {
-            inventory.deserializeNBT(CompressedStreamTools.read(getDataFile(uuid)));
-        }
-        catch (FileNotFoundException ignored)
-        {
+            File file;
+            if ((file = getDataFile(uuid)).exists())
+                inventory.deserializeNBT(CompressedStreamTools.read(file));
         }
         catch (Throwable t)
         {
