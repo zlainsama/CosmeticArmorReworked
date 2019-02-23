@@ -123,7 +123,10 @@ public enum GuiHandler
             }
             return newGui;
         });
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> msg -> GuiFactory.get(msg.getId()).apply(msg.getAdditionalData()));
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> msg -> GuiFactory.getOrDefault(msg.getId(), pb -> {
+            ModObjects.logger.fatal("Couldn't find a gui for {}", msg.getId());
+            return null;
+        }).apply(msg.getAdditionalData()));
     }
 
 }
