@@ -17,7 +17,7 @@ import net.minecraft.world.IInteractionObject;
 public class InventoryCosArmor extends CAStacksBase implements IInventory, IInteractionObject
 {
 
-    public static final ResourceLocation GuiID = new ResourceLocation("cosmeticarmorreworked:InventoryCosArmor");
+    public static final ResourceLocation GuiID = new ResourceLocation("cosmeticarmorreworked:inventorycosarmor");
 
     protected static final ITextComponent Name = new TextComponentString("InventoryCosArmor");
     protected static final int MINSIZE = 11;
