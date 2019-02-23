@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.PacketDistributor.PacketTarget;
@@ -18,9 +19,9 @@ public class NetworkManager
     public static interface NetworkPacket
     {
 
-        void handlePacketClient();
+        void handlePacketClient(Context context);
 
-        void handlePacketServer(EntityPlayerMP player);
+        void handlePacketServer(Context context);
 
         void readFromBuffer(PacketBuffer buffer);
 
@@ -58,11 +59,11 @@ public class NetworkManager
             switch (s.get().getDirection().reply().getLogicalSide())
             {
                 case CLIENT:
-                    p.handlePacketClient();
+                    p.handlePacketClient(s.get());
                     s.get().setPacketHandled(true);
                     break;
                 case SERVER:
-                    p.handlePacketServer(s.get().getSender());
+                    p.handlePacketServer(s.get());
                     s.get().setPacketHandled(true);
                     break;
                 default:

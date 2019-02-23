@@ -4,12 +4,9 @@ import java.util.UUID;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.IThreadListener;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketSyncCosArmor implements NetworkPacket
 {
@@ -34,23 +31,16 @@ public class PacketSyncCosArmor implements NetworkPacket
     }
 
     @Override
-    public void handlePacketClient()
+    public void handlePacketClient(Context context)
     {
-        IThreadListener scheduler = LogicalSidedProvider.WORKQUEUE.get(LogicalSide.CLIENT);
-        if (!scheduler.isCallingFromMinecraftThread())
-        {
-            scheduler.addScheduledTask(() -> handlePacketClient());
-        }
-        else
-        {
-            InventoryCosArmor inv = ModObjects.invMan.getCosArmorInventoryClient(uuid);
-            inv.setStackInSlot(slot, itemCosArmor);
-            inv.setSkinArmor(slot, isSkinArmor);
-        }
+        context.enqueueWork(() -> {
+            ModObjects.invMan.getCosArmorInventoryClient(uuid).setStackInSlot(slot, itemCosArmor);
+            ModObjects.invMan.getCosArmorInventoryClient(uuid).setSkinArmor(slot, isSkinArmor);
+        });
     }
 
     @Override
-    public void handlePacketServer(EntityPlayerMP player)
+    public void handlePacketServer(Context context)
     {
     }
 

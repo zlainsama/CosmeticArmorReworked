@@ -1,18 +1,31 @@
 package lain.mods.cos.impl.client;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import com.google.common.collect.ImmutableSet;
 import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.client.gui.GuiCosArmorButton;
 import lain.mods.cos.impl.client.gui.GuiCosArmorInventory;
 import lain.mods.cos.impl.client.gui.GuiCosArmorToggleButton;
+import lain.mods.cos.impl.inventory.ContainerCosArmor;
+import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.impl.network.packet.PacketOpenNormalInventory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fml.ModLoadingContext;
 
 public enum GuiHandler
 {
@@ -21,6 +34,7 @@ public enum GuiHandler
 
     public static final Set<Integer> ButtonIds = ImmutableSet.of(76, 77);
 
+    private final Map<ResourceLocation, Function<PacketBuffer, GuiScreen>> GuiFactory = new ConcurrentHashMap<>();
     private int lastLeft = -1;
 
     // TODO move to use ActionPerformedEvent.Post when they are back
@@ -86,6 +100,30 @@ public enum GuiHandler
     {
         MinecraftForge.EVENT_BUS.addListener(this::handleGuiDrawPre);
         MinecraftForge.EVENT_BUS.addListener(this::handleGuiInitPost);
+        setupGuiFactory();
+    }
+
+    public void registerGui(ResourceLocation id, Function<PacketBuffer, GuiScreen> factory)
+    {
+        if (GuiFactory.containsKey(id))
+            throw new IllegalArgumentException(id + " is already registered");
+        GuiFactory.put(id, factory);
+    }
+
+    private void setupGuiFactory()
+    {
+        registerGui(InventoryCosArmor.GuiID, pb -> {
+            Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
+            GuiCosArmorInventory newGui = new GuiCosArmorInventory(new ContainerCosArmor(mc.player.inventory, ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUniqueID()), mc.player));
+            GuiScreen gui = mc.currentScreen;
+            if (gui instanceof GuiInventory)
+            {
+                newGui.oldMouseX = ((GuiInventory) gui).oldMouseX;
+                newGui.oldMouseY = ((GuiInventory) gui).oldMouseY;
+            }
+            return newGui;
+        });
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> msg -> GuiFactory.get(msg.getId()).apply(msg.getAdditionalData()));
     }
 
 }

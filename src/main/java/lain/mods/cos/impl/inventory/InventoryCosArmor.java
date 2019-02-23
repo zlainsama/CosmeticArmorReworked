@@ -5,13 +5,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import lain.mods.cos.api.inventory.CAStacksBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IInteractionObject;
 
-public class InventoryCosArmor extends CAStacksBase implements IInventory
+public class InventoryCosArmor extends CAStacksBase implements IInventory, IInteractionObject
 {
+
+    public static final ResourceLocation GuiID = new ResourceLocation("cosmeticarmorreworked:InventoryCosArmor");
 
     protected static final ITextComponent Name = new TextComponentString("InventoryCosArmor");
     protected static final int MINSIZE = 11;
@@ -36,6 +42,12 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory
     }
 
     @Override
+    public Container createContainer(InventoryPlayer invPlayer, EntityPlayer player)
+    {
+        return new ContainerCosArmor(invPlayer, this, player);
+    }
+
+    @Override
     public ItemStack decrStackSize(int slot, int num)
     {
         return extractItem(slot, num, false);
@@ -57,6 +69,12 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory
     public int getFieldCount()
     {
         return 0;
+    }
+
+    @Override
+    public String getGuiID()
+    {
+        return GuiID.toString();
     }
 
     @Override

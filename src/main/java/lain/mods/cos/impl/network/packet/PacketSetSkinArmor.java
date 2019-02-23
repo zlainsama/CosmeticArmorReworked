@@ -2,11 +2,8 @@ package lain.mods.cos.impl.network.packet;
 
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.IThreadListener;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketSetSkinArmor implements NetworkPacket
 {
@@ -25,22 +22,16 @@ public class PacketSetSkinArmor implements NetworkPacket
     }
 
     @Override
-    public void handlePacketClient()
+    public void handlePacketClient(Context context)
     {
     }
 
     @Override
-    public void handlePacketServer(EntityPlayerMP player)
+    public void handlePacketServer(Context context)
     {
-        IThreadListener scheduler = LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER);
-        if (!scheduler.isCallingFromMinecraftThread())
-        {
-            scheduler.addScheduledTask(() -> handlePacketServer(player));
-        }
-        else
-        {
-            ModObjects.invMan.getCosArmorInventory(player.getUniqueID()).setSkinArmor(slot, isSkinArmor);
-        }
+        context.enqueueWork(() -> {
+            ModObjects.invMan.getCosArmorInventory(context.getSender().getUniqueID()).setSkinArmor(slot, isSkinArmor);
+        });
     }
 
     @Override

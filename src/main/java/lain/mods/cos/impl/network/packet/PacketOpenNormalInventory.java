@@ -1,11 +1,8 @@
 package lain.mods.cos.impl.network.packet;
 
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.IThreadListener;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketOpenNormalInventory implements NetworkPacket
 {
@@ -15,23 +12,16 @@ public class PacketOpenNormalInventory implements NetworkPacket
     }
 
     @Override
-    public void handlePacketClient()
+    public void handlePacketClient(Context context)
     {
     }
 
     @Override
-    public void handlePacketServer(EntityPlayerMP player)
+    public void handlePacketServer(Context context)
     {
-        IThreadListener scheduler = LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER);
-        if (!scheduler.isCallingFromMinecraftThread())
-        {
-            scheduler.addScheduledTask(() -> handlePacketServer(player));
-        }
-        else
-        {
-            player.openContainer.onContainerClosed(player);
-            player.openContainer = player.inventoryContainer;
-        }
+        context.enqueueWork(() -> {
+            context.getSender().closeContainer();
+        });
     }
 
     @Override
