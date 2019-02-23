@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import com.google.common.collect.ImmutableSet;
+import io.netty.buffer.Unpooled;
 import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.client.gui.GuiCosArmorButton;
@@ -36,6 +37,19 @@ public enum GuiHandler
 
     private final Map<ResourceLocation, Function<PacketBuffer, GuiScreen>> GuiFactory = new ConcurrentHashMap<>();
     private int lastLeft = -1;
+
+    public GuiScreen buildGui(ResourceLocation id)
+    {
+        return buildGui(id, new PacketBuffer(Unpooled.EMPTY_BUFFER));
+    }
+
+    public GuiScreen buildGui(ResourceLocation id, PacketBuffer buffer)
+    {
+        return GuiFactory.getOrDefault(id, pb -> {
+            ModObjects.logger.fatal("Couldn't find a gui for {}", id);
+            return null;
+        }).apply(buffer);
+    }
 
     // TODO move to use ActionPerformedEvent.Post when they are back
     private void handleGuiDrawPre(GuiScreenEvent.DrawScreenEvent.Pre event)
@@ -123,10 +137,7 @@ public enum GuiHandler
             }
             return newGui;
         });
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> msg -> GuiFactory.getOrDefault(msg.getId(), pb -> {
-            ModObjects.logger.fatal("Couldn't find a gui for {}", msg.getId());
-            return null;
-        }).apply(msg.getAdditionalData()));
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> msg -> buildGui(msg.getId(), msg.getAdditionalData()));
     }
 
 }
