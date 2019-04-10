@@ -1,0 +1,5 @@
+cos.key.opencosarmorinventory=OpenCosmeticArmorInventory
+cos.gui.buttoncos=CosmeticArmor
+cos.gui.buttonnormal=Normal
+cos.command.clearcosarmor=/clearcosarmor [oyuncu]
+cos.command.clearcosarmor.success=%s oyuncusunun kozmetik envanteri temizlendi.
