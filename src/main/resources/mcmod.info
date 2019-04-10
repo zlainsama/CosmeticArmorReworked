@@ -17,22 +17,5 @@
     "dependencies": [],
     "dependants": [],
     "useDependencyInformation": true
-  }, {
-    "modid": "cosmeticarmorreworked|tombmanygraves",
-    "name": "CosmeticArmorReworked Integration for TombManyGraves2",
-    "description": "Adds integration for TombManyGraves2",
-    "version": "${version}",
-    "mcversion": "${mcversion}",
-    "url": "https://github.com/zlainsama/cosmeticarmorreworked",
-    "updateUrl": "",
-    "authorList": ["zlainsama"],
-    "credits": "M4thG33k",
-    "logoFile": "",
-    "screenshots": [],
-    "parent": "cosmeticarmorreworked",
-    "requiredMods": ["forge", "cosmeticarmorreworked"],
-    "dependencies": ["cosmeticarmorreworked", "tombmanygraves2api", "tombmanygraves"],
-    "dependants": [],
-    "useDependencyInformation": true
   }]
 }
