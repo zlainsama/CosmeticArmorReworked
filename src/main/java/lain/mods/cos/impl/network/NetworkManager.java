@@ -56,7 +56,7 @@ public class NetworkManager
             p.readFromBuffer(b);
             return p;
         }, (p, s) -> {
-            switch (s.get().getDirection().reply().getLogicalSide())
+            switch (s.get().getDirection().getReceptionSide())
             {
                 case CLIENT:
                     p.handlePacketClient(s.get());
