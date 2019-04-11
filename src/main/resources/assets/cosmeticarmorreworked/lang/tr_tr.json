@@ -2,6 +2,6 @@
   "cos.key.opencosarmorinventory": "OpenCosmeticArmorInventory",
   "cos.gui.buttoncos": "CosmeticArmor",
   "cos.gui.buttonnormal": "Normal",
-  "cos.command.clearcosarmor.success.single": "%s eşyaları, %s oyuncusunun kozmetik zırh envanterinden silindi.",
-  "cos.command.clearcosarmor.success.multiple": "%s eşyaları, %s oyuncularının kozmetik zırh envanterinden silindi."
+  "cos.command.clearcosarmor.success.single": "%s e\u015Fyalar\u0131, %s oyuncusunun kozmetik z\u0131rh envanterinden silindi.",
+  "cos.command.clearcosarmor.success.multiple": "%s e\u015Fyalar\u0131, %s oyuncular\u0131n\u0131n kozmetik z\u0131rh envanterinden silindi."
 }
