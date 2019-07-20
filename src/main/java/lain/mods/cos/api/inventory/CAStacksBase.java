@@ -1,8 +1,8 @@
 package lain.mods.cos.api.inventory;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -34,20 +34,20 @@ public class CAStacksBase extends ItemStackHandler
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt)
+    public void deserializeNBT(CompoundNBT nbt)
     {
         setSize(nbt.contains("Size", Constants.NBT.TAG_INT) ? nbt.getInt("Size") : stacks.size());
-        NBTTagList tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
+        ListNBT tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++)
         {
-            NBTTagCompound itemTags = tagList.getCompound(i);
+            CompoundNBT itemTags = tagList.getCompound(i);
             int slot = itemTags.getInt("Slot");
 
             if (slot >= 0 && slot < stacks.size())
             {
-                if (itemTags.hasKey("id"))
+                if (itemTags.contains("id"))
                     stacks.set(slot, ItemStack.read(itemTags));
-                if (itemTags.hasKey("isSkinArmor"))
+                if (itemTags.contains("isSkinArmor"))
                     isSkinArmor[slot] = itemTags.getBoolean("isSkinArmor");
             }
         }
@@ -61,25 +61,25 @@ public class CAStacksBase extends ItemStackHandler
     }
 
     @Override
-    public NBTTagCompound serializeNBT()
+    public CompoundNBT serializeNBT()
     {
-        NBTTagList nbtTagList = new NBTTagList();
+        ListNBT nbtTagList = new ListNBT();
         for (int i = 0; i < stacks.size(); i++)
         {
             if (!stacks.get(i).isEmpty() || isSkinArmor[i])
             {
-                NBTTagCompound itemTag = new NBTTagCompound();
-                itemTag.setInt("Slot", i);
+                CompoundNBT itemTag = new CompoundNBT();
+                itemTag.putInt("Slot", i);
                 if (!stacks.get(i).isEmpty())
                     stacks.get(i).write(itemTag);
                 if (isSkinArmor[i])
-                    itemTag.setBoolean("isSkinArmor", true);
+                    itemTag.putBoolean("isSkinArmor", true);
                 nbtTagList.add(itemTag);
             }
         }
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setTag("Items", nbtTagList);
-        nbt.setInt("Size", stacks.size());
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.put("Items", nbtTagList);
+        nbt.putInt("Size", stacks.size());
         return nbt;
     }
 

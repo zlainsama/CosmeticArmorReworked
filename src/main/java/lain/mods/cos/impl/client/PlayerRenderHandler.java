@@ -8,12 +8,12 @@ import com.google.common.cache.LoadingCache;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPacketDisconnect;
+import net.minecraft.network.play.server.SDisconnectPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -32,7 +32,7 @@ public enum PlayerRenderHandler
     private static void disconnect(ITextComponent message)
     {
         Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
-        mc.getConnection().handleDisconnect(new SPacketDisconnect(message));
+        mc.getConnection().handleDisconnect(new SDisconnectPacket(message));
         mc.getConnection().onDisconnect(message);
     }
 
@@ -51,7 +51,7 @@ public enum PlayerRenderHandler
     {
         try
         {
-            EntityPlayer player = event.getEntityPlayer();
+            PlayerEntity player = event.getEntityPlayer();
             Pair<NonNullList<ItemStack>, MutableInt> cached = cache.getUnchecked(player);
             NonNullList<ItemStack> armorCached = cached.getLeft();
             NonNullList<ItemStack> armor = player.inventory.armorInventory;
@@ -65,7 +65,7 @@ public enum PlayerRenderHandler
         }
         catch (Throwable t)
         {
-            disconnect(new TextComponentString("Something went wrong during restoration after player rendering, it should be fine to reconnect."));
+            disconnect(new StringTextComponent("Something went wrong during restoration after player rendering, it should be fine to reconnect."));
         }
     }
 
@@ -73,7 +73,7 @@ public enum PlayerRenderHandler
     {
         try
         {
-            EntityPlayer player = event.getEntityPlayer();
+            PlayerEntity player = event.getEntityPlayer();
             Pair<NonNullList<ItemStack>, MutableInt> cached = cache.getUnchecked(player);
             NonNullList<ItemStack> armorCached = cached.getLeft();
             NonNullList<ItemStack> armor = player.inventory.armorInventory;
@@ -106,7 +106,7 @@ public enum PlayerRenderHandler
         }
         catch (Throwable t)
         {
-            disconnect(new TextComponentString("Something went wrong during preparation for player rendering, it should be fine to reconnect."));
+            disconnect(new StringTextComponent("Something went wrong during preparation for player rendering, it should be fine to reconnect."));
         }
     }
 
@@ -116,7 +116,7 @@ public enum PlayerRenderHandler
             return;
         try
         {
-            EntityPlayer player = event.getEntityPlayer();
+            PlayerEntity player = event.getEntityPlayer();
             Pair<NonNullList<ItemStack>, MutableInt> cached = cache.getUnchecked(player);
             NonNullList<ItemStack> armorCached = cached.getLeft();
             NonNullList<ItemStack> armor = player.inventory.armorInventory;
@@ -130,7 +130,7 @@ public enum PlayerRenderHandler
         }
         catch (Throwable t)
         {
-            disconnect(new TextComponentString("Something went wrong during restoration for canceled player rendering, it should be fine to reconnect."));
+            disconnect(new StringTextComponent("Something went wrong during restoration for canceled player rendering, it should be fine to reconnect."));
         }
     }
 

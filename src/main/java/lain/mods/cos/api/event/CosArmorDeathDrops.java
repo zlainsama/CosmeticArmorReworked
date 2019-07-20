@@ -1,7 +1,7 @@
 package lain.mods.cos.api.event;
 
 import lain.mods.cos.api.inventory.CAStacksBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
@@ -25,10 +25,10 @@ import net.minecraftforge.eventbus.api.Event;
 public class CosArmorDeathDrops extends Event
 {
 
-    private final EntityPlayer player;
+    private final PlayerEntity player;
     private final CAStacksBase stacks;
 
-    public CosArmorDeathDrops(EntityPlayer player, CAStacksBase stacks)
+    public CosArmorDeathDrops(PlayerEntity player, CAStacksBase stacks)
     {
         this.player = player;
         this.stacks = stacks;
@@ -39,7 +39,7 @@ public class CosArmorDeathDrops extends Event
         return stacks;
     }
 
-    public EntityPlayer getEntityPlayer()
+    public PlayerEntity getEntityPlayer()
     {
         return player;
     }

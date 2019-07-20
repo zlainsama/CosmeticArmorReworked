@@ -4,22 +4,22 @@ import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import lain.mods.cos.api.inventory.CAStacksBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.IInteractionObject;
+import net.minecraft.util.text.StringTextComponent;
 
-public class InventoryCosArmor extends CAStacksBase implements IInventory, IInteractionObject
+public class InventoryCosArmor extends CAStacksBase implements IInventory, INamedContainerProvider
 {
 
     public static final ResourceLocation GuiID = new ResourceLocation("cosmeticarmorreworked:inventorycosarmor");
 
-    protected static final ITextComponent Name = new TextComponentString("InventoryCosArmor");
+    protected static final ITextComponent Name = new StringTextComponent("InventoryCosArmor");
     protected static final int MINSIZE = 11;
 
     protected final Collection<BiConsumer<InventoryCosArmor, Integer>> listeners = new CopyOnWriteArrayList<>();
@@ -37,12 +37,12 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IInte
     }
 
     @Override
-    public void closeInventory(EntityPlayer player)
+    public void closeInventory(PlayerEntity player)
     {
     }
 
     @Override
-    public Container createContainer(InventoryPlayer invPlayer, EntityPlayer player)
+    public Container createMenu(int id, PlayerInventory invPlayer, PlayerEntity player)
     {
         return new ContainerCosArmor(invPlayer, this, player);
     }
@@ -54,39 +54,15 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IInte
     }
 
     @Override
-    public ITextComponent getCustomName()
+    public ITextComponent getDisplayName()
     {
-        return getName();
-    }
-
-    @Override
-    public int getField(int id)
-    {
-        return 0;
-    }
-
-    @Override
-    public int getFieldCount()
-    {
-        return 0;
-    }
-
-    @Override
-    public String getGuiID()
-    {
-        return GuiID.toString();
+        return Name;
     }
 
     @Override
     public int getInventoryStackLimit()
     {
         return 64;
-    }
-
-    @Override
-    public ITextComponent getName()
-    {
-        return Name;
     }
 
     @Override
@@ -99,12 +75,6 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IInte
     public ItemStack getStackInSlot(int slot)
     {
         return super.getStackInSlot(slot);
-    }
-
-    @Override
-    public boolean hasCustomName()
-    {
-        return false;
     }
 
     @Override
@@ -123,7 +93,7 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IInte
     }
 
     @Override
-    public boolean isUsableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(PlayerEntity player)
     {
         return true;
     }
@@ -150,7 +120,7 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IInte
     }
 
     @Override
-    public void openInventory(EntityPlayer player)
+    public void openInventory(PlayerEntity player)
     {
     }
 
@@ -158,11 +128,6 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IInte
     public ItemStack removeStackFromSlot(int slot)
     {
         return extractItem(slot, Integer.MAX_VALUE, false);
-    }
-
-    @Override
-    public void setField(int id, int value)
-    {
     }
 
     @Override

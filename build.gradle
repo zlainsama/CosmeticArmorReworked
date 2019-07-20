@@ -13,19 +13,19 @@ apply plugin: 'eclipse'
 
 import net.minecraftforge.gradle.common.task.SignJar
 
-version = "1.13.2-v1b"
+version = "1.14.2-v1"
 group= "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20180921-1.13'
+    mappings channel: 'snapshot', version: '20190608-1.14.2'
     accessTransformer = file("$rootDir/src/main/resources/META-INF/accesstransformer.cfg")
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.13.2-25.0.110'
+    minecraft 'net.minecraftforge:forge:1.14.2-26.0.33'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

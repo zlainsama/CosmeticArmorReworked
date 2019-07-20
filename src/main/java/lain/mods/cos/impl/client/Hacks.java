@@ -6,7 +6,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import io.netty.channel.ChannelFuture;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
@@ -34,7 +34,7 @@ class Hacks
         {
             if (event.phase != Phase.START)
                 return;
-            NetHandlerPlayClient handler;
+            ClientPlayNetHandler handler;
             if ((handler = LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).getConnection()) != null && handler.getNetworkManager().isChannelOpen())
             {
                 ChannelFuture future;

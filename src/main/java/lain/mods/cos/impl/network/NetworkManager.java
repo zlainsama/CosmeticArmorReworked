@@ -2,7 +2,7 @@ package lain.mods.cos.impl.network;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
@@ -79,7 +79,7 @@ public class NetworkManager
         channel.send(target, packet);
     }
 
-    public <T extends NetworkPacket> void sendTo(T packet, EntityPlayerMP player)
+    public <T extends NetworkPacket> void sendTo(T packet, ServerPlayerEntity player)
     {
         if (packet == null || player == null)
             throw new IllegalArgumentException();

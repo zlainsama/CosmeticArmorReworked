@@ -1,20 +1,20 @@
 package lain.mods.cos.impl.inventory;
 
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerCosArmor extends ContainerPlayer
+public class ContainerCosArmor extends PlayerContainer
 {
 
     private static final String[] EMPTY_SLOT_NAMES = new String[] { "item/empty_armor_slot_boots", "item/empty_armor_slot_leggings", "item/empty_armor_slot_chestplate", "item/empty_armor_slot_helmet" };
-    private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = { EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
+    private static final EquipmentSlotType[] VALID_EQUIPMENT_SLOTS = { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
 
-    public ContainerCosArmor(InventoryPlayer invPlayer, InventoryCosArmor invCosArmor, EntityPlayer player)
+    public ContainerCosArmor(PlayerInventory invPlayer, InventoryCosArmor invCosArmor, PlayerEntity player)
     {
         super(invPlayer, !player.isServerWorld(), player);
 
@@ -48,7 +48,7 @@ public class ContainerCosArmor extends ContainerPlayer
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotNumber)
+    public ItemStack transferStackInSlot(PlayerEntity player, int slotNumber)
     {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = (Slot) inventorySlots.get(slotNumber);
@@ -57,7 +57,7 @@ public class ContainerCosArmor extends ContainerPlayer
         {
             ItemStack stack1 = slot.getStack();
             stack = stack1.copy();
-            EntityEquipmentSlot desiredSlot = EntityLiving.getSlotForItemStack(stack);
+            EquipmentSlotType desiredSlot = MobEntity.getSlotForItemStack(stack);
 
             if (slotNumber == 0) // CraftingResult
             {
@@ -81,14 +81,14 @@ public class ContainerCosArmor extends ContainerPlayer
                 if (!mergeItemStack(stack1, 9, 45, false))
                     return ItemStack.EMPTY;
             }
-            else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(8 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check NormalArmor slots
+            else if (desiredSlot.getSlotType() == EquipmentSlotType.Group.ARMOR && !inventorySlots.get(8 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check NormalArmor slots
             {
                 int j = 8 - desiredSlot.getIndex();
 
                 if (!mergeItemStack(stack1, j, j + 1, false))
                     return ItemStack.EMPTY;
             }
-            else if (desiredSlot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !inventorySlots.get(49 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check CosmeticArmor slots
+            else if (desiredSlot.getSlotType() == EquipmentSlotType.Group.ARMOR && !inventorySlots.get(49 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check CosmeticArmor slots
             {
                 int j = 49 - desiredSlot.getIndex();
 
