@@ -11,15 +11,18 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lain.mods.cos.api.event.CosArmorDeathDrops;
+import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.packet.PacketSyncCosArmor;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.dimension.DimensionType;
@@ -98,6 +101,11 @@ public class InventoryManager
         }
 
     });
+
+    public ContainerCosArmor createContainerClient(int windowId, PlayerInventory invPlayer, PacketBuffer extraData)
+    {
+        throw new UnsupportedOperationException();
+    }
 
     @Nonnull
     public InventoryCosArmor getCosArmorInventory(UUID uuid)

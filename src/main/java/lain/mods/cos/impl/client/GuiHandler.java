@@ -17,6 +17,7 @@ import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.impl.network.packet.PacketOpenNormalInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.network.PacketBuffer;
@@ -35,21 +36,7 @@ public enum GuiHandler
 
     public static final Set<Integer> ButtonIds = ImmutableSet.of(76, 77);
 
-    private final Map<ResourceLocation, Function<PacketBuffer, GuiScreen>> GuiFactory = new ConcurrentHashMap<>();
     private int lastLeft = -1;
-
-    public GuiScreen buildGui(ResourceLocation id)
-    {
-        return buildGui(id, new PacketBuffer(Unpooled.EMPTY_BUFFER));
-    }
-
-    public GuiScreen buildGui(ResourceLocation id, PacketBuffer buffer)
-    {
-        return GuiFactory.getOrDefault(id, pb -> {
-            ModObjects.logger.fatal("Couldn't find a gui for {}", id);
-            return null;
-        }).apply(buffer);
-    }
 
     // TODO move to use ActionPerformedEvent.Post when they are back
     private void handleGuiDrawPre(GuiScreenEvent.DrawScreenEvent.Pre event)
@@ -117,27 +104,9 @@ public enum GuiHandler
         setupGuiFactory();
     }
 
-    public void registerGui(ResourceLocation id, Function<PacketBuffer, GuiScreen> factory)
-    {
-        if (GuiFactory.containsKey(id))
-            throw new IllegalArgumentException(id + " is already registered");
-        GuiFactory.put(id, factory);
-    }
-
     private void setupGuiFactory()
     {
-        registerGui(InventoryCosArmor.GuiID, pb -> {
-            Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
-            GuiCosArmorInventory newGui = new GuiCosArmorInventory(new ContainerCosArmor(mc.player.inventory, ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUniqueID()), mc.player));
-            GuiScreen gui = mc.currentScreen;
-            if (gui instanceof GuiInventory)
-            {
-                newGui.oldMouseX = ((GuiInventory) gui).oldMouseX;
-                newGui.oldMouseY = ((GuiInventory) gui).oldMouseY;
-            }
-            return newGui;
-        });
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> msg -> buildGui(msg.getId(), msg.getAdditionalData()));
+        ScreenManager.registerFactory(ModObjects.typeContainerCosArmor, GuiCosArmorInventory::new);
     }
 
 }

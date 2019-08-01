@@ -5,7 +5,11 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lain.mods.cos.impl.InventoryManager;
+import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.network.PacketBuffer;
 
 public class InventoryManagerClient extends InventoryManager
 {
@@ -20,6 +24,12 @@ public class InventoryManagerClient extends InventoryManager
         }
 
     });
+
+    @Override
+    public ContainerCosArmor createContainerClient(int windowId, PlayerInventory invPlayer, PacketBuffer extraData)
+    {
+        return new ContainerCosArmor(invPlayer, getCosArmorInventoryClient(Minecraft.getInstance().player.getUniqueID()), Minecraft.getInstance().player, windowId);
+    }
 
     @Override
     public InventoryCosArmor getCosArmorInventoryClient(UUID uuid)

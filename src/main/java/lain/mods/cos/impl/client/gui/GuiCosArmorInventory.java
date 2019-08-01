@@ -3,24 +3,27 @@ package lain.mods.cos.impl.client.gui;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.blaze3d.platform.GlStateManager;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.packet.PacketSetSkinArmor;
+import net.minecraft.client.gui.DisplayEffectsScreen;
 import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.gui.recipebook.GuiRecipeBook;
 import net.minecraft.client.gui.recipebook.IRecipeShownListener;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.client.gui.recipebook.RecipeBookGui;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.ClickType;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ContainerRecipeBook;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
-public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRecipeShownListener
+public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor> implements IRecipeShownListener
 {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
@@ -30,11 +33,11 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
     public float oldMouseX;
     public float oldMouseY;
 
-    private final GuiRecipeBook recipeBook = new GuiRecipeBook();
+    private final RecipeBookGui recipeBook = new RecipeBookGui();
     private boolean widthTooNarrow;
     private boolean buttonClicked;
 
-    public GuiCosArmorInventory(ContainerCosArmor container)
+    public GuiCosArmorInventory(ContainerCosArmor container, PlayerInventory invPlayer, ITextComponent displayName)
     {
         super(container);
         allowUserInput = true;
