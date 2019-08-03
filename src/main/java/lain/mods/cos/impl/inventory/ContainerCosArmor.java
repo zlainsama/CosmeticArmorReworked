@@ -41,7 +41,7 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
         {
             ServerPlayerEntity serverplayer = (ServerPlayerEntity) player;
             ItemStack stack = ItemStack.EMPTY;
-            Optional<ICraftingRecipe> optionalrecipe = world.getServer().getRecipeManager().func_215371_a(IRecipeType.field_222149_a, craftingInventory, world);
+            Optional<ICraftingRecipe> optionalrecipe = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, craftingInventory, world);
             if (optionalrecipe.isPresent())
             {
                 ICraftingRecipe recipe = optionalrecipe.get();
@@ -187,7 +187,7 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
         return 0;
     }
 
-//    @Override
+    @Override
     public List<RecipeBookCategories> getRecipeBookCategories()
     {
         return Lists.newArrayList(RecipeBookCategories.SEARCH, RecipeBookCategories.EQUIPMENT, RecipeBookCategories.BUILDING_BLOCKS, RecipeBookCategories.MISC, RecipeBookCategories.REDSTONE);

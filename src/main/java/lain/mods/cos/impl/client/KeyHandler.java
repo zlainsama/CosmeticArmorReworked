@@ -1,6 +1,7 @@
 package lain.mods.cos.impl.client;
 
 import lain.mods.cos.impl.ModObjects;
+import lain.mods.cos.impl.client.gui.GuiCosArmorInventory;
 import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -23,7 +24,7 @@ public enum KeyHandler
     {
         if (event.phase != Phase.START || !LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).isGameFocused())
             return;
-        if (keyOpenCosArmorInventory.isPressed())
+        if (keyOpenCosArmorInventory.isPressed() && !(LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).currentScreen instanceof GuiCosArmorInventory))
             ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
     }
 

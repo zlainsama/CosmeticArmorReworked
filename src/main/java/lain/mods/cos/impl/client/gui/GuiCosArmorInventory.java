@@ -95,7 +95,7 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     {
         super.init();
         widthTooNarrow = width < 379;
-        recipeBook.func_201520_a(width, height, mc, widthTooNarrow, (RecipeBookContainer<?>) field_147002_h);
+        recipeBook.func_201520_a(width, height, mc, widthTooNarrow, (RecipeBookContainer<?>) container);
         guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
         children.add(recipeBook);
         addButton(new ImageButton(guiLeft + 76, guiTop + 27, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
@@ -193,10 +193,10 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
 
     private void smoothTransition()
     {
-        if (mc.field_71462_r instanceof InventoryScreen)
+        if (mc.currentScreen instanceof InventoryScreen)
         {
-            oldMouseX = ((InventoryScreen) mc.field_71462_r).oldMouseX;
-            oldMouseY = ((InventoryScreen) mc.field_71462_r).oldMouseY;
+            oldMouseX = ((InventoryScreen) mc.currentScreen).oldMouseX;
+            oldMouseY = ((InventoryScreen) mc.currentScreen).oldMouseY;
         }
     }
 

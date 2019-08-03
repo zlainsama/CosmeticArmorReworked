@@ -25,6 +25,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -133,7 +134,7 @@ public class InventoryManager
     {
         try
         {
-            return LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).getWorld(DimensionType.OVERWORLD).func_217485_w().getWorldDirectory();
+            return LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).getWorld(DimensionType.OVERWORLD).getSaveHandler().getWorldDirectory();
         }
         catch (Throwable t)
         {
@@ -146,7 +147,7 @@ public class InventoryManager
     {
         if (event.getEntityLiving() instanceof PlayerEntity)
         {
-            if (event.getEntityLiving().isServerWorld() && !event.getEntityLiving().getEntityWorld().getGameRules().getBoolean("keepInventory") && !ModConfigs.CosArmorKeepThroughDeath.get())
+            if (event.getEntityLiving().isServerWorld() && !event.getEntityLiving().getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY) && !ModConfigs.CosArmorKeepThroughDeath.get())
             {
                 InventoryCosArmor inv = getCosArmorInventory(event.getEntityLiving().getUniqueID());
                 if (MinecraftForge.EVENT_BUS.post(new CosArmorDeathDrops((PlayerEntity) event.getEntityLiving(), inv)))
