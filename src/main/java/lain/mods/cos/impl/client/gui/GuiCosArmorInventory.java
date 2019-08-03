@@ -8,13 +8,14 @@ import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.packet.PacketSetSkinArmor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.DisplayEffectsScreen;
 import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.gui.recipebook.GuiRecipeBook;
 import net.minecraft.client.gui.recipebook.IRecipeShownListener;
 import net.minecraft.client.gui.recipebook.RecipeBookGui;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ContainerRecipeBook;
@@ -22,6 +23,8 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.LogicalSidedProvider;
 
 public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor> implements IRecipeShownListener
 {
@@ -29,6 +32,8 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     public static final ResourceLocation TEXTURE = new ResourceLocation("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
     public static final ResourceLocation RECIPE_BUTTON_TEXTURE = new ResourceLocation("textures/gui/recipe_button.png");
     public static final Set<Integer> ToggleButtonIds = ImmutableSet.of(80, 81, 82, 83);
+
+    protected Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
 
     public float oldMouseX;
     public float oldMouseY;
@@ -39,8 +44,8 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
 
     public GuiCosArmorInventory(ContainerCosArmor container, PlayerInventory invPlayer, ITextComponent displayName)
     {
-        super(container);
-        allowUserInput = true;
+        super(container, invPlayer, displayName);
+        passEvents = true;
     }
 
     @Override
@@ -50,14 +55,14 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         mc.getTextureManager().bindTexture(TEXTURE);
         int i = guiLeft;
         int j = guiTop;
-        drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
-        GuiInventory.drawEntityOnScreen(i + 51, j + 75, 30, (float) (i + 51) - oldMouseX, (float) (j + 75 - 50) - oldMouseY, mc.player);
+        blit(i, j, 0, 0, xSize, ySize);
+        InventoryScreen.drawEntityOnScreen(i + 51, j + 75, 30, (float) (i + 51) - oldMouseX, (float) (j + 75 - 50) - oldMouseY, mc.player);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        fontRenderer.drawString(I18n.format("container.crafting"), 97.0F, 8.0F, 4210752);
+        font.drawString(I18n.format("container.crafting"), 97.0F, 8.0F, 4210752);
     }
 
     @Override
@@ -183,7 +188,7 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
-        drawDefaultBackground();
+        renderBackground();
         hasActivePotionEffects = !recipeBook.isVisible();
         if (recipeBook.isVisible() && widthTooNarrow)
         {
