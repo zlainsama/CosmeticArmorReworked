@@ -96,7 +96,7 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         recipeBook.func_201520_a(width, height, mc, widthTooNarrow, (RecipeBookContainer<?>) field_147002_h);
         guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
         children.add(recipeBook);
-        addButton(new ImageButton(guiLeft + 104, height / 2 - 22, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
+        addButton(new ImageButton(guiLeft + 76, guiTop + 27, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
 //            int lastLeft = guiLeft;
             recipeBook.func_201518_a(widthTooNarrow);
             recipeBook.toggleVisibility();

@@ -12,6 +12,7 @@ import lain.mods.cos.impl.network.packet.PacketSyncCosArmor;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -21,11 +22,20 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class ForgeCosmeticArmorReworked
 {
 
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class RegistryEvents
+    {
+        @SubscribeEvent
+        public static void setupRegistryContainerType(RegistryEvent.Register<ContainerType<?>> event)
+        {
+            event.getRegistry().register(IForgeContainerType.create(ModObjects.invMan::createContainerClient).setRegistryName("cosmeticarmorreworked:inventorycosarmor"));
+        }
+    }
+
     public ForgeCosmeticArmorReworked()
     {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupRegistryContainerType);
         ModConfigs.registerConfigs();
     }
 
@@ -49,11 +59,6 @@ public class ForgeCosmeticArmorReworked
         ModObjects.network.registerPacket(2, PacketSetSkinArmor.class, PacketSetSkinArmor::new);
         ModObjects.network.registerPacket(3, PacketOpenCosArmorInventory.class, PacketOpenCosArmorInventory::new);
         ModObjects.network.registerPacket(4, PacketOpenNormalInventory.class, PacketOpenNormalInventory::new);
-    }
-
-    private void setupRegistryContainerType(RegistryEvent.Register<ContainerType<?>> event)
-    {
-        event.getRegistry().register(IForgeContainerType.create(ModObjects.invMan::createContainerClient).setRegistryName("cosmeticarmorreworked:inventorycosarmor"));
     }
 
 }

@@ -1,8 +1,11 @@
 package lain.mods.cos.impl.inventory;
 
+import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import com.google.common.collect.Lists;
 import lain.mods.cos.impl.ModObjects;
+import net.minecraft.client.util.RecipeBookCategories;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -182,6 +185,12 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
     public int getOutputSlot()
     {
         return 0;
+    }
+
+//    @Override
+    public List<RecipeBookCategories> getRecipeBookCategories()
+    {
+        return Lists.newArrayList(RecipeBookCategories.SEARCH, RecipeBookCategories.EQUIPMENT, RecipeBookCategories.BUILDING_BLOCKS, RecipeBookCategories.MISC, RecipeBookCategories.REDSTONE);
     }
 
     @Override
