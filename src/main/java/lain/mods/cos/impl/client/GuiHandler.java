@@ -1,33 +1,20 @@
 package lain.mods.cos.impl.client;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import com.google.common.collect.ImmutableSet;
-import io.netty.buffer.Unpooled;
 import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.client.gui.GuiCosArmorButton;
 import lain.mods.cos.impl.client.gui.GuiCosArmorInventory;
 import lain.mods.cos.impl.client.gui.GuiCosArmorToggleButton;
-import lain.mods.cos.impl.inventory.ContainerCosArmor;
-import lain.mods.cos.impl.inventory.InventoryCosArmor;
+import lain.mods.cos.impl.client.gui.IShiftingWidget;
 import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.impl.network.packet.PacketOpenNormalInventory;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ExtensionPoint;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.LogicalSidedProvider;
-import net.minecraftforge.fml.ModLoadingContext;
 
 public enum GuiHandler
 {
@@ -38,61 +25,46 @@ public enum GuiHandler
 
     private int lastLeft = -1;
 
-    // TODO move to use ActionPerformedEvent.Post when they are back
     private void handleGuiDrawPre(GuiScreenEvent.DrawScreenEvent.Pre event)
     {
-        if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiCosArmorInventory)
+        if (event.getGui() instanceof InventoryScreen || event.getGui() instanceof GuiCosArmorInventory)
         {
-            GuiContainer gui = (GuiContainer) event.getGui();
+            ContainerScreen<?> gui = (ContainerScreen<?>) event.getGui();
             if (lastLeft != gui.guiLeft)
             {
                 int diffLeft = gui.guiLeft - lastLeft;
                 lastLeft = gui.guiLeft;
-                gui.buttons.stream().filter(b -> ButtonIds.contains(b.id)).forEach(b -> b.x += diffLeft);
+                gui.buttons.stream().filter(IShiftingWidget.class::isInstance).forEach(b -> b.x += diffLeft);
             }
         }
     }
 
     private void handleGuiInitPost(GuiScreenEvent.InitGuiEvent.Post event)
     {
-        if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiCosArmorInventory)
+        if (event.getGui() instanceof InventoryScreen || event.getGui() instanceof GuiCosArmorInventory)
         {
-            GuiContainer gui = (GuiContainer) event.getGui();
+            ContainerScreen<?> gui = (ContainerScreen<?>) event.getGui();
             lastLeft = gui.guiLeft;
             if (!ModConfigs.CosArmorGuiButton_Hidden.get())
-                event.addButton(new GuiCosArmorButton(76, gui.guiLeft + ModConfigs.CosArmorGuiButton_Left.get()/* 65 */, gui.guiTop + ModConfigs.CosArmorGuiButton_Top.get()/* 67 */, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonnormal" : "cos.gui.buttoncos")
-                {
-
-                    @Override
-                    public void onClick(double mouseX, double mouseY)
+                event.addWidget(new GuiCosArmorButton(gui.guiLeft + ModConfigs.CosArmorGuiButton_Left.get()/* 65 */, gui.guiTop + ModConfigs.CosArmorGuiButton_Top.get()/* 67 */, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? "cos.gui.buttonnormal" : "cos.gui.buttoncos", button -> {
+                    if (gui instanceof GuiCosArmorInventory)
                     {
-                        if (gui instanceof GuiCosArmorInventory)
-                        {
-                            GuiInventory newGui = new GuiInventory(gui.mc.player);
-                            newGui.oldMouseX = ((GuiCosArmorInventory) gui).oldMouseX;
-                            newGui.oldMouseY = ((GuiCosArmorInventory) gui).oldMouseY;
-                            gui.mc.displayGuiScreen(newGui);
-                            ModObjects.network.sendToServer(new PacketOpenNormalInventory());
-                        }
-                        else
-                        {
-                            ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
-                        }
+                        InventoryScreen newGui = new InventoryScreen(gui.getMinecraft().player);
+                        newGui.oldMouseX = ((GuiCosArmorInventory) gui).oldMouseX;
+                        newGui.oldMouseY = ((GuiCosArmorInventory) gui).oldMouseY;
+                        gui.getMinecraft().displayGuiScreen(newGui);
+                        ModObjects.network.sendToServer(new PacketOpenNormalInventory());
                     }
-
-                });
+                    else
+                    {
+                        ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
+                    }
+                }));
             if (!ModConfigs.CosArmorToggleButton_Hidden.get())
-                event.addButton(new GuiCosArmorToggleButton(77, gui.guiLeft + ModConfigs.CosArmorToggleButton_Left.get()/* 59 */, gui.guiTop + ModConfigs.CosArmorToggleButton_Top.get()/* 72 */, 5, 5, "", PlayerRenderHandler.Disabled ? 1 : 0)
-                {
-
-                    @Override
-                    public void onClick(double mouseX, double mouseY)
-                    {
-                        PlayerRenderHandler.Disabled = !PlayerRenderHandler.Disabled;
-                        state = PlayerRenderHandler.Disabled ? 1 : 0;
-                    }
-
-                });
+                event.addWidget(new GuiCosArmorToggleButton(gui.guiLeft + ModConfigs.CosArmorToggleButton_Left.get()/* 59 */, gui.guiTop + ModConfigs.CosArmorToggleButton_Top.get()/* 72 */, 5, 5, "", PlayerRenderHandler.Disabled ? 1 : 0, button -> {
+                    PlayerRenderHandler.Disabled = !PlayerRenderHandler.Disabled;
+                    ((GuiCosArmorToggleButton) button).state = PlayerRenderHandler.Disabled ? 1 : 0;
+                }));
         }
         // TODO add baubles integration
     }

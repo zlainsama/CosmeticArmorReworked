@@ -6,7 +6,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 
-public class GuiCosArmorToggleButton extends Button
+public class GuiCosArmorToggleButton extends Button implements IShiftingWidget
 {
 
     protected Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);

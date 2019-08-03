@@ -1,8 +1,6 @@
 package lain.mods.cos.impl.client.gui;
 
-import java.util.Set;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.platform.GlStateManager;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
@@ -10,16 +8,15 @@ import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.packet.PacketSetSkinArmor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.DisplayEffectsScreen;
-import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.recipebook.GuiRecipeBook;
 import net.minecraft.client.gui.recipebook.IRecipeShownListener;
 import net.minecraft.client.gui.recipebook.RecipeBookGui;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ContainerRecipeBook;
 import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.RecipeBookContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -31,7 +28,6 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
 
     public static final ResourceLocation TEXTURE = new ResourceLocation("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
     public static final ResourceLocation RECIPE_BUTTON_TEXTURE = new ResourceLocation("textures/gui/recipe_button.png");
-    public static final Set<Integer> ToggleButtonIds = ImmutableSet.of(80, 81, 82, 83);
 
     protected Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
 
@@ -66,16 +62,9 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     }
 
     @Override
-    public GuiRecipeBook func_194310_f()
+    public RecipeBookGui func_194310_f()
     {
         return recipeBook;
-    }
-
-    @Override
-    protected boolean func_195361_a(double p_195361_1_, double p_195361_3_, int p_195361_5_, int p_195361_6_, int p_195361_7_)
-    {
-        boolean flag = p_195361_1_ < (double) p_195361_5_ || p_195361_3_ < (double) p_195361_6_ || p_195361_1_ >= (double) (p_195361_5_ + xSize) || p_195361_3_ >= (double) (p_195361_6_ + ySize);
-        return recipeBook.func_195604_a(p_195361_1_, p_195361_3_, guiLeft, guiTop, xSize, ySize, p_195361_7_) && flag;
     }
 
     @Override
@@ -93,48 +82,40 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     }
 
     @Override
-    protected void initGui()
+    protected boolean hasClickedOutside(double p_195361_1_, double p_195361_3_, int p_195361_5_, int p_195361_6_, int p_195361_7_)
     {
-        super.initGui();
+        boolean flag = p_195361_1_ < (double) p_195361_5_ || p_195361_3_ < (double) p_195361_6_ || p_195361_1_ >= (double) (p_195361_5_ + xSize) || p_195361_3_ >= (double) (p_195361_6_ + ySize);
+        return recipeBook.func_195604_a(p_195361_1_, p_195361_3_, guiLeft, guiTop, xSize, ySize, p_195361_7_) && flag;
+    }
+
+    @Override
+    protected void init()
+    {
+        super.init();
         widthTooNarrow = width < 379;
-        recipeBook.func_201520_a(width, height, mc, widthTooNarrow, (ContainerRecipeBook) inventorySlots);
+        recipeBook.func_201520_a(width, height, mc, widthTooNarrow, (RecipeBookContainer<?>) field_147002_h);
         guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
         children.add(recipeBook);
-        addButton(new GuiButtonImage(10, guiLeft + 76, guiTop + 27, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE)
-        {
-
-            @Override
-            public void onClick(double mouseX, double mouseY)
-            {
-                int lastLeft = GuiCosArmorInventory.this.guiLeft;
-                GuiCosArmorInventory.this.recipeBook.func_201518_a(GuiCosArmorInventory.this.widthTooNarrow);
-                GuiCosArmorInventory.this.recipeBook.toggleVisibility();
-                GuiCosArmorInventory.this.guiLeft = GuiCosArmorInventory.this.recipeBook.updateScreenPosition(GuiCosArmorInventory.this.widthTooNarrow, GuiCosArmorInventory.this.width, GuiCosArmorInventory.this.xSize);
-                setPosition(GuiCosArmorInventory.this.guiLeft + 76, GuiCosArmorInventory.this.guiTop + 27);
-                GuiCosArmorInventory.this.buttonClicked = true;
-                int leftDiff = GuiCosArmorInventory.this.guiLeft - lastLeft;
-                GuiCosArmorInventory.this.buttons.stream().filter(b -> GuiCosArmorInventory.ToggleButtonIds.contains(b.id)).forEach(b -> b.x += leftDiff);
-            }
-
-        });
+        addButton(new ImageButton(guiLeft + 104, height / 2 - 22, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
+//            int lastLeft = guiLeft;
+            recipeBook.func_201518_a(widthTooNarrow);
+            recipeBook.toggleVisibility();
+            guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
+            ((ImageButton) button).setPosition(guiLeft + 76, guiTop + 27);
+            buttonClicked = true;
+//            int leftDiff = guiLeft - lastLeft;
+//            buttons.stream().filter(IShiftingWidget.class::isInstance).forEach(b -> b.x += leftDiff);
+        }));
         InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUniqueID());
         for (int i = 0; i < 4; i++)
         {
             int j = 3 - i;
-            int id = 80 + j;
-            addButton(new GuiCosArmorToggleButton(id, guiLeft + 97 + 18 * i, guiTop + 61, 5, 5, "", invCosArmor.isSkinArmor(j) ? 1 : 0)
-            {
-
-                @Override
-                public void onClick(double mouseX, double mouseY)
-                {
-                    InventoryCosArmor inv = ModObjects.invMan.getCosArmorInventoryClient(GuiCosArmorInventory.this.mc.player.getUniqueID());
-                    inv.setSkinArmor(j, !inv.isSkinArmor(j));
-                    state = inv.isSkinArmor(j) ? 1 : 0;
-                    ModObjects.network.sendToServer(new PacketSetSkinArmor(j, inv.isSkinArmor(j)));
-                }
-
-            });
+            addButton(new GuiCosArmorToggleButton(guiLeft + 97 + 18 * i, guiTop + 61, 5, 5, "", invCosArmor.isSkinArmor(j) ? 1 : 0, button -> {
+                InventoryCosArmor inv = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUniqueID());
+                inv.setSkinArmor(j, !inv.isSkinArmor(j));
+                ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(j) ? 1 : 0;
+                ModObjects.network.sendToServer(new PacketSetSkinArmor(j, inv.isSkinArmor(j)));
+            }));
         }
     }
 
@@ -172,17 +153,17 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     }
 
     @Override
-    public void onGuiClosed()
-    {
-        recipeBook.removed();
-
-        super.onGuiClosed();
-    }
-
-    @Override
     public void recipesUpdated()
     {
         recipeBook.recipesUpdated();
+    }
+
+    @Override
+    public void removed()
+    {
+        recipeBook.removed();
+
+        super.removed();
     }
 
     @Override
