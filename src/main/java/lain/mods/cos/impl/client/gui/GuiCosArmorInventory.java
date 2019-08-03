@@ -42,6 +42,8 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     {
         super(container, invPlayer, displayName);
         passEvents = true;
+
+        smoothTransition();
     }
 
     @Override
@@ -187,6 +189,15 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         recipeBook.renderTooltip(guiLeft, guiTop, mouseX, mouseY);
         oldMouseX = (float) mouseX;
         oldMouseY = (float) mouseY;
+    }
+
+    private void smoothTransition()
+    {
+        if (mc.field_71462_r instanceof InventoryScreen)
+        {
+            oldMouseX = ((InventoryScreen) mc.field_71462_r).oldMouseX;
+            oldMouseY = ((InventoryScreen) mc.field_71462_r).oldMouseY;
+        }
     }
 
     @Override
