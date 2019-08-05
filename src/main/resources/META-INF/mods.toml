@@ -16,6 +16,6 @@ This mod allows you to wear two sets of armor, one for display, one for function
 [[dependencies.cosmeticarmorreworked]]
 modId="forge"
 mandatory=true
-versionRange="[25,)"
+versionRange="[28.0.45,)"
 ordering="NONE"
 side="BOTH"
