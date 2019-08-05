@@ -7,11 +7,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public enum KeyHandler
 {
@@ -22,7 +21,7 @@ public enum KeyHandler
 
     private void handleClientTick(TickEvent.ClientTickEvent event)
     {
-        if (event.phase != Phase.START || !LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).isGameFocused())
+        if (event.phase != TickEvent.Phase.START || !LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).isGameFocused())
             return;
         if (keyOpenCosArmorInventory.isPressed() && !(LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).currentScreen instanceof GuiCosArmorInventory))
             ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());

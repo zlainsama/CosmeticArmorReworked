@@ -8,10 +8,9 @@ import io.netty.channel.ChannelFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 class Hacks
 {
@@ -32,7 +31,7 @@ class Hacks
         // Note: this only gets called after client connected to a server
         void tickClient(TickEvent.ClientTickEvent event)
         {
-            if (event.phase != Phase.START)
+            if (event.phase != TickEvent.Phase.START)
                 return;
             ClientPlayNetHandler handler;
             if ((handler = LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).getConnection()) != null && handler.getNetworkManager().isChannelOpen())
