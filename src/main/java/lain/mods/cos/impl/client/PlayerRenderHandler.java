@@ -51,7 +51,7 @@ public enum PlayerRenderHandler
     {
         try
         {
-            PlayerEntity player = event.getEntityPlayer();
+            PlayerEntity player = event.getPlayer();
             Pair<NonNullList<ItemStack>, MutableInt> cached = cache.getUnchecked(player);
             NonNullList<ItemStack> armorCached = cached.getLeft();
             NonNullList<ItemStack> armor = player.inventory.armorInventory;
@@ -73,7 +73,7 @@ public enum PlayerRenderHandler
     {
         try
         {
-            PlayerEntity player = event.getEntityPlayer();
+            PlayerEntity player = event.getPlayer();
             Pair<NonNullList<ItemStack>, MutableInt> cached = cache.getUnchecked(player);
             NonNullList<ItemStack> armorCached = cached.getLeft();
             NonNullList<ItemStack> armor = player.inventory.armorInventory;
@@ -116,7 +116,7 @@ public enum PlayerRenderHandler
             return;
         try
         {
-            PlayerEntity player = event.getEntityPlayer();
+            PlayerEntity player = event.getPlayer();
             Pair<NonNullList<ItemStack>, MutableInt> cached = cache.getUnchecked(player);
             NonNullList<ItemStack> armorCached = cached.getLeft();
             NonNullList<ItemStack> armor = player.inventory.armorInventory;
