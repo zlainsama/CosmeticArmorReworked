@@ -1,6 +1,6 @@
 package lain.mods.cos.impl.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraftforge.fml.LogicalSide;
@@ -19,19 +19,12 @@ public class GuiCosArmorToggleButton extends Button implements IShiftingWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void renderButton(int mouseX, int mouseY, float partialTicks)
     {
-        if (visible)
-        {
-            mc.getTextureManager().bindTexture(GuiCosArmorInventory.TEXTURE);
-            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-            GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            blit(x, y, 0 + 5 * state, 176, 5, 5);
-            renderBg(mc, mouseX, mouseY);
-        }
+        mc.getTextureManager().bindTexture(GuiCosArmorInventory.TEXTURE);
+        RenderSystem.disableDepthTest();
+        blit(x, y, 0 + 5 * state, 176, 5, 5);
+        RenderSystem.enableDepthTest();
     }
 
 }

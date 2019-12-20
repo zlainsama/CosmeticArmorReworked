@@ -163,7 +163,7 @@ public class InventoryManager
                     float fZ = RANDOM.nextFloat() * 0.75F + 0.125F;
                     while (!stack.isEmpty())
                     {
-                        ItemEntity entity = new ItemEntity(event.getEntityLiving().getEntityWorld(), event.getEntityLiving().posX + (double) fX, event.getEntityLiving().posY + (double) fY, event.getEntityLiving().posZ + (double) fZ, stack.split(RANDOM.nextInt(21) + 10));
+                        ItemEntity entity = new ItemEntity(event.getEntityLiving().getEntityWorld(), event.getEntityLiving().func_226277_ct_() + (double) fX, event.getEntityLiving().func_226278_cu_() + (double) fY, event.getEntityLiving().func_226281_cx_() + (double) fZ, stack.split(RANDOM.nextInt(21) + 10));
                         entity.setMotion(RANDOM.nextGaussian() * (double) 0.05F, RANDOM.nextGaussian() * (double) 0.05F + (double) 0.2F, RANDOM.nextGaussian() * (double) 0.05F);
                         event.getDrops().add(entity);
                     }

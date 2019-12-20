@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
 import lain.mods.cos.impl.ModObjects;
 import net.minecraft.client.util.RecipeBookCategories;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -16,6 +17,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.CraftingResultSlot;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.inventory.container.RecipeBookContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -24,6 +26,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.network.play.server.SSetSlotPacket;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,8 +34,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
 {
 
-    private static final String[] ARMOR_SLOT_TEXTURES = new String[] { "item/empty_armor_slot_boots", "item/empty_armor_slot_leggings", "item/empty_armor_slot_chestplate", "item/empty_armor_slot_helmet" };
-    private static final EquipmentSlotType[] VALID_EQUIPMENT_SLOTS = { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
+    private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] { PlayerContainer.field_226619_g_, PlayerContainer.field_226618_f_, PlayerContainer.field_226617_e_, PlayerContainer.field_226616_d_ };
+    private static final EquipmentSlotType[] VALID_EQUIPMENT_SLOTS = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
 
     // net.minecraft.inventory.container.WorkbenchContainer.func_217066_a()
     private static void updateCrafting(int windowId, World world, PlayerEntity player, CraftingInventory craftingInventory, CraftResultInventory craftResultInventory)
@@ -83,22 +86,23 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
                     return !itemstack.isEmpty() && !playerIn.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack) ? false : super.canTakeStack(playerIn);
                 }
 
+                @Nullable
+                @OnlyIn(Dist.CLIENT)
+                public Pair<ResourceLocation, ResourceLocation> func_225517_c_()
+                {
+                    return Pair.of(PlayerContainer.field_226615_c_, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
+                }
+
                 public int getSlotStackLimit()
                 {
                     return 1;
-                }
-
-                @Nullable
-                @OnlyIn(Dist.CLIENT)
-                public String getSlotTexture()
-                {
-                    return ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()];
                 }
 
                 public boolean isItemValid(ItemStack stack)
                 {
                     return stack.canEquip(equipmentslottype, player);
                 }
+
             });
         }
 
@@ -113,12 +117,14 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
         // OffHand
         addSlot(new Slot(invPlayer, 40, 77, 62)
         {
+
             @Nullable
             @OnlyIn(Dist.CLIENT)
-            public String getSlotTexture()
+            public Pair<ResourceLocation, ResourceLocation> func_225517_c_()
             {
-                return "item/empty_armor_slot_shield";
+                return Pair.of(PlayerContainer.field_226615_c_, PlayerContainer.field_226620_h_);
             }
+
         });
 
         // CosmeticArmor
@@ -128,16 +134,17 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
             addSlot(new Slot(invCosArmor, 3 - i, 98 + i * 18, 62)
             {
 
+                @Nullable
+                @OnlyIn(Dist.CLIENT)
+                public Pair<ResourceLocation, ResourceLocation> func_225517_c_()
+                {
+                    return Pair.of(PlayerContainer.field_226615_c_, ARMOR_SLOT_TEXTURES[VALID_EQUIPMENT_SLOTS[j].getIndex()]);
+                }
+
                 @Override
                 public int getSlotStackLimit()
                 {
                     return 1;
-                }
-
-                @Override
-                public String getSlotTexture()
-                {
-                    return ARMOR_SLOT_TEXTURES[VALID_EQUIPMENT_SLOTS[j].getIndex()];
                 }
 
                 @Override
