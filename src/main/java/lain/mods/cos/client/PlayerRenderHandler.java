@@ -89,7 +89,7 @@ public class PlayerRenderHandler
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void handleEvent(RenderPlayerEvent.Post event)
     {
         CachedInventory cachedInv = cache.getUnchecked(event.getEntityPlayer());
