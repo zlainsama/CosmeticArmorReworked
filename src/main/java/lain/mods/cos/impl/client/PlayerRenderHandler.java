@@ -47,7 +47,7 @@ public enum PlayerRenderHandler
 
     });
 
-    private void handlePostRenderPlayer_High(RenderPlayerEvent.Post event)
+    private void handlePostRenderPlayer_Low(RenderPlayerEvent.Post event)
     {
         try
         {
@@ -136,7 +136,7 @@ public enum PlayerRenderHandler
 
     public void registerEvents()
     {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handlePostRenderPlayer_High);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::handlePostRenderPlayer_Low);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handlePreRenderPlayer_High);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handlePreRenderPlayer_LowestCanceled);
         Hacks.addClientDisconnectionCallback(() -> Disabled = false);
