@@ -2,6 +2,7 @@ package lain.mods.cos.impl.client.gui;
 
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
+import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
@@ -34,7 +35,23 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     public float oldMouseX;
     public float oldMouseY;
 
-    private final RecipeBookGui recipeBook = new RecipeBookGui();
+    private final RecipeBookGui recipeBook = new RecipeBookGui()
+    {
+
+        @Override
+        public boolean isVisible()
+        {
+            return super.isVisible() && !ModConfigs.CosArmorDisableRecipeBook.get();
+        }
+
+        @Override
+        public void toggleVisibility()
+        {
+            setVisible(!super.isVisible());
+        }
+
+    };
+
     private boolean widthTooNarrow;
     private boolean buttonClicked;
 
@@ -98,16 +115,19 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         recipeBook.func_201520_a(width, height, mc, widthTooNarrow, (RecipeBookContainer<?>) container);
         guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
         children.add(recipeBook);
-        addButton(new ImageButton(guiLeft + 76, guiTop + 27, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
+        if (!ModConfigs.CosArmorDisableRecipeBook.get())
+        {
+            addButton(new ImageButton(guiLeft + 76, guiTop + 27, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
 //            int lastLeft = guiLeft;
-            recipeBook.func_201518_a(widthTooNarrow);
-            recipeBook.toggleVisibility();
-            guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
-            ((ImageButton) button).setPosition(guiLeft + 76, guiTop + 27);
-            buttonClicked = true;
+                recipeBook.func_201518_a(widthTooNarrow);
+                recipeBook.toggleVisibility();
+                guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
+                ((ImageButton) button).setPosition(guiLeft + 76, guiTop + 27);
+                buttonClicked = true;
 //            int leftDiff = guiLeft - lastLeft;
 //            buttons.stream().filter(IShiftingWidget.class::isInstance).forEach(b -> b.x += leftDiff);
-        }));
+            }));
+        }
         InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUniqueID());
         for (int i = 0; i < 4; i++)
         {
