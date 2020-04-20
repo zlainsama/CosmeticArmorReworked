@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import com.google.common.collect.Maps;
 import lain.mods.cos.CosmeticArmorReworked;
+import lain.mods.cos.ModConfigs;
 import lain.mods.cos.inventory.ContainerCosArmor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
@@ -26,7 +27,31 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
     public float oldMouseX;
     public float oldMouseY;
     private GuiButtonImage recipeBookButton;
-    private final GuiRecipeBook recipeBook = new GuiRecipeBook();
+    private final GuiRecipeBook recipeBook = new GuiRecipeBook()
+    {
+
+        private boolean bypass = false;
+
+        @Override
+        public boolean isVisible()
+        {
+            if (bypass)
+                return super.isVisible();
+
+            return super.isVisible() && !ModConfigs.CosArmorDisableRecipeBook;
+        }
+
+        @Override
+        public void toggleVisibility()
+        {
+            boolean last = bypass;
+
+            bypass = true;
+            super.toggleVisibility();
+            bypass = last;
+        }
+
+    };
     private boolean widthTooNarrow;
     private boolean buttonClicked;
 
@@ -136,7 +161,10 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer implements IRe
         guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
 
         recipeBookButton = new GuiButtonImage(10, guiLeft + 76, guiTop + 27, 20, 18, 178, 0, 19, INVENTORY_BACKGROUND);
-        buttonList.add(recipeBookButton);
+        if (!ModConfigs.CosArmorDisableRecipeBook)
+        {
+            buttonList.add(recipeBookButton);
+        }
 
         toggleButtons.clear();
         for (int i = 0; i < 4; i++)

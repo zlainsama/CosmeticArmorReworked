@@ -14,6 +14,7 @@ public class ModConfigs
     public static int CosArmorToggleButton_Top = 72;
     public static boolean CosArmorToggleButton_Baubles = true;
     public static boolean CosArmorKeepThroughDeath = false;
+    public static boolean CosArmorDisableRecipeBook = false;
 
     private static Configuration lastConfig;
 
@@ -57,6 +58,10 @@ public class ModConfigs
         prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorKeepThroughDeath", false);
         prop.setComment("If you want to keep your cosmetic slots through death, change this to true. (if you are on a server, only the setting on the server side will take effect)");
         CosArmorKeepThroughDeath = prop.getBoolean();
+
+        prop = config.get(Configuration.CATEGORY_GENERAL, "CosArmorDisableRecipeBook", false);
+        prop.setComment("If you want to disable the RecipeBook in CosmeticArmorInventory, change this to true. (you need to make sure this is same as the server to avoid potential de-sync issues)");
+        CosArmorDisableRecipeBook = prop.getBoolean();
 
         if (config.hasChanged())
             config.save();
