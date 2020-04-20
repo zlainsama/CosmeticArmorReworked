@@ -14,6 +14,7 @@ import net.minecraft.network.play.server.SDisconnectPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -47,6 +48,11 @@ public enum PlayerRenderHandler
 
     });
 
+    private void handleLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event)
+    {
+        Disabled = false;
+    }
+
     private void handlePostRenderPlayer_Low(RenderPlayerEvent.Post event)
     {
         try
@@ -59,7 +65,6 @@ public enum PlayerRenderHandler
             {
                 for (int i = 0; i < armor.size(); i++)
                     armor.set(i, armorCached.get(i));
-                // TODO add baubles integration
                 cached.getRight().setValue(0);
             }
         }
@@ -81,14 +86,12 @@ public enum PlayerRenderHandler
             {
                 for (int i = 0; i < armor.size(); i++)
                     armor.set(i, armorCached.get(i));
-                // TODO add baubles integration
                 cached.getRight().setValue(0);
             }
 
             for (int i = 0; i < armor.size(); i++)
                 armorCached.set(i, armor.get(i));
             cached.getRight().setValue(1);
-            // TODO add baubles integration
 
             if (Disabled)
                 return;
@@ -102,7 +105,6 @@ public enum PlayerRenderHandler
                 else if (!(stack = invCosArmor.getStackInSlot(i)).isEmpty())
                     armor.set(i, stack);
             }
-            // TODO add baubles integration
         }
         catch (Throwable t)
         {
@@ -124,7 +126,6 @@ public enum PlayerRenderHandler
             {
                 for (int i = 0; i < armor.size(); i++)
                     armor.set(i, armorCached.get(i));
-                // TODO add baubles integration
                 cached.getRight().setValue(0);
             }
         }
@@ -139,7 +140,7 @@ public enum PlayerRenderHandler
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::handlePostRenderPlayer_Low);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handlePreRenderPlayer_High);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handlePreRenderPlayer_LowestCanceled);
-        Hacks.addClientDisconnectionCallback(() -> Disabled = false);
+        MinecraftForge.EVENT_BUS.addListener(this::handleLoggedOut);
     }
 
 }

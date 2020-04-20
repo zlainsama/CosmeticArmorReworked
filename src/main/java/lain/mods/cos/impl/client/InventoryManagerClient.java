@@ -11,6 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 
@@ -43,10 +45,15 @@ public class InventoryManagerClient extends InventoryManager
         return ClientCache.getUnchecked(uuid);
     }
 
+    private void handleLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event)
+    {
+        ClientCache.invalidateAll();
+    }
+
     @Override
     public void registerEventsClient()
     {
-        Hacks.addClientDisconnectionCallback(() -> ClientCache.invalidateAll());
+        MinecraftForge.EVENT_BUS.addListener(this::handleLoggedOut);
     }
 
 }

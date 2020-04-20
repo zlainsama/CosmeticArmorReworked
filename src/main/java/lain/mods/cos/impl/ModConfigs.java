@@ -15,10 +15,9 @@ public class ModConfigs
     public static BooleanValue CosArmorToggleButton_Hidden;
     public static IntValue CosArmorToggleButton_Left;
     public static IntValue CosArmorToggleButton_Top;
-    public static BooleanValue CosArmorToggleButton_Baubles;
     public static BooleanValue CosArmorKeepThroughDeath;
+    public static BooleanValue CosArmorDisableRecipeBook;
 
-    // TODO add translations to assets when things are implemented
     public static void registerConfigs()
     {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, new ForgeConfigSpec.Builder()
@@ -43,9 +42,6 @@ public class ModConfigs
                 CosArmorToggleButton_Top = comment("The vertical pixel distance from the origin point of player inventory gui")
                         .translation("cos.config.CosArmorToggleButton_Top")
                         .defineInRange("CosArmorToggleButton_Top", 72, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                CosArmorToggleButton_Baubles = comment("Whether or not to show the buttons for toggling visibilities for Baubles slots (currently not implemented)")
-                        .translation("cos.config.CosArmorToggleButton_Baubles")
-                        .define("CosArmorToggleButton_Baubles", true);
                 pop();
             }
         }.build());
@@ -56,6 +52,16 @@ public class ModConfigs
                 CosArmorKeepThroughDeath = comment("Whether or not to keep items in cosmetic armor slots in the event of player death")
                         .translation("cos.config.CosArmorKeepThroughDeath")
                         .define("CosArmorKeepThroughDeath", false);
+                pop();
+            }
+        }.build());
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, new ForgeConfigSpec.Builder()
+        {
+            {
+                comment("These settings affects both server and client, they will also be synced from server to client").push("Server");
+                CosArmorDisableRecipeBook = comment("Whether or not to disable the RecipeBook in the CosmeticArmorInventory")
+                        .translation("cos.config.CosArmorDisableRecipeBook")
+                        .define("CosArmorDisableRecipeBook", false);
                 pop();
             }
         }.build());
