@@ -15,7 +15,6 @@ public class ModConfigs
     public static BooleanValue CosArmorToggleButton_Hidden;
     public static IntValue CosArmorToggleButton_Left;
     public static IntValue CosArmorToggleButton_Top;
-    public static BooleanValue CosArmorToggleButton_Baubles;
     public static BooleanValue CosArmorKeepThroughDeath;
     public static BooleanValue CosArmorDisableRecipeBook;
 
@@ -44,9 +43,6 @@ public class ModConfigs
                 CosArmorToggleButton_Top = comment("The vertical pixel distance from the origin point of player inventory gui")
                         .translation("cos.config.CosArmorToggleButton_Top")
                         .defineInRange("CosArmorToggleButton_Top", 72, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                CosArmorToggleButton_Baubles = comment("Whether or not to show the buttons for toggling visibilities for Baubles slots (currently not implemented)")
-                        .translation("cos.config.CosArmorToggleButton_Baubles")
-                        .define("CosArmorToggleButton_Baubles", true);
                 pop();
             }
         }.build());

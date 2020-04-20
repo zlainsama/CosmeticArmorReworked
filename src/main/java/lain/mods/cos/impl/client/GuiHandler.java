@@ -66,7 +66,6 @@ public enum GuiHandler
                     ((GuiCosArmorToggleButton) button).state = PlayerRenderHandler.Disabled ? 1 : 0;
                 }));
         }
-        // TODO add baubles integration
     }
 
     public void registerEvents()

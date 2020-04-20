@@ -59,7 +59,6 @@ public enum PlayerRenderHandler
             {
                 for (int i = 0; i < armor.size(); i++)
                     armor.set(i, armorCached.get(i));
-                // TODO add baubles integration
                 cached.getRight().setValue(0);
             }
         }
@@ -81,14 +80,12 @@ public enum PlayerRenderHandler
             {
                 for (int i = 0; i < armor.size(); i++)
                     armor.set(i, armorCached.get(i));
-                // TODO add baubles integration
                 cached.getRight().setValue(0);
             }
 
             for (int i = 0; i < armor.size(); i++)
                 armorCached.set(i, armor.get(i));
             cached.getRight().setValue(1);
-            // TODO add baubles integration
 
             if (Disabled)
                 return;
@@ -102,7 +99,6 @@ public enum PlayerRenderHandler
                 else if (!(stack = invCosArmor.getStackInSlot(i)).isEmpty())
                     armor.set(i, stack);
             }
-            // TODO add baubles integration
         }
         catch (Throwable t)
         {
@@ -124,7 +120,6 @@ public enum PlayerRenderHandler
             {
                 for (int i = 0; i < armor.size(); i++)
                     armor.set(i, armorCached.get(i));
-                // TODO add baubles integration
                 cached.getRight().setValue(0);
             }
         }
