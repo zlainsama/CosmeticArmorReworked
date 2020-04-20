@@ -18,7 +18,6 @@ public class ModConfigs
     public static BooleanValue CosArmorKeepThroughDeath;
     public static BooleanValue CosArmorDisableRecipeBook;
 
-    // TODO add translations to assets when things are implemented
     public static void registerConfigs()
     {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, new ForgeConfigSpec.Builder()
@@ -60,7 +59,7 @@ public class ModConfigs
         {
             {
                 comment("These settings affects both server and client, they will also be synced from server to client").push("Server");
-                CosArmorDisableRecipeBook = comment("")
+                CosArmorDisableRecipeBook = comment("Whether or not to disable the RecipeBook in the CosmeticArmorInventory")
                         .translation("cos.config.CosArmorDisableRecipeBook")
                         .define("CosArmorDisableRecipeBook", false);
                 pop();
