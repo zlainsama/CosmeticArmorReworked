@@ -21,9 +21,11 @@ import net.minecraftforge.items.ItemStackHandler;
  * <br>
  * This class extends {@link ItemStackHandler}. <br>
  * <br>
- * CosmeticArmorReworked uses 11 slots. <br>
+ * CosmeticArmorReworked uses 4 slots. <br>
  * Slot 0-3 are {@link net.minecraft.inventory.EntityEquipmentSlot#FEET FEET}, {@link net.minecraft.inventory.EntityEquipmentSlot#LEGS LEGS}, {@link net.minecraft.inventory.EntityEquipmentSlot#CHEST CHEST}, {@link net.minecraft.inventory.EntityEquipmentSlot#HEAD HEAD}. <br>
- * Slot 4-10 are Baubles, the player can only setSkinArmor for them. <br>
+ * <br>
+ * For toggling visibilities of other mods, use these methods: <br>
+ * {@link #setHidden(String, String, boolean) setHidden}, {@link #isHidden(String, String) isHidden}, {@link #forEachHidden(BiConsumer) forEachHidden}.
  */
 public class CAStacksBase extends ItemStackHandler
 {
@@ -69,6 +71,11 @@ public class CAStacksBase extends ItemStackHandler
         onLoad();
     }
 
+    /**
+     * Iterates through all set hidden other mods' things.
+     *
+     * @param consumer the consumer that will be accepting pairs of modid and identifier
+     */
     public void forEachHidden(BiConsumer<String, String> consumer)
     {
         for (String modid : hidden.keySet())
@@ -76,6 +83,13 @@ public class CAStacksBase extends ItemStackHandler
                 consumer.accept(modid, identifier);
     }
 
+    /**
+     * Checks to see if something should be hidden when rendering.
+     *
+     * @param modid      the modid of the related mod (example: curios)
+     * @param identifier the identifier of the related slot (format: slotId#slotIndex) (example: ring#0)
+     * @return true if the item in the related slot should be hidden when rendering
+     */
     public boolean isHidden(String modid, String identifier)
     {
         return hidden.getOrDefault(modid, Collections.emptySet()).contains(identifier);
@@ -112,6 +126,14 @@ public class CAStacksBase extends ItemStackHandler
         return nbt;
     }
 
+    /**
+     * Sets or removes something from hidden when rendering.
+     *
+     * @param modid      the modid of the related mod (example: curios)
+     * @param identifier the identifer of the related slot (format: slotId#slotIndex) (example: ring#0)
+     * @param set        true for set, false for remove
+     * @return if something changed due to this invocation
+     */
     public boolean setHidden(String modid, String identifier, boolean set)
     {
         if (set)
