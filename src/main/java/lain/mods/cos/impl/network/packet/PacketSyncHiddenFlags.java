@@ -48,8 +48,8 @@ public class PacketSyncHiddenFlags implements NetworkPacket
     public void readFromBuffer(PacketBuffer buffer)
     {
         uuid = new UUID(buffer.readLong(), buffer.readLong());
-        modid = buffer.readString();
-        identifier = buffer.readString();
+        modid = buffer.readString(Short.MAX_VALUE);
+        identifier = buffer.readString(Short.MAX_VALUE);
         hidden = buffer.readBoolean();
     }
 
@@ -58,8 +58,8 @@ public class PacketSyncHiddenFlags implements NetworkPacket
     {
         buffer.writeLong(uuid.getMostSignificantBits());
         buffer.writeLong(uuid.getLeastSignificantBits());
-        buffer.writeString(modid);
-        buffer.writeString(identifier);
+        buffer.writeString(modid, Short.MAX_VALUE);
+        buffer.writeString(identifier, Short.MAX_VALUE);
         buffer.writeBoolean(hidden);
     }
 

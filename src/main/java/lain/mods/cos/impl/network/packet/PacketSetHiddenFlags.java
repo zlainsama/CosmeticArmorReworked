@@ -43,16 +43,16 @@ public class PacketSetHiddenFlags implements NetworkPacket
     @Override
     public void readFromBuffer(PacketBuffer buffer)
     {
-        modid = buffer.readString();
-        identifier = buffer.readString();
+        modid = buffer.readString(Short.MAX_VALUE);
+        identifier = buffer.readString(Short.MAX_VALUE);
         set = buffer.readBoolean();
     }
 
     @Override
     public void writeToBuffer(PacketBuffer buffer)
     {
-        buffer.writeString(modid);
-        buffer.writeString(identifier);
+        buffer.writeString(modid, Short.MAX_VALUE);
+        buffer.writeString(identifier, Short.MAX_VALUE);
         buffer.writeBoolean(set);
     }
 
