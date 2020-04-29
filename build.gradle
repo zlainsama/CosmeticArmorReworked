@@ -13,7 +13,7 @@ apply plugin: 'eclipse'
 
 import net.minecraftforge.gradle.common.task.SignJar
 
-version = "1.15.2-v3"
+version = "1.15.2-v3a"
 group= "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
 
