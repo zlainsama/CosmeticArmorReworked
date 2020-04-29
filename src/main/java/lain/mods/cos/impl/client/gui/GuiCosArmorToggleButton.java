@@ -11,6 +11,7 @@ public class GuiCosArmorToggleButton extends Button implements IShiftingWidget
 
     protected Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
     public int state;
+    public int stamp;
 
     public GuiCosArmorToggleButton(int x, int y, int width, int height, String message, int initialState, Button.IPressable onPress)
     {
@@ -25,6 +26,12 @@ public class GuiCosArmorToggleButton extends Button implements IShiftingWidget
         RenderSystem.disableDepthTest();
         blit(x, y, 0 + 5 * state, 176, 5, 5);
         RenderSystem.enableDepthTest();
+    }
+
+    public GuiCosArmorToggleButton setStamp(int stamp)
+    {
+        this.stamp = stamp;
+        return this;
     }
 
 }

@@ -5,7 +5,6 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import javax.annotation.Nonnull;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -14,6 +13,7 @@ import lain.mods.cos.api.event.CosArmorDeathDrops;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.packet.PacketSyncCosArmor;
+import lain.mods.cos.impl.network.packet.PacketSyncHiddenFlags;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.item.ItemEntity;
@@ -34,8 +34,10 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import top.theillusivec4.curios.api.CuriosAPI;
 
 public class InventoryManager
 {
@@ -65,6 +67,18 @@ public class InventoryManager
         }
 
         @Override
+        public boolean isHidden(String modid, String identifier)
+        {
+            return false;
+        }
+
+        @Override
+        public boolean isSkinArmor(int slot)
+        {
+            return false;
+        }
+
+        @Override
         protected void onContentsChanged(int slot)
         {
         }
@@ -75,12 +89,29 @@ public class InventoryManager
         }
 
         @Override
+        public boolean setHidden(String modid, String identifier, boolean set)
+        {
+            return false;
+        }
+
+        @Override
+        public void setSkinArmor(int slot, boolean enabled)
+        {
+        }
+
+        @Override
         public void setStackInSlot(int slot, @Nonnull ItemStack stack)
         {
         }
 
         @Override
-        public boolean setUpdateListener(BiConsumer<InventoryCosArmor, Integer> listener)
+        public boolean setUpdateListener(ContentsChangeListener listener)
+        {
+            return false;
+        }
+
+        @Override
+        public boolean setUpdateListener(HiddenFlagsChangeListener listener)
         {
             return false;
         }
@@ -89,6 +120,28 @@ public class InventoryManager
 
     protected static final Random RANDOM = new Random();
 
+    public static boolean checkIdentifier(String modid, String identifier)
+    {
+        if (modid == null || modid.isEmpty() || identifier == null || identifier.isEmpty() || !ModList.get().isLoaded(modid))
+            return false;
+
+        if ("curios".equals(modid))
+        {
+            try
+            {
+                for (String registeredId : CuriosAPI.getTypeIdentifiers())
+                    if (identifier.startsWith(registeredId + "#"))
+                        return true;
+            }
+            catch (Throwable e)
+            {
+                ModObjects.logger.error("Failed in checking identifier for curios", e);
+            }
+        }
+
+        return false;
+    }
+
     protected final LoadingCache<UUID, InventoryCosArmor> CommonCache = CacheBuilder.newBuilder().build(new CacheLoader<UUID, InventoryCosArmor>()
     {
 
@@ -96,7 +149,8 @@ public class InventoryManager
         public InventoryCosArmor load(UUID key) throws Exception
         {
             InventoryCosArmor inventory = new InventoryCosArmor();
-            inventory.setUpdateListener((i, s) -> onInventoryChanged(key, i, s));
+            inventory.setUpdateListener((inv, slot) -> onInventoryChanged(key, inv, slot));
+            inventory.setUpdateListener((inv, modid, identifier) -> onHiddenFlagsChanged(key, inv, modid, identifier));
             loadInventory(key, inventory);
             return inventory;
         }
@@ -190,6 +244,7 @@ public class InventoryManager
                 InventoryCosArmor inv = getCosArmorInventory(uuid);
                 for (int i = 0; i < inv.getSlots(); i++)
                     ModObjects.network.sendTo(new PacketSyncCosArmor(uuid, inv, i), player);
+                inv.forEachHidden((modid, identifier) -> ModObjects.network.sendTo(new PacketSyncHiddenFlags(uuid, inv, modid, identifier), player));
             }
         }
     }
@@ -266,6 +321,11 @@ public class InventoryManager
         {
             ModObjects.logger.fatal("Failed to load CosmeticArmor data", t);
         }
+    }
+
+    protected void onHiddenFlagsChanged(UUID uuid, InventoryCosArmor inventory, String modid, String identifier)
+    {
+        ModObjects.network.sendToAll(new PacketSyncHiddenFlags(uuid, inventory, modid, identifier));
     }
 
     protected void onInventoryChanged(UUID uuid, InventoryCosArmor inventory, int slot)

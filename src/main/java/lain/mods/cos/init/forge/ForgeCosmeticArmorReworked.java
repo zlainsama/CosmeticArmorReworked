@@ -7,8 +7,10 @@ import lain.mods.cos.impl.client.KeyHandler;
 import lain.mods.cos.impl.client.PlayerRenderHandler;
 import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.impl.network.packet.PacketOpenNormalInventory;
+import lain.mods.cos.impl.network.packet.PacketSetHiddenFlags;
 import lain.mods.cos.impl.network.packet.PacketSetSkinArmor;
 import lain.mods.cos.impl.network.packet.PacketSyncCosArmor;
+import lain.mods.cos.impl.network.packet.PacketSyncHiddenFlags;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
@@ -59,6 +61,8 @@ public class ForgeCosmeticArmorReworked
         ModObjects.network.registerPacket(2, PacketSetSkinArmor.class, PacketSetSkinArmor::new);
         ModObjects.network.registerPacket(3, PacketOpenCosArmorInventory.class, PacketOpenCosArmorInventory::new);
         ModObjects.network.registerPacket(4, PacketOpenNormalInventory.class, PacketOpenNormalInventory::new);
+        ModObjects.network.registerPacket(5, PacketSyncHiddenFlags.class, PacketSyncHiddenFlags::new);
+        ModObjects.network.registerPacket(6, PacketSetHiddenFlags.class, PacketSetHiddenFlags::new);
     }
 
 }
