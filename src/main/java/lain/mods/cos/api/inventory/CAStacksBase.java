@@ -1,5 +1,13 @@
 package lain.mods.cos.api.inventory;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -13,14 +21,17 @@ import net.minecraftforge.items.ItemStackHandler;
  * <br>
  * This class extends {@link ItemStackHandler}. <br>
  * <br>
- * CosmeticArmorReworked uses 11 slots. <br>
+ * CosmeticArmorReworked uses 4 slots. <br>
  * Slot 0-3 are {@link net.minecraft.inventory.EntityEquipmentSlot#FEET FEET}, {@link net.minecraft.inventory.EntityEquipmentSlot#LEGS LEGS}, {@link net.minecraft.inventory.EntityEquipmentSlot#CHEST CHEST}, {@link net.minecraft.inventory.EntityEquipmentSlot#HEAD HEAD}. <br>
- * Slot 4-10 are Baubles, the player can only setSkinArmor for them. <br>
+ * <br>
+ * For toggling visibilities of other mods, use these methods: <br>
+ * {@link #setHidden(String, String, boolean) setHidden}, {@link #isHidden(String, String) isHidden}, {@link #forEachHidden(BiConsumer) forEachHidden}.
  */
 public class CAStacksBase extends ItemStackHandler
 {
 
     protected boolean[] isSkinArmor;
+    protected final Map<String, Set<String>> hidden = new HashMap<>();
 
     public CAStacksBase()
     {
@@ -51,7 +62,37 @@ public class CAStacksBase extends ItemStackHandler
                     isSkinArmor[slot] = itemTags.getBoolean("isSkinArmor");
             }
         }
+        hidden.clear();
+        Arrays.stream(nbt.getString("Hidden").split("\0")).forEach(str -> {
+            int i = str.indexOf(":");
+            if (i != -1)
+                hidden.computeIfAbsent(str.substring(0, i), key -> new HashSet<>()).add(str.substring(i + 1));
+        });
         onLoad();
+    }
+
+    /**
+     * Iterates through all set hidden other mods' things.
+     *
+     * @param consumer the consumer that will be accepting pairs of modid and identifier
+     */
+    public void forEachHidden(BiConsumer<String, String> consumer)
+    {
+        for (String modid : hidden.keySet())
+            for (String identifier : hidden.get(modid))
+                consumer.accept(modid, identifier);
+    }
+
+    /**
+     * Checks to see if something should be hidden when rendering.
+     *
+     * @param modid      the modid of the related mod (example: curios)
+     * @param identifier the identifier of the related slot (format: slotId#slotIndex) (example: ring#0)
+     * @return true if the item in the related slot should be hidden when rendering
+     */
+    public boolean isHidden(String modid, String identifier)
+    {
+        return hidden.getOrDefault(modid, Collections.emptySet()).contains(identifier);
     }
 
     public boolean isSkinArmor(int slot)
@@ -80,7 +121,25 @@ public class CAStacksBase extends ItemStackHandler
         CompoundNBT nbt = new CompoundNBT();
         nbt.put("Items", nbtTagList);
         nbt.putInt("Size", stacks.size());
+        // writeUTF limit = a 16-bit unsigned integer = 65535 - Should be enough
+        nbt.putString("Hidden", hidden.entrySet().stream().map(entry -> entry.getValue().stream().map(value -> entry.getKey() + ":" + value).collect(Collectors.joining("\0"))).collect(Collectors.joining("\0")));
         return nbt;
+    }
+
+    /**
+     * Sets or removes something from hidden when rendering.
+     *
+     * @param modid      the modid of the related mod (example: curios)
+     * @param identifier the identifer of the related slot (format: slotId#slotIndex) (example: ring#0)
+     * @param set        true for set, false for remove
+     * @return if something changed due to this invocation
+     */
+    public boolean setHidden(String modid, String identifier, boolean set)
+    {
+        if (set)
+            return hidden.computeIfAbsent(modid, key -> new HashSet<>()).add(identifier);
+        else
+            return hidden.getOrDefault(modid, Collections.emptySet()).remove(identifier);
     }
 
     @Override

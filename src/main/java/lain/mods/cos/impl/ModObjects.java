@@ -16,7 +16,7 @@ public class ModObjects
 
     public static final Logger logger = LogManager.getLogger(ForgeCosmeticArmorReworked.class);
     public static final InventoryManager invMan = DistExecutor.runForDist(() -> InventoryManagerClient::new, () -> InventoryManager::new);
-    public static final NetworkManager network = new NetworkManager(new ResourceLocation("cosmeticarmorreworked:main"), "1");
+    public static final NetworkManager network = new NetworkManager(new ResourceLocation("cosmeticarmorreworked:main"), "2");
 
     @ObjectHolder("cosmeticarmorreworked:inventorycosarmor")
     public static ContainerType<ContainerCosArmor> typeContainerCosArmor;
