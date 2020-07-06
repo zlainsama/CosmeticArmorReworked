@@ -14,17 +14,11 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.fml.ModList;
-import top.theillusivec4.curios.api.CuriosAPI;
-import top.theillusivec4.curios.api.capability.ICurioItemHandler;
-import top.theillusivec4.curios.api.inventory.CurioStackHandler;
 
 public enum PlayerRenderHandler
 {
 
     INSTANCE;
-
-    private static final boolean isCuriosLoaded = ModList.get().isLoaded("curios");
 
     public static boolean Disabled = false;
 
@@ -63,22 +57,6 @@ public enum PlayerRenderHandler
             queue.add(() -> armor.set(slot, stack));
         }
 
-        if (isCuriosLoaded)
-        {
-            CuriosAPI.getCuriosHandler(player).map(ICurioItemHandler::getCurioMap).ifPresent(map -> {
-                for (String id : map.keySet())
-                {
-                    CurioStackHandler handler = map.get(id);
-                    for (int i = 0; i < handler.getSlots(); i++)
-                    {
-                        int slot = i;
-                        ItemStack stack = handler.getStackInSlot(slot);
-                        queue.add(() -> handler.setStackInSlot(slot, stack));
-                    }
-                }
-            });
-        }
-
         if (Disabled)
             return;
 
@@ -90,22 +68,6 @@ public enum PlayerRenderHandler
                 armor.set(i, ItemStack.EMPTY);
             else if (!(stack = invCosArmor.getStackInSlot(i)).isEmpty())
                 armor.set(i, stack);
-        }
-
-        if (isCuriosLoaded)
-        {
-            CuriosAPI.getCuriosHandler(player).map(ICurioItemHandler::getCurioMap).ifPresent(map -> {
-                for (String id : map.keySet())
-                {
-                    CurioStackHandler handler = map.get(id);
-                    for (int slot = 0; slot < handler.getSlots(); slot++)
-                    {
-                        String identifier = id + "#" + slot;
-                        if (invCosArmor.isHidden("curios", identifier))
-                            handler.setStackInSlot(slot, ItemStack.EMPTY);
-                    }
-                }
-            });
         }
     }
 

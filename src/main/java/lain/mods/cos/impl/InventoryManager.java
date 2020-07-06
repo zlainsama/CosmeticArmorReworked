@@ -1,7 +1,6 @@
 package lain.mods.cos.impl;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
@@ -26,7 +25,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -37,7 +35,6 @@ import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
-import top.theillusivec4.curios.api.CuriosAPI;
 
 public class InventoryManager
 {
@@ -125,20 +122,6 @@ public class InventoryManager
         if (modid == null || modid.isEmpty() || identifier == null || identifier.isEmpty() || !ModList.get().isLoaded(modid))
             return false;
 
-        if ("curios".equals(modid))
-        {
-            try
-            {
-                for (String registeredId : CuriosAPI.getTypeIdentifiers())
-                    if (identifier.startsWith(registeredId + "#"))
-                        return true;
-            }
-            catch (Throwable e)
-            {
-                ModObjects.logger.error("Failed in checking identifier for curios", e);
-            }
-        }
-
         return false;
     }
 
@@ -178,23 +161,7 @@ public class InventoryManager
 
     protected File getDataFile(UUID uuid)
     {
-        File dir = new File(getSavesDirectory(), "playerdata");
-        if (!dir.exists())
-            dir.mkdirs();
-        return new File(dir, uuid + ".cosarmor");
-    }
-
-    protected File getSavesDirectory()
-    {
-        try
-        {
-            return LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).getWorld(DimensionType.OVERWORLD).getSaveHandler().getWorldDirectory();
-        }
-        catch (Throwable t)
-        {
-            ModObjects.logger.fatal("Failed to get saves directory", t);
-            return Paths.get(".", "SomethingWentWrongFolder").toFile();
-        }
+        return new File(LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).field_240766_e_.getPlayerDataFolder(), uuid + ".cosarmor");
     }
 
     private void handlePlayerDrops(LivingDropsEvent event)
@@ -217,7 +184,7 @@ public class InventoryManager
                     float fZ = RANDOM.nextFloat() * 0.75F + 0.125F;
                     while (!stack.isEmpty())
                     {
-                        ItemEntity entity = new ItemEntity(event.getEntityLiving().getEntityWorld(), event.getEntityLiving().func_226277_ct_() + (double) fX, event.getEntityLiving().func_226278_cu_() + (double) fY, event.getEntityLiving().func_226281_cx_() + (double) fZ, stack.split(RANDOM.nextInt(21) + 10));
+                        ItemEntity entity = new ItemEntity(event.getEntityLiving().getEntityWorld(), event.getEntityLiving().getPosX() + (double) fX, event.getEntityLiving().getPosY() + (double) fY, event.getEntityLiving().getPosZ() + (double) fZ, stack.split(RANDOM.nextInt(21) + 10));
                         entity.setMotion(RANDOM.nextGaussian() * (double) 0.05F, RANDOM.nextGaussian() * (double) 0.05F + (double) 0.2F, RANDOM.nextGaussian() * (double) 0.05F);
                         event.getDrops().add(entity);
                     }

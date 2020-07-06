@@ -4,8 +4,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -100,7 +101,7 @@ public class NetworkManager
         channel.send(PacketDistributor.NEAR.with(() -> point), packet);
     }
 
-    public <T extends NetworkPacket> void sendToDimension(T packet, DimensionType dimension)
+    public <T extends NetworkPacket> void sendToDimension(T packet, RegistryKey<World> dimension)
     {
         if (packet == null || dimension == null)
             throw new IllegalArgumentException();

@@ -34,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
 {
 
-    private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] { PlayerContainer.field_226619_g_, PlayerContainer.field_226618_f_, PlayerContainer.field_226617_e_, PlayerContainer.field_226616_d_ };
+    private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] { PlayerContainer.EMPTY_ARMOR_SLOT_BOOTS, PlayerContainer.EMPTY_ARMOR_SLOT_LEGGINGS, PlayerContainer.EMPTY_ARMOR_SLOT_CHESTPLATE, PlayerContainer.EMPTY_ARMOR_SLOT_HELMET };
     private static final EquipmentSlotType[] VALID_EQUIPMENT_SLOTS = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
 
     // net.minecraft.inventory.container.WorkbenchContainer.func_217066_a()
@@ -80,24 +80,28 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
             addSlot(new Slot(invPlayer, 39 - k, 8, 8 + k * 18)
             {
 
+                @Override
                 public boolean canTakeStack(PlayerEntity playerIn)
                 {
                     ItemStack itemstack = getStack();
                     return !itemstack.isEmpty() && !playerIn.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack) ? false : super.canTakeStack(playerIn);
                 }
 
+                @Override
                 @Nullable
                 @OnlyIn(Dist.CLIENT)
                 public Pair<ResourceLocation, ResourceLocation> func_225517_c_()
                 {
-                    return Pair.of(PlayerContainer.field_226615_c_, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
+                    return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
                 }
 
+                @Override
                 public int getSlotStackLimit()
                 {
                     return 1;
                 }
 
+                @Override
                 public boolean isItemValid(ItemStack stack)
                 {
                     return stack.canEquip(equipmentslottype, player);
@@ -110,6 +114,7 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
         for (int l = 0; l < 3; ++l)
             for (int j1 = 0; j1 < 9; ++j1)
                 addSlot(new Slot(invPlayer, j1 + (l + 1) * 9, 8 + j1 * 18, 84 + l * 18));
+
         // HotBar
         for (int i1 = 0; i1 < 9; ++i1)
             addSlot(new Slot(invPlayer, i1, 8 + i1 * 18, 142));
@@ -118,11 +123,12 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
         addSlot(new Slot(invPlayer, 40, 77, 62)
         {
 
+            @Override
             @Nullable
             @OnlyIn(Dist.CLIENT)
             public Pair<ResourceLocation, ResourceLocation> func_225517_c_()
             {
-                return Pair.of(PlayerContainer.field_226615_c_, PlayerContainer.field_226620_h_);
+                return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.EMPTY_ARMOR_SLOT_SHIELD);
             }
 
         });
@@ -130,15 +136,16 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
         // CosmeticArmor
         for (int i = 0; i < 4; i++)
         {
-            final int j = i;
+            final EquipmentSlotType equipmentslottype = VALID_EQUIPMENT_SLOTS[i];
             addSlot(new Slot(invCosArmor, 3 - i, 98 + i * 18, 62)
             {
 
+                @Override
                 @Nullable
                 @OnlyIn(Dist.CLIENT)
                 public Pair<ResourceLocation, ResourceLocation> func_225517_c_()
                 {
-                    return Pair.of(PlayerContainer.field_226615_c_, ARMOR_SLOT_TEXTURES[VALID_EQUIPMENT_SLOTS[j].getIndex()]);
+                    return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
                 }
 
                 @Override
@@ -150,7 +157,7 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
                 @Override
                 public boolean isItemValid(ItemStack stack)
                 {
-                    return stack.canEquip(VALID_EQUIPMENT_SLOTS[j], player);
+                    return stack.canEquip(equipmentslottype, player);
                 }
 
             });
@@ -177,7 +184,7 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
     }
 
     @Override
-    public void func_201771_a(RecipeItemHelper arg0)
+    public void fillStackedContents(RecipeItemHelper arg0)
     {
         craftingInventory.fillStackedContents(arg0);
     }
@@ -197,7 +204,7 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
     @Override
     public List<RecipeBookCategories> getRecipeBookCategories()
     {
-        return Lists.newArrayList(RecipeBookCategories.SEARCH, RecipeBookCategories.EQUIPMENT, RecipeBookCategories.BUILDING_BLOCKS, RecipeBookCategories.MISC, RecipeBookCategories.REDSTONE);
+        return Lists.newArrayList(RecipeBookCategories.SEARCH, RecipeBookCategories.CRAFTING_EQUIPMENT, RecipeBookCategories.CRAFTING_BUILDING_BLOCKS, RecipeBookCategories.CRAFTING_MISC, RecipeBookCategories.CRAFTING_REDSTONE);
     }
 
     @Override
