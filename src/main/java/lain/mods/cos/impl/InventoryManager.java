@@ -237,7 +237,7 @@ public class InventoryManager
 
     private void handleServerStarting(FMLServerStartingEvent event)
     {
-        event.getCommandDispatcher().register(Commands.literal("clearcosarmor").requires(s -> {
+        event.getServer().getCommandManager().getDispatcher().register(Commands.literal("clearcosarmor").requires(s -> {
             return s.hasPermissionLevel(2);
         }).executes(s -> {
             int count = 0;
