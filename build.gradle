@@ -13,7 +13,7 @@ apply plugin: 'eclipse'
 
 import net.minecraftforge.gradle.common.task.SignJar
 
-version = "1.16.1-v1"
+version = "1.16.1-v1a"
 group= "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
 
@@ -25,7 +25,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.47'
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.71'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
