@@ -26,6 +26,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -33,7 +34,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 
 public class InventoryManager
@@ -227,17 +227,9 @@ public class InventoryManager
         }
     }
 
-    private void handleSaveToFile(PlayerEvent.SaveToFile event)
+    private void handleRegisterCommands(RegisterCommandsEvent event)
     {
-        UUID uuid;
-        InventoryCosArmor inv;
-        if ((inv = CommonCache.getIfPresent(uuid = UUID.fromString(event.getPlayerUUID()))) != null)
-            saveInventory(uuid, inv);
-    }
-
-    private void handleServerStarting(FMLServerStartingEvent event)
-    {
-        event.getServer().getCommandManager().getDispatcher().register(Commands.literal("clearcosarmor").requires(s -> {
+        event.getDispatcher().register(Commands.literal("clearcosarmor").requires(s -> {
             return s.hasPermissionLevel(2);
         }).executes(s -> {
             int count = 0;
@@ -262,6 +254,14 @@ public class InventoryManager
                 s.getSource().sendFeedback(new TranslationTextComponent("cos.command.clearcosarmor.success.multiple", count, players.size()), true);
             return count;
         })));
+    }
+
+    private void handleSaveToFile(PlayerEvent.SaveToFile event)
+    {
+        UUID uuid;
+        InventoryCosArmor inv;
+        if ((inv = CommonCache.getIfPresent(uuid = UUID.fromString(event.getPlayerUUID()))) != null)
+            saveInventory(uuid, inv);
     }
 
     private void handleServerStopping(FMLServerStoppingEvent event)
@@ -306,7 +306,7 @@ public class InventoryManager
         MinecraftForge.EVENT_BUS.addListener(this::handlePlayerLoggedIn);
         MinecraftForge.EVENT_BUS.addListener(this::handlePlayerLoggedOut);
         MinecraftForge.EVENT_BUS.addListener(this::handleSaveToFile);
-        MinecraftForge.EVENT_BUS.addListener(this::handleServerStarting);
+        MinecraftForge.EVENT_BUS.addListener(this::handleRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(this::handleServerStopping);
     }
 
