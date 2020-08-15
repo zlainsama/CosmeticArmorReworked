@@ -1,12 +1,9 @@
 package lain.mods.cos.impl.inventory;
 
-import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
-import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import lain.mods.cos.impl.ModObjects;
-import net.minecraft.client.util.RecipeBookCategories;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.RecipeBookCategory;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.ResourceLocation;
@@ -190,6 +188,12 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
     }
 
     @Override
+    public RecipeBookCategory func_241850_m()
+    {
+        return RecipeBookCategory.CRAFTING;
+    }
+
+    @Override
     public int getHeight()
     {
         return craftingInventory.getHeight();
@@ -199,12 +203,6 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory>
     public int getOutputSlot()
     {
         return 0;
-    }
-
-    @Override
-    public List<RecipeBookCategories> getRecipeBookCategories()
-    {
-        return Lists.newArrayList(RecipeBookCategories.SEARCH, RecipeBookCategories.CRAFTING_EQUIPMENT, RecipeBookCategories.CRAFTING_BUILDING_BLOCKS, RecipeBookCategories.CRAFTING_MISC, RecipeBookCategories.CRAFTING_REDSTONE);
     }
 
     @Override

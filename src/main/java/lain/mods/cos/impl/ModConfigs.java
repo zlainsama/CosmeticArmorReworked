@@ -17,7 +17,6 @@ public class ModConfigs
     public static IntValue CosArmorToggleButton_Top;
     public static BooleanValue CosArmorKeepThroughDeath;
     public static BooleanValue CosArmorDisableRecipeBook;
-    public static BooleanValue CosArmorToggleButton_Curios;
 
     public static void registerConfigs()
     {
@@ -43,9 +42,6 @@ public class ModConfigs
                 CosArmorToggleButton_Top = comment("The vertical pixel distance from the origin point of player inventory gui")
                         .translation("cos.config.CosArmorToggleButton_Top")
                         .defineInRange("CosArmorToggleButton_Top", 72, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                CosArmorToggleButton_Curios = comment("Whether or not to add buttons to CurioSlots for toggling visibility for that slot")
-                        .translation("cos.config.CosArmorToggleButton_Curios")
-                        .define("CosArmorToggleButton_Curios", true);
                 pop();
             }
         }.build());

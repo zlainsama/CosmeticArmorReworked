@@ -105,7 +105,7 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     @Override
     protected void func_230451_b_(MatrixStack matrix, int mouseX, int mouseY)
     {
-        field_230712_o_.func_238422_b_(matrix, craftingText, (float) field_238742_p_, (float) field_238743_q_, 4210752);
+        field_230712_o_.func_243248_b(matrix, craftingText, (float) field_238742_p_, (float) field_238743_q_, 4210752);
     }
 
     @Override
