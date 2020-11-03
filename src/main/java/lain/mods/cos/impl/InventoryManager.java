@@ -1,10 +1,5 @@
 package lain.mods.cos.impl;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.Random;
-import java.util.UUID;
-import javax.annotation.Nonnull;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -36,80 +31,72 @@ import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 
-public class InventoryManager
-{
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.util.Collection;
+import java.util.Random;
+import java.util.UUID;
 
-    protected static final InventoryCosArmor Dummy = new InventoryCosArmor()
-    {
+public class InventoryManager {
+
+    protected static final InventoryCosArmor Dummy = new InventoryCosArmor() {
 
         @Override
         @Nonnull
-        public ItemStack extractItem(int slot, int amount, boolean simulate)
-        {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
         }
 
         @Override
         @Nonnull
-        public ItemStack getStackInSlot(int slot)
-        {
+        public ItemStack getStackInSlot(int slot) {
             return ItemStack.EMPTY;
         }
 
         @Override
         @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-        {
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
             return stack;
         }
 
         @Override
-        public boolean isHidden(String modid, String identifier)
-        {
+        public boolean isHidden(String modid, String identifier) {
             return false;
         }
 
         @Override
-        public boolean isSkinArmor(int slot)
-        {
+        public boolean isSkinArmor(int slot) {
             return false;
         }
 
         @Override
-        protected void onContentsChanged(int slot)
-        {
+        protected void onContentsChanged(int slot) {
         }
 
         @Override
-        protected void onLoad()
-        {
+        protected void onLoad() {
         }
 
         @Override
-        public boolean setHidden(String modid, String identifier, boolean set)
-        {
+        public boolean setHidden(String modid, String identifier, boolean set) {
             return false;
         }
 
         @Override
-        public void setSkinArmor(int slot, boolean enabled)
-        {
+        public void setSkinArmor(int slot, boolean enabled) {
         }
 
         @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack)
-        {
+        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
         }
 
         @Override
-        public boolean setUpdateListener(ContentsChangeListener listener)
-        {
+        public boolean setUpdateListener(ContentsChangeListener listener) {
             return false;
         }
 
         @Override
-        public boolean setUpdateListener(HiddenFlagsChangeListener listener)
-        {
+        public boolean setUpdateListener(HiddenFlagsChangeListener listener) {
             return false;
         }
 
@@ -117,20 +104,10 @@ public class InventoryManager
 
     protected static final Random RANDOM = new Random();
 
-    public static boolean checkIdentifier(String modid, String identifier)
-    {
-        if (modid == null || modid.isEmpty() || identifier == null || identifier.isEmpty() || !ModList.get().isLoaded(modid))
-            return false;
-
-        return false;
-    }
-
-    protected final LoadingCache<UUID, InventoryCosArmor> CommonCache = CacheBuilder.newBuilder().build(new CacheLoader<UUID, InventoryCosArmor>()
-    {
+    protected final LoadingCache<UUID, InventoryCosArmor> CommonCache = CacheBuilder.newBuilder().build(new CacheLoader<UUID, InventoryCosArmor>() {
 
         @Override
-        public InventoryCosArmor load(UUID key) throws Exception
-        {
+        public InventoryCosArmor load(UUID key) throws Exception {
             InventoryCosArmor inventory = new InventoryCosArmor();
             inventory.setUpdateListener((inv, slot) -> onInventoryChanged(key, inv, slot));
             inventory.setUpdateListener((inv, modid, identifier) -> onHiddenFlagsChanged(key, inv, modid, identifier));
@@ -140,41 +117,40 @@ public class InventoryManager
 
     });
 
-    public ContainerCosArmor createContainerClient(int windowId, PlayerInventory invPlayer, PacketBuffer extraData)
-    {
+    public static boolean checkIdentifier(String modid, String identifier) {
+        if (modid == null || modid.isEmpty() || identifier == null || identifier.isEmpty() || !ModList.get().isLoaded(modid))
+            return false;
+
+        return false;
+    }
+
+    public ContainerCosArmor createContainerClient(int windowId, PlayerInventory invPlayer, PacketBuffer extraData) {
         throw new UnsupportedOperationException();
     }
 
     @Nonnull
-    public InventoryCosArmor getCosArmorInventory(UUID uuid)
-    {
+    public InventoryCosArmor getCosArmorInventory(UUID uuid) {
         if (uuid == null)
             return Dummy;
         return CommonCache.getUnchecked(uuid);
     }
 
     @Nonnull
-    public InventoryCosArmor getCosArmorInventoryClient(UUID uuid)
-    {
+    public InventoryCosArmor getCosArmorInventoryClient(UUID uuid) {
         throw new UnsupportedOperationException();
     }
 
-    protected File getDataFile(UUID uuid)
-    {
-        return new File(LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).field_240766_e_.getPlayerDataFolder(), uuid + ".cosarmor");
+    protected File getDataFile(UUID uuid) {
+        return new File(LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).playerDataManager.getPlayerDataFolder(), uuid + ".cosarmor");
     }
 
-    private void handlePlayerDrops(LivingDropsEvent event)
-    {
-        if (event.getEntityLiving() instanceof PlayerEntity)
-        {
-            if (event.getEntityLiving().isServerWorld() && !event.getEntityLiving().getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY) && !ModConfigs.CosArmorKeepThroughDeath.get())
-            {
+    private void handlePlayerDrops(LivingDropsEvent event) {
+        if (event.getEntityLiving() instanceof PlayerEntity) {
+            if (event.getEntityLiving().isServerWorld() && !event.getEntityLiving().getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY) && !ModConfigs.CosArmorKeepThroughDeath.get()) {
                 InventoryCosArmor inv = getCosArmorInventory(event.getEntityLiving().getUniqueID());
                 if (MinecraftForge.EVENT_BUS.post(new CosArmorDeathDrops((PlayerEntity) event.getEntityLiving(), inv)))
                     return;
-                for (int i = 0; i < inv.getSlots(); i++)
-                {
+                for (int i = 0; i < inv.getSlots(); i++) {
                     ItemStack stack = inv.getStackInSlot(i).copy();
                     if (stack.isEmpty())
                         continue;
@@ -182,8 +158,7 @@ public class InventoryManager
                     float fX = RANDOM.nextFloat() * 0.75F + 0.125F;
                     float fY = RANDOM.nextFloat() * 0.75F;
                     float fZ = RANDOM.nextFloat() * 0.75F + 0.125F;
-                    while (!stack.isEmpty())
-                    {
+                    while (!stack.isEmpty()) {
                         ItemEntity entity = new ItemEntity(event.getEntityLiving().getEntityWorld(), event.getEntityLiving().getPosX() + (double) fX, event.getEntityLiving().getPosY() + (double) fY, event.getEntityLiving().getPosZ() + (double) fZ, stack.split(RANDOM.nextInt(21) + 10));
                         entity.setMotion(RANDOM.nextGaussian() * (double) 0.05F, RANDOM.nextGaussian() * (double) 0.05F + (double) 0.2F, RANDOM.nextGaussian() * (double) 0.05F);
                         event.getDrops().add(entity);
@@ -195,16 +170,13 @@ public class InventoryManager
         }
     }
 
-    private void handlePlayerLoggedIn(PlayerLoggedInEvent event)
-    {
+    private void handlePlayerLoggedIn(PlayerLoggedInEvent event) {
         CommonCache.invalidate(event.getPlayer().getUniqueID());
         getCosArmorInventory(event.getPlayer().getUniqueID());
 
-        if (event.getPlayer() instanceof ServerPlayerEntity)
-        {
+        if (event.getPlayer() instanceof ServerPlayerEntity) {
             ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
-            for (ServerPlayerEntity other : LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).getPlayerList().getPlayers())
-            {
+            for (ServerPlayerEntity other : LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).getPlayerList().getPlayers()) {
                 if (other == player)
                     continue;
                 UUID uuid = other.getUniqueID();
@@ -216,19 +188,16 @@ public class InventoryManager
         }
     }
 
-    private void handlePlayerLoggedOut(PlayerLoggedOutEvent event)
-    {
+    private void handlePlayerLoggedOut(PlayerLoggedOutEvent event) {
         UUID uuid;
         InventoryCosArmor inv;
-        if ((inv = CommonCache.getIfPresent(uuid = event.getPlayer().getUniqueID())) != null)
-        {
+        if ((inv = CommonCache.getIfPresent(uuid = event.getPlayer().getUniqueID())) != null) {
             saveInventory(uuid, inv);
             CommonCache.invalidate(uuid);
         }
     }
 
-    private void handleRegisterCommands(RegisterCommandsEvent event)
-    {
+    private void handleRegisterCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("clearcosarmor").requires(s -> {
             return s.hasPermissionLevel(2);
         }).executes(s -> {
@@ -242,8 +211,7 @@ public class InventoryManager
         }).then(Commands.argument("targets", EntityArgument.players()).executes(s -> {
             int count = 0;
             Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(s, "targets");
-            for (ServerPlayerEntity player : players)
-            {
+            for (ServerPlayerEntity player : players) {
                 InventoryCosArmor inv = getCosArmorInventory(player.getUniqueID());
                 for (int i = 0; i < inv.getSlots(); i++)
                     count += inv.extractItem(i, Integer.MAX_VALUE, false).getCount();
@@ -256,16 +224,14 @@ public class InventoryManager
         })));
     }
 
-    private void handleSaveToFile(PlayerEvent.SaveToFile event)
-    {
+    private void handleSaveToFile(PlayerEvent.SaveToFile event) {
         UUID uuid;
         InventoryCosArmor inv;
         if ((inv = CommonCache.getIfPresent(uuid = UUID.fromString(event.getPlayerUUID()))) != null)
             saveInventory(uuid, inv);
     }
 
-    private void handleServerStopping(FMLServerStoppingEvent event)
-    {
+    private void handleServerStopping(FMLServerStoppingEvent event) {
         ModObjects.logger.debug("Server is stopping... try to save all still loaded CosmeticArmor data");
         CommonCache.asMap().entrySet().forEach(e -> {
             ModObjects.logger.debug(e.getKey());
@@ -274,34 +240,27 @@ public class InventoryManager
         CommonCache.invalidateAll();
     }
 
-    protected void loadInventory(UUID uuid, InventoryCosArmor inventory)
-    {
+    protected void loadInventory(UUID uuid, InventoryCosArmor inventory) {
         if (inventory == Dummy)
             return;
-        try
-        {
+        try {
             File file;
             if ((file = getDataFile(uuid)).exists())
                 inventory.deserializeNBT(CompressedStreamTools.read(file));
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to load CosmeticArmor data", t);
         }
     }
 
-    protected void onHiddenFlagsChanged(UUID uuid, InventoryCosArmor inventory, String modid, String identifier)
-    {
+    protected void onHiddenFlagsChanged(UUID uuid, InventoryCosArmor inventory, String modid, String identifier) {
         ModObjects.network.sendToAll(new PacketSyncHiddenFlags(uuid, inventory, modid, identifier));
     }
 
-    protected void onInventoryChanged(UUID uuid, InventoryCosArmor inventory, int slot)
-    {
+    protected void onInventoryChanged(UUID uuid, InventoryCosArmor inventory, int slot) {
         ModObjects.network.sendToAll(new PacketSyncCosArmor(uuid, inventory, slot));
     }
 
-    public void registerEvents()
-    {
+    public void registerEvents() {
         MinecraftForge.EVENT_BUS.addListener(this::handlePlayerDrops);
         MinecraftForge.EVENT_BUS.addListener(this::handlePlayerLoggedIn);
         MinecraftForge.EVENT_BUS.addListener(this::handlePlayerLoggedOut);
@@ -310,21 +269,16 @@ public class InventoryManager
         MinecraftForge.EVENT_BUS.addListener(this::handleServerStopping);
     }
 
-    public void registerEventsClient()
-    {
+    public void registerEventsClient() {
         throw new UnsupportedOperationException();
     }
 
-    protected void saveInventory(UUID uuid, InventoryCosArmor inventory)
-    {
+    protected void saveInventory(UUID uuid, InventoryCosArmor inventory) {
         if (inventory == Dummy)
             return;
-        try
-        {
+        try {
             CompressedStreamTools.write(inventory.serializeNBT(), getDataFile(uuid));
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to save CosmeticArmor data", t);
         }
     }

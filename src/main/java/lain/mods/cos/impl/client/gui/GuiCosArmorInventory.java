@@ -24,44 +24,38 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 
-public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor> implements IRecipeShownListener
-{
+public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor> implements IRecipeShownListener {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
     public static final ResourceLocation RECIPE_BUTTON_TEXTURE = new ResourceLocation("textures/gui/recipe_button.png");
 
-    protected Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
-
-    public float oldMouseX;
-    public float oldMouseY;
-
-    private ITextComponent craftingText;
-
-    private final RecipeBookGui recipeBook = new RecipeBookGui()
-    {
+    private final RecipeBookGui recipeBook = new RecipeBookGui() {
 
         @Override
-        public boolean isVisible()
-        {
+        public boolean isVisible() {
             return super.isVisible() && !ModConfigs.CosArmorDisableRecipeBook.get();
         }
 
         @Override
-        public void toggleVisibility()
-        {
+        public void toggleVisibility() {
             setVisible(!super.isVisible());
         }
 
     };
 
+    public float oldMouseX;
+    public float oldMouseY;
+
+    protected Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
+
+    private ITextComponent craftingText;
     private boolean widthTooNarrow;
     private boolean buttonClicked;
 
-    public GuiCosArmorInventory(ContainerCosArmor container, PlayerInventory invPlayer, ITextComponent displayName)
-    {
+    public GuiCosArmorInventory(ContainerCosArmor container, PlayerInventory invPlayer, ITextComponent displayName) {
         super(container, invPlayer, displayName);
-        field_230711_n_ = true;
-        field_238742_p_ = 97;
+        passEvents = true;
+        titleX = 97;
 
         craftingText = new TranslationTextComponent("container.crafting");
 
@@ -69,94 +63,77 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     }
 
     @Override
-    public void func_230430_a_(MatrixStack matrix, int mouseX, int mouseY, float partialTicks)
-    {
-        func_230446_a_(matrix);
+    public void render(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(matrix);
         hasActivePotionEffects = !recipeBook.isVisible();
-        if (recipeBook.isVisible() && widthTooNarrow)
-        {
-            func_230450_a_(matrix, partialTicks, mouseX, mouseY);
-            recipeBook.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
-        }
-        else
-        {
-            recipeBook.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
-            super.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
+        if (recipeBook.isVisible() && widthTooNarrow) {
+            drawGuiContainerBackgroundLayer(matrix, partialTicks, mouseX, mouseY);
+            recipeBook.render(matrix, mouseX, mouseY, partialTicks);
+        } else {
+            recipeBook.render(matrix, mouseX, mouseY, partialTicks);
+            super.render(matrix, mouseX, mouseY, partialTicks);
             recipeBook.func_230477_a_(matrix, guiLeft, guiTop, false, partialTicks);
         }
 
-        func_230459_a_(matrix, mouseX, mouseY);
+        renderHoveredTooltip(matrix, mouseX, mouseY);
         recipeBook.func_238924_c_(matrix, guiLeft, guiTop, mouseX, mouseY);
         oldMouseX = (float) mouseX;
         oldMouseY = (float) mouseY;
     }
 
     @Override
-    protected void func_230450_a_(MatrixStack matrix, float partialTicks, int mouseX, int mouseY)
-    {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrix, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.getTextureManager().bindTexture(TEXTURE);
         int i = guiLeft;
         int j = guiTop;
-        func_238474_b_(matrix, i, j, 0, 0, xSize, ySize);
+        blit(matrix, i, j, 0, 0, xSize, ySize);
         InventoryScreen.drawEntityOnScreen(i + 51, j + 75, 30, (float) (i + 51) - oldMouseX, (float) (j + 75 - 50) - oldMouseY, mc.player);
     }
 
     @Override
-    protected void func_230451_b_(MatrixStack matrix, int mouseX, int mouseY)
-    {
-        field_230712_o_.func_243248_b(matrix, craftingText, (float) field_238742_p_, (float) field_238743_q_, 4210752);
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrix, int mouseX, int mouseY) {
+        font.func_243248_b(matrix, craftingText, (float) titleX, (float) titleY, 4210752);
     }
 
     @Override
-    public void func_231023_e_()
-    {
+    public void tick() {
         recipeBook.tick();
     }
 
     @Override
-    public boolean func_231044_a_(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_)
-    {
-        if (recipeBook.func_231044_a_(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_))
-        {
+    public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
+        if (recipeBook.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_)) {
             return true;
-        }
-        else
-        {
-            return widthTooNarrow && recipeBook.isVisible() ? false : super.func_231044_a_(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
+        } else {
+            return widthTooNarrow && recipeBook.isVisible() ? false : super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
         }
     }
 
     @Override
-    public boolean func_231048_c_(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_)
-    {
-        if (buttonClicked)
-        {
+    public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
+        if (buttonClicked) {
             buttonClicked = false;
             return true;
-        }
-        else
-        {
-            return super.func_231048_c_(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
+        } else {
+            return super.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
         }
     }
 
     @Override
-    protected void func_231160_c_()
-    {
-        super.func_231160_c_();
-        widthTooNarrow = field_230708_k_ < 379;
-        recipeBook.init(field_230708_k_, field_230709_l_, mc, widthTooNarrow, (RecipeBookContainer<?>) container);
-        guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, field_230708_k_, xSize);
-        field_230705_e_.add(recipeBook);
+    protected void init() {
+        super.init();
+        widthTooNarrow = width < 379;
+        recipeBook.init(width, height, mc, widthTooNarrow, (RecipeBookContainer<?>) container);
+        guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
+        children.add(recipeBook);
         setFocusedDefault(recipeBook);
-        if (!ModConfigs.CosArmorDisableRecipeBook.get())
-        {
-            func_230480_a_(new ImageButton(guiLeft + 76, guiTop + 27, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
+        if (!ModConfigs.CosArmorDisableRecipeBook.get()) {
+            addButton(new ImageButton(guiLeft + 76, guiTop + 27, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
 //            int lastLeft = guiLeft;
                 recipeBook.initSearchBar(widthTooNarrow);
                 recipeBook.toggleVisibility();
-                guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, field_230708_k_, xSize);
+                guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
                 ((ImageButton) button).setPosition(guiLeft + 76, guiTop + 27);
                 buttonClicked = true;
 //            int leftDiff = guiLeft - lastLeft;
@@ -164,10 +141,9 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
             }));
         }
         InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUniqueID());
-        for (int i = 0; i < 4; i++)
-        {
+        for (int i = 0; i < 4; i++) {
             int j = 3 - i;
-            func_230480_a_(new GuiCosArmorToggleButton(guiLeft + 97 + 18 * i, guiTop + 61, 5, 5, new StringTextComponent(""), invCosArmor.isSkinArmor(j) ? 1 : 0, button -> {
+            addButton(new GuiCosArmorToggleButton(guiLeft + 97 + 18 * i, guiTop + 61, 5, 5, new StringTextComponent(""), invCosArmor.isSkinArmor(j) ? 1 : 0, button -> {
                 InventoryCosArmor inv = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUniqueID());
                 inv.setSkinArmor(j, !inv.isSkinArmor(j));
                 ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(j) ? 1 : 0;
@@ -177,49 +153,41 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     }
 
     @Override
-    public void func_231164_f_()
-    {
+    public void onClose() {
         recipeBook.removed();
 
-        super.func_231164_f_();
+        super.onClose();
     }
 
     @Override
-    public RecipeBookGui getRecipeGui()
-    {
+    public RecipeBookGui getRecipeGui() {
         return recipeBook;
     }
 
     @Override
-    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type)
-    {
+    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
         super.handleMouseClick(slotIn, slotId, mouseButton, type);
         recipeBook.slotClicked(slotIn);
     }
 
     @Override
-    protected boolean hasClickedOutside(double p_195361_1_, double p_195361_3_, int p_195361_5_, int p_195361_6_, int p_195361_7_)
-    {
+    protected boolean hasClickedOutside(double p_195361_1_, double p_195361_3_, int p_195361_5_, int p_195361_6_, int p_195361_7_) {
         boolean flag = p_195361_1_ < (double) p_195361_5_ || p_195361_3_ < (double) p_195361_6_ || p_195361_1_ >= (double) (p_195361_5_ + xSize) || p_195361_3_ >= (double) (p_195361_6_ + ySize);
         return recipeBook.func_195604_a(p_195361_1_, p_195361_3_, guiLeft, guiTop, xSize, ySize, p_195361_7_) && flag;
     }
 
     @Override
-    protected boolean isPointInRegion(int p_195359_1_, int p_195359_2_, int p_195359_3_, int p_195359_4_, double p_195359_5_, double p_195359_7_)
-    {
+    protected boolean isPointInRegion(int p_195359_1_, int p_195359_2_, int p_195359_3_, int p_195359_4_, double p_195359_5_, double p_195359_7_) {
         return (!widthTooNarrow || !recipeBook.isVisible()) && super.isPointInRegion(p_195359_1_, p_195359_2_, p_195359_3_, p_195359_4_, p_195359_5_, p_195359_7_);
     }
 
     @Override
-    public void recipesUpdated()
-    {
+    public void recipesUpdated() {
         recipeBook.recipesUpdated();
     }
 
-    private void smoothTransition()
-    {
-        if (mc.currentScreen instanceof InventoryScreen)
-        {
+    private void smoothTransition() {
+        if (mc.currentScreen instanceof InventoryScreen) {
             oldMouseX = ((InventoryScreen) mc.currentScreen).oldMouseX;
             oldMouseY = ((InventoryScreen) mc.currentScreen).oldMouseY;
         }

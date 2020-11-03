@@ -12,23 +12,20 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
-public enum KeyHandler
-{
+public enum KeyHandler {
 
     INSTANCE;
 
     public KeyBinding keyOpenCosArmorInventory = new KeyBinding("cos.key.opencosarmorinventory", InputMappings.INPUT_INVALID.getKeyCode(), "key.categories.inventory");
 
-    private void handleClientTick(TickEvent.ClientTickEvent event)
-    {
+    private void handleClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START || !LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).isGameFocused())
             return;
         if (keyOpenCosArmorInventory.isPressed() && !(LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).currentScreen instanceof GuiCosArmorInventory))
             ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
     }
 
-    public void registerEvents()
-    {
+    public void registerEvents() {
         ClientRegistry.registerKeyBinding(keyOpenCosArmorInventory);
         MinecraftForge.EVENT_BUS.addListener(this::handleClientTick);
     }

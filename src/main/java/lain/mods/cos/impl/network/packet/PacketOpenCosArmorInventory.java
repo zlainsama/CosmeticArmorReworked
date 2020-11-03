@@ -6,34 +6,28 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class PacketOpenCosArmorInventory implements NetworkPacket
-{
+public class PacketOpenCosArmorInventory implements NetworkPacket {
 
-    public PacketOpenCosArmorInventory()
-    {
+    public PacketOpenCosArmorInventory() {
     }
 
     @Override
-    public void handlePacketClient(Context context)
-    {
+    public void handlePacketClient(Context context) {
     }
 
     @Override
-    public void handlePacketServer(Context context)
-    {
+    public void handlePacketServer(Context context) {
         context.enqueueWork(() -> {
             NetworkHooks.openGui(context.getSender(), ModObjects.invMan.getCosArmorInventory(context.getSender().getUniqueID()));
         });
     }
 
     @Override
-    public void readFromBuffer(PacketBuffer buffer)
-    {
+    public void readFromBuffer(PacketBuffer buffer) {
     }
 
     @Override
-    public void writeToBuffer(PacketBuffer buffer)
-    {
+    public void writeToBuffer(PacketBuffer buffer) {
     }
 
 }

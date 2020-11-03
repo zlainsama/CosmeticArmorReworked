@@ -1,6 +1,5 @@
 package lain.mods.cos.impl.client;
 
-import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
@@ -18,8 +17,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 
-public enum GuiHandler
-{
+import java.util.Set;
+
+public enum GuiHandler {
 
     INSTANCE;
 
@@ -27,53 +27,42 @@ public enum GuiHandler
 
     private int lastLeft = 0;
 
-    private void handleGuiDrawPre(GuiScreenEvent.DrawScreenEvent.Pre event)
-    {
-        if (event.getGui() instanceof ContainerScreen)
-        {
+    private void handleGuiDrawPre(GuiScreenEvent.DrawScreenEvent.Pre event) {
+        if (event.getGui() instanceof ContainerScreen) {
             ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
 
-            if (lastLeft != screen.guiLeft)
-            {
+            if (lastLeft != screen.guiLeft) {
                 int diffLeft = screen.guiLeft - lastLeft;
                 lastLeft = screen.guiLeft;
-                screen.field_230710_m_.stream().filter(IShiftingWidget.class::isInstance).map(IShiftingWidget.class::cast).forEach(b -> b.shiftLeft(diffLeft));
+                screen.buttons.stream().filter(IShiftingWidget.class::isInstance).map(IShiftingWidget.class::cast).forEach(b -> b.shiftLeft(diffLeft));
             }
         }
     }
 
-    private void handleGuiInitPost(GuiScreenEvent.InitGuiEvent.Post event)
-    {
-        if (event.getGui() instanceof ContainerScreen)
-        {
+    private void handleGuiInitPost(GuiScreenEvent.InitGuiEvent.Post event) {
+        if (event.getGui() instanceof ContainerScreen) {
             ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
 
             lastLeft = screen.guiLeft;
         }
 
-        if (event.getGui() instanceof InventoryScreen || event.getGui() instanceof GuiCosArmorInventory)
-        {
+        if (event.getGui() instanceof InventoryScreen || event.getGui() instanceof GuiCosArmorInventory) {
             ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
 
-            if (!ModConfigs.CosArmorGuiButton_Hidden.get())
-            {
+            if (!ModConfigs.CosArmorGuiButton_Hidden.get()) {
                 event.addWidget(new GuiCosArmorButton(screen.guiLeft + ModConfigs.CosArmorGuiButton_Left.get()/* 65 */, screen.guiTop + ModConfigs.CosArmorGuiButton_Top.get()/* 67 */, 10, 10, event.getGui() instanceof GuiCosArmorInventory ? new TranslationTextComponent("cos.gui.buttonnormal") : new TranslationTextComponent("cos.gui.buttoncos"), button -> {
-                    if (screen instanceof GuiCosArmorInventory)
-                    {
+                    if (screen instanceof GuiCosArmorInventory) {
                         InventoryScreen newGui = new InventoryScreen(screen.getMinecraft().player);
                         newGui.oldMouseX = ((GuiCosArmorInventory) screen).oldMouseX;
                         newGui.oldMouseY = ((GuiCosArmorInventory) screen).oldMouseY;
                         screen.getMinecraft().displayGuiScreen(newGui);
                         ModObjects.network.sendToServer(new PacketOpenNormalInventory());
-                    }
-                    else
-                    {
+                    } else {
                         ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
                     }
                 }));
             }
-            if (!ModConfigs.CosArmorToggleButton_Hidden.get())
-            {
+            if (!ModConfigs.CosArmorToggleButton_Hidden.get()) {
                 event.addWidget(new GuiCosArmorToggleButton(screen.guiLeft + ModConfigs.CosArmorToggleButton_Left.get()/* 59 */, screen.guiTop + ModConfigs.CosArmorToggleButton_Top.get()/* 72 */, 5, 5, new StringTextComponent(""), PlayerRenderHandler.Disabled ? 1 : 0, button -> {
                     PlayerRenderHandler.Disabled = !PlayerRenderHandler.Disabled;
                     ((GuiCosArmorToggleButton) button).state = PlayerRenderHandler.Disabled ? 1 : 0;
@@ -82,15 +71,13 @@ public enum GuiHandler
         }
     }
 
-    public void registerEvents()
-    {
+    public void registerEvents() {
         MinecraftForge.EVENT_BUS.addListener(this::handleGuiDrawPre);
         MinecraftForge.EVENT_BUS.addListener(this::handleGuiInitPost);
         setupGuiFactory();
     }
 
-    private void setupGuiFactory()
-    {
+    private void setupGuiFactory() {
         ScreenManager.registerFactory(ModObjects.typeContainerCosArmor, GuiCosArmorInventory::new);
     }
 

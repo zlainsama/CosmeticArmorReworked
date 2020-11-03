@@ -6,6 +6,6 @@
 /gradle.properties
 /build/
 /*.launch
-/bin/
-/libs/
+/.idea/
+/*.iml
 /logs/
