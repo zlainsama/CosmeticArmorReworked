@@ -22,7 +22,7 @@ public enum PlayerRenderHandler {
 
     public static boolean Disabled = false;
 
-    private LoadingCache<Object, Deque<Runnable>> cache = CacheBuilder.newBuilder().weakKeys().build(new CacheLoader<Object, Deque<Runnable>>() {
+    private final LoadingCache<Object, Deque<Runnable>> cache = CacheBuilder.newBuilder().weakKeys().build(new CacheLoader<Object, Deque<Runnable>>() {
 
         @Override
         public Deque<Runnable> load(Object key) throws Exception {

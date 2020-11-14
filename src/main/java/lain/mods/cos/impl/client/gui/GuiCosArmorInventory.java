@@ -15,7 +15,6 @@ import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.RecipeBookContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -42,13 +41,10 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         }
 
     };
-
+    private final ITextComponent craftingText;
     public float oldMouseX;
     public float oldMouseY;
-
     protected Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
-
-    private ITextComponent craftingText;
     private boolean widthTooNarrow;
     private boolean buttonClicked;
 
@@ -106,7 +102,7 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         if (recipeBook.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_)) {
             return true;
         } else {
-            return widthTooNarrow && recipeBook.isVisible() ? false : super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
+            return (!widthTooNarrow || !recipeBook.isVisible()) && super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
         }
     }
 
@@ -124,7 +120,7 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     protected void init() {
         super.init();
         widthTooNarrow = width < 379;
-        recipeBook.init(width, height, mc, widthTooNarrow, (RecipeBookContainer<?>) container);
+        recipeBook.init(width, height, mc, widthTooNarrow, container);
         guiLeft = recipeBook.updateScreenPosition(widthTooNarrow, width, xSize);
         children.add(recipeBook);
         setFocusedDefault(recipeBook);

@@ -92,7 +92,7 @@ public class NetworkManager {
         channel.send(PacketDistributor.SERVER.noArg(), packet);
     }
 
-    public static interface NetworkPacket {
+    public interface NetworkPacket {
 
         void handlePacketClient(Context context);
 
