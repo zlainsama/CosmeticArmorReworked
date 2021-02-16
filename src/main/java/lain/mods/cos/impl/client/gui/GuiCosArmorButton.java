@@ -8,12 +8,16 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 
-public class GuiCosArmorButton extends Button implements IShiftingWidget {
+import java.util.function.ObjIntConsumer;
 
-    protected Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
+public class GuiCosArmorButton extends Button implements IShiftingWidget, ICreativeInvWidget {
 
-    public GuiCosArmorButton(int x, int y, int width, int height, ITextComponent message, Button.IPressable onPress) {
+    private final Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
+    private final ObjIntConsumer<GuiCosArmorButton> onCreativeTabChanged;
+
+    public GuiCosArmorButton(int x, int y, int width, int height, ITextComponent message, Button.IPressable onPress, ObjIntConsumer<GuiCosArmorButton> onCreativeTabChanged) {
         super(x, y, width, height, message, onPress);
+        this.onCreativeTabChanged = onCreativeTabChanged;
     }
 
     @Override
@@ -34,4 +38,9 @@ public class GuiCosArmorButton extends Button implements IShiftingWidget {
         x += diffLeft;
     }
 
+    @Override
+    public void onSelectedTabChanged(int newTabIndex) {
+        if (onCreativeTabChanged != null)
+            onCreativeTabChanged.accept(this, newTabIndex);
+    }
 }

@@ -14,6 +14,9 @@ public class ModConfigs {
     public static BooleanValue CosArmorToggleButton_Hidden;
     public static IntValue CosArmorToggleButton_Left;
     public static IntValue CosArmorToggleButton_Top;
+    public static BooleanValue CosArmorCreativeGuiButton_Hidden;
+    public static IntValue CosArmorCreativeGuiButton_Left;
+    public static IntValue CosArmorCreativeGuiButton_Top;
     public static BooleanValue CosArmorKeepThroughDeath;
     public static BooleanValue CosArmorDisableRecipeBook;
 
@@ -39,6 +42,15 @@ public class ModConfigs {
                 CosArmorToggleButton_Top = comment("The vertical pixel distance from the origin point of player inventory gui")
                         .translation("cos.config.CosArmorToggleButton_Top")
                         .defineInRange("CosArmorToggleButton_Top", 72, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                CosArmorCreativeGuiButton_Hidden = comment("Whether or not to hide the button for opening CosmeticArmorInventory in CreativeInventory")
+                        .translation("cos.config.CosArmorCreativeGuiButton_Hidden")
+                        .define("CosArmorCreativeGuiButton_Hidden", false);
+                CosArmorCreativeGuiButton_Left = comment("The horizontal pixel distance from the origin point of creative inventory gui")
+                        .translation("cos.config.CosArmorCreativeGuiButton_Left")
+                        .defineInRange("CosArmorCreativeGuiButton_Left", 95, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                CosArmorCreativeGuiButton_Top = comment("The vertical pixel distance from the origin point of creative inventoy gui")
+                        .translation("cos.config.CosArmorCreativeGuiButton_Top")
+                        .defineInRange("CosArmorCreativeGuiButton_Top", 38, Integer.MIN_VALUE, Integer.MAX_VALUE);
                 pop();
             }
         }.build());

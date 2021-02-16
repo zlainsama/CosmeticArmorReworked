@@ -15,7 +15,7 @@ import net.minecraftforge.gradle.common.task.SignJar
 
 import java.nio.file.Files
 
-version = "1.16.5-v1a"
+version = "1.16.5-v1b"
 group = "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
 

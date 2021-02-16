@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.DisplayEffectsScreen;
 import net.minecraft.client.gui.recipebook.IRecipeShownListener;
 import net.minecraft.client.gui.recipebook.RecipeBookGui;
+import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.entity.player.PlayerInventory;
@@ -45,6 +46,7 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     public float oldMouseX;
     public float oldMouseY;
     protected Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
+    private boolean useMousePos;
     private boolean widthTooNarrow;
     private boolean buttonClicked;
 
@@ -84,6 +86,11 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         int i = guiLeft;
         int j = guiTop;
         blit(matrix, i, j, 0, 0, xSize, ySize);
+        if (useMousePos) {
+            oldMouseX = (float) mouseX;
+            oldMouseY = (float) mouseY;
+            useMousePos = false;
+        }
         InventoryScreen.drawEntityOnScreen(i + 51, j + 75, 30, (float) (i + 51) - oldMouseX, (float) (j + 75 - 50) - oldMouseY, mc.player);
     }
 
@@ -186,6 +193,8 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         if (mc.currentScreen instanceof InventoryScreen) {
             oldMouseX = ((InventoryScreen) mc.currentScreen).oldMouseX;
             oldMouseY = ((InventoryScreen) mc.currentScreen).oldMouseY;
+        } else if (mc.currentScreen instanceof CreativeScreen) {
+            useMousePos = true;
         }
     }
 
