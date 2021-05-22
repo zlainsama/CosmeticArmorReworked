@@ -48,7 +48,7 @@ public class CAStacksBase extends ItemStackHandler {
 
             if (slot >= 0 && slot < stacks.size()) {
                 if (itemTags.contains("id"))
-                    stacks.set(slot, ItemStack.read(itemTags));
+                    stacks.set(slot, ItemStack.of(itemTags));
                 if (itemTags.contains("isSkinArmor"))
                     isSkinArmor[slot] = itemTags.getBoolean("isSkinArmor");
             }
@@ -97,7 +97,7 @@ public class CAStacksBase extends ItemStackHandler {
                 CompoundNBT itemTag = new CompoundNBT();
                 itemTag.putInt("Slot", i);
                 if (!stacks.get(i).isEmpty())
-                    stacks.get(i).write(itemTag);
+                    stacks.get(i).save(itemTag);
                 if (isSkinArmor[i])
                     itemTag.putBoolean("isSkinArmor", true);
                 nbtTagList.add(itemTag);

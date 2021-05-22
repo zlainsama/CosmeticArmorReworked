@@ -22,11 +22,11 @@ public class GuiCosArmorButton extends Button implements IShiftingWidget, ICreat
 
     @Override
     public void renderButton(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        mc.getTextureManager().bindTexture(GuiCosArmorInventory.TEXTURE);
+        mc.getTextureManager().bind(GuiCosArmorInventory.TEXTURE);
         RenderSystem.disableDepthTest();
         if (isHovered()) {
             blit(matrix, x, y, 10, 166, 10, 10);
-            drawCenteredString(matrix, mc.fontRenderer, getMessage(), x + 5, y + height, 0xffffff);
+            drawCenteredString(matrix, mc.font, getMessage(), x + 5, y + height, 0xffffff);
         } else {
             blit(matrix, x, y, 0, 166, 10, 10);
         }

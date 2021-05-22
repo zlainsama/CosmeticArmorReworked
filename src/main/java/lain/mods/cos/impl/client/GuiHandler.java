@@ -31,13 +31,13 @@ public enum GuiHandler {
         if (event.getGui() instanceof ContainerScreen) {
             ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
 
-            if (lastLeft != screen.guiLeft) {
-                int diffLeft = screen.guiLeft - lastLeft;
-                lastLeft = screen.guiLeft;
+            if (lastLeft != screen.leftPos) {
+                int diffLeft = screen.leftPos - lastLeft;
+                lastLeft = screen.leftPos;
                 screen.buttons.stream().filter(IShiftingWidget.class::isInstance).map(IShiftingWidget.class::cast).forEach(b -> b.shiftLeft(diffLeft));
             }
             if (event.getGui() instanceof CreativeScreen) {
-                int currentTabIndex = CreativeScreen.selectedTabIndex;
+                int currentTabIndex = CreativeScreen.selectedTab;
                 if (lastCreativeTabIndex != currentTabIndex) {
                     lastCreativeTabIndex = currentTabIndex;
                     screen.buttons.stream().filter(ICreativeInvWidget.class::isInstance).map(ICreativeInvWidget.class::cast).forEach(b -> b.onSelectedTabChanged(currentTabIndex));
@@ -50,7 +50,7 @@ public enum GuiHandler {
         if (event.getGui() instanceof ContainerScreen) {
             ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
 
-            lastLeft = screen.guiLeft;
+            lastLeft = screen.leftPos;
             lastCreativeTabIndex = -1;
         }
 
@@ -59,8 +59,8 @@ public enum GuiHandler {
 
             if (!ModConfigs.CosArmorGuiButton_Hidden.get()) {
                 event.addWidget(new GuiCosArmorButton(
-                        screen.guiLeft + ModConfigs.CosArmorGuiButton_Left.get()/* 65 */,
-                        screen.guiTop + ModConfigs.CosArmorGuiButton_Top.get()/* 67 */,
+                        screen.leftPos + ModConfigs.CosArmorGuiButton_Left.get()/* 65 */,
+                        screen.topPos + ModConfigs.CosArmorGuiButton_Top.get()/* 67 */,
                         10, 10,
                         event.getGui() instanceof GuiCosArmorInventory ?
                                 new TranslationTextComponent("cos.gui.buttonnormal") :
@@ -68,9 +68,9 @@ public enum GuiHandler {
                         button -> {
                             if (screen instanceof GuiCosArmorInventory) {
                                 InventoryScreen newGui = new InventoryScreen(screen.getMinecraft().player);
-                                newGui.oldMouseX = ((GuiCosArmorInventory) screen).oldMouseX;
-                                newGui.oldMouseY = ((GuiCosArmorInventory) screen).oldMouseY;
-                                screen.getMinecraft().displayGuiScreen(newGui);
+                                newGui.xMouse = ((GuiCosArmorInventory) screen).oldMouseX;
+                                newGui.yMouse = ((GuiCosArmorInventory) screen).oldMouseY;
+                                screen.getMinecraft().setScreen(newGui);
                                 ModObjects.network.sendToServer(new PacketOpenNormalInventory());
                             } else {
                                 ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
@@ -80,8 +80,8 @@ public enum GuiHandler {
             }
             if (!ModConfigs.CosArmorToggleButton_Hidden.get()) {
                 event.addWidget(new GuiCosArmorToggleButton(
-                        screen.guiLeft + ModConfigs.CosArmorToggleButton_Left.get()/* 59 */,
-                        screen.guiTop + ModConfigs.CosArmorToggleButton_Top.get()/* 72 */,
+                        screen.leftPos + ModConfigs.CosArmorToggleButton_Left.get()/* 59 */,
+                        screen.topPos + ModConfigs.CosArmorToggleButton_Top.get()/* 72 */,
                         5, 5,
                         new StringTextComponent(""),
                         PlayerRenderHandler.Disabled ? 1 : 0,
@@ -95,15 +95,15 @@ public enum GuiHandler {
 
             if (!ModConfigs.CosArmorCreativeGuiButton_Hidden.get()) {
                 event.addWidget(new GuiCosArmorButton(
-                        /*screen.guiLeft + */ModConfigs.CosArmorCreativeGuiButton_Left.get()/* 95 */,
-                        screen.guiTop + ModConfigs.CosArmorCreativeGuiButton_Top.get()/* 38 */,
+                        /*screen.leftPos + */ModConfigs.CosArmorCreativeGuiButton_Left.get()/* 95 */,
+                        screen.topPos + ModConfigs.CosArmorCreativeGuiButton_Top.get()/* 38 */,
                         10, 10,
                         new TranslationTextComponent("cos.gui.buttoncos"),
                         button -> {
                             ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
                         },
                         (button, newTabIndex) -> {
-                            button.visible = newTabIndex == ItemGroup.INVENTORY.getIndex();
+                            button.visible = newTabIndex == ItemGroup.TAB_INVENTORY.getId();
                         }));
             }
         }
@@ -116,7 +116,7 @@ public enum GuiHandler {
     }
 
     private void setupGuiFactory() {
-        ScreenManager.registerFactory(ModObjects.typeContainerCosArmor, GuiCosArmorInventory::new);
+        ScreenManager.register(ModObjects.typeContainerCosArmor, GuiCosArmorInventory::new);
     }
 
 }

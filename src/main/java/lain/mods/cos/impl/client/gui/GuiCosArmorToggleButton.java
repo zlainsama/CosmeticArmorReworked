@@ -21,7 +21,7 @@ public class GuiCosArmorToggleButton extends Button implements IShiftingWidget {
 
     @Override
     public void renderButton(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        mc.getTextureManager().bindTexture(GuiCosArmorInventory.TEXTURE);
+        mc.getTextureManager().bind(GuiCosArmorInventory.TEXTURE);
         RenderSystem.disableDepthTest();
         blit(matrix, x, y, 0 + 5 * state, 176, 5, 5);
         RenderSystem.enableDepthTest();

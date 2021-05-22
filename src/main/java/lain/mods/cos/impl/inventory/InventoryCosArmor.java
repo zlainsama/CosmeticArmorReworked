@@ -25,13 +25,13 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IName
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         for (int i = 0; i < getSlots(); i++)
             setStackInSlot(i, ItemStack.EMPTY);
     }
 
     @Override
-    public void closeInventory(PlayerEntity player) {
+    public void stopOpen(PlayerEntity player) {
     }
 
     @Override
@@ -40,7 +40,7 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IName
     }
 
     @Override
-    public ItemStack decrStackSize(int slot, int num) {
+    public ItemStack removeItem(int slot, int num) {
         return extractItem(slot, num, false);
     }
 
@@ -50,12 +50,12 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IName
     }
 
     @Override
-    public int getInventoryStackLimit() {
+    public int getMaxStackSize() {
         return 64;
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return getSlots();
     }
 
@@ -73,17 +73,22 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IName
     }
 
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack) {
+    public ItemStack getItem(int p_70301_1_) {
+        return getStackInSlot(p_70301_1_);
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
         return true;
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         return true;
     }
 
     @Override
-    public void markDirty() {
+    public void setChanged() {
     }
 
     @Override
@@ -105,11 +110,11 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IName
     }
 
     @Override
-    public void openInventory(PlayerEntity player) {
+    public void startOpen(PlayerEntity player) {
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int slot) {
+    public ItemStack removeItemNoUpdate(int slot) {
         return extractItem(slot, Integer.MAX_VALUE, false);
     }
 
@@ -122,7 +127,7 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IName
     }
 
     @Override
-    public void setInventorySlotContents(int slot, ItemStack stack) {
+    public void setItem(int slot, ItemStack stack) {
         setStackInSlot(slot, stack);
     }
 

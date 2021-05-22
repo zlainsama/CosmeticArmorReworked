@@ -29,22 +29,22 @@ public class PacketSetHiddenFlags implements NetworkPacket {
     public void handlePacketServer(Context context) {
         context.enqueueWork(() -> {
             if (InventoryManager.checkIdentifier(modid, identifier)) {
-                ModObjects.invMan.getCosArmorInventory(context.getSender().getUniqueID()).setHidden(modid, identifier, set);
+                ModObjects.invMan.getCosArmorInventory(context.getSender().getUUID()).setHidden(modid, identifier, set);
             }
         });
     }
 
     @Override
     public void readFromBuffer(PacketBuffer buffer) {
-        modid = buffer.readString(Short.MAX_VALUE);
-        identifier = buffer.readString(Short.MAX_VALUE);
+        modid = buffer.readUtf(Short.MAX_VALUE);
+        identifier = buffer.readUtf(Short.MAX_VALUE);
         set = buffer.readBoolean();
     }
 
     @Override
     public void writeToBuffer(PacketBuffer buffer) {
-        buffer.writeString(modid, Short.MAX_VALUE);
-        buffer.writeString(identifier, Short.MAX_VALUE);
+        buffer.writeUtf(modid, Short.MAX_VALUE);
+        buffer.writeUtf(identifier, Short.MAX_VALUE);
         buffer.writeBoolean(set);
     }
 

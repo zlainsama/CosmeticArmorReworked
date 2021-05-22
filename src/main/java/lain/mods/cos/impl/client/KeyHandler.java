@@ -16,12 +16,12 @@ public enum KeyHandler {
 
     INSTANCE;
 
-    public KeyBinding keyOpenCosArmorInventory = new KeyBinding("cos.key.opencosarmorinventory", InputMappings.INPUT_INVALID.getKeyCode(), "key.categories.inventory");
+    public KeyBinding keyOpenCosArmorInventory = new KeyBinding("cos.key.opencosarmorinventory", InputMappings.UNKNOWN.getValue(), "key.categories.inventory");
 
     private void handleClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.START || !LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).isGameFocused())
+        if (event.phase != TickEvent.Phase.START || !LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).isWindowActive())
             return;
-        if (keyOpenCosArmorInventory.isPressed() && !(LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).currentScreen instanceof GuiCosArmorInventory))
+        if (keyOpenCosArmorInventory.consumeClick() && !(LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).screen instanceof GuiCosArmorInventory))
             ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
     }
 

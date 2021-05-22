@@ -53,25 +53,25 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory> {
             addSlot(new Slot(invPlayer, 39 - k, 8, 8 + k * 18) {
 
                 @Override
-                public boolean canTakeStack(PlayerEntity playerIn) {
-                    ItemStack itemstack = getStack();
-                    return (itemstack.isEmpty() || playerIn.isCreative() || !EnchantmentHelper.hasBindingCurse(itemstack)) && super.canTakeStack(playerIn);
+                public boolean mayPickup(PlayerEntity playerIn) {
+                    ItemStack itemstack = getItem();
+                    return (itemstack.isEmpty() || playerIn.isCreative() || !EnchantmentHelper.hasBindingCurse(itemstack)) && super.mayPickup(playerIn);
                 }
 
                 @Override
                 @Nullable
                 @OnlyIn(Dist.CLIENT)
-                public Pair<ResourceLocation, ResourceLocation> getBackground() {
-                    return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
+                public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+                    return Pair.of(PlayerContainer.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
                 }
 
                 @Override
-                public int getSlotStackLimit() {
+                public int getMaxStackSize() {
                     return 1;
                 }
 
                 @Override
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     return stack.canEquip(equipmentslottype, player);
                 }
 
@@ -93,8 +93,8 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory> {
             @Override
             @Nullable
             @OnlyIn(Dist.CLIENT)
-            public Pair<ResourceLocation, ResourceLocation> getBackground() {
-                return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.EMPTY_ARMOR_SLOT_SHIELD);
+            public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+                return Pair.of(PlayerContainer.BLOCK_ATLAS, PlayerContainer.EMPTY_ARMOR_SLOT_SHIELD);
             }
 
         });
@@ -107,17 +107,17 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory> {
                 @Override
                 @Nullable
                 @OnlyIn(Dist.CLIENT)
-                public Pair<ResourceLocation, ResourceLocation> getBackground() {
-                    return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
+                public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+                    return Pair.of(PlayerContainer.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
                 }
 
                 @Override
-                public int getSlotStackLimit() {
+                public int getMaxStackSize() {
                     return 1;
                 }
 
                 @Override
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     return stack.canEquip(equipmentslottype, player);
                 }
 
@@ -127,54 +127,54 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory> {
 
     // net.minecraft.inventory.container.WorkbenchContainer.func_217066_a()
     private static void updateCrafting(int windowId, World world, PlayerEntity player, CraftingInventory craftingInventory, CraftResultInventory craftResultInventory) {
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             ServerPlayerEntity serverplayer = (ServerPlayerEntity) player;
             ItemStack stack = ItemStack.EMPTY;
-            Optional<ICraftingRecipe> optionalrecipe = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, craftingInventory, world);
+            Optional<ICraftingRecipe> optionalrecipe = world.getServer().getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, craftingInventory, world);
             if (optionalrecipe.isPresent()) {
                 ICraftingRecipe recipe = optionalrecipe.get();
-                if (craftResultInventory.canUseRecipe(world, serverplayer, recipe))
-                    stack = recipe.getCraftingResult(craftingInventory);
+                if (craftResultInventory.setRecipeUsed(world, serverplayer, recipe))
+                    stack = recipe.assemble(craftingInventory);
             }
 
-            craftResultInventory.setInventorySlotContents(0, stack);
-            serverplayer.connection.sendPacket(new SSetSlotPacket(windowId, 0, stack));
+            craftResultInventory.setItem(0, stack);
+            serverplayer.connection.send(new SSetSlotPacket(windowId, 0, stack));
         }
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean stillValid(PlayerEntity playerIn) {
         return true;
     }
 
     @Override
-    public boolean canMergeSlot(ItemStack stack, Slot slotIn) {
-        return slotIn.inventory != craftResultInventory && super.canMergeSlot(stack, slotIn);
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slotIn) {
+        return slotIn.container != craftResultInventory && super.canTakeItemForPickAll(stack, slotIn);
     }
 
     @Override
-    public void clear() {
-        craftResultInventory.clear();
-        craftingInventory.clear();
+    public void clearCraftingContent() {
+        craftResultInventory.clearContent();
+        craftingInventory.clearContent();
     }
 
     @Override
-    public void fillStackedContents(RecipeItemHelper arg0) {
+    public void fillCraftSlotsStackedContents(RecipeItemHelper arg0) {
         craftingInventory.fillStackedContents(arg0);
     }
 
     @Override
-    public RecipeBookCategory func_241850_m() {
+    public RecipeBookCategory getRecipeBookType() {
         return RecipeBookCategory.CRAFTING;
     }
 
     @Override
-    public int getHeight() {
+    public int getGridHeight() {
         return craftingInventory.getHeight();
     }
 
     @Override
-    public int getOutputSlot() {
+    public int getResultSlotIndex() {
         return 0;
     }
 
@@ -184,84 +184,84 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory> {
     }
 
     @Override
-    public int getWidth() {
+    public int getGridWidth() {
         return craftingInventory.getWidth();
     }
 
     @Override
-    public boolean matches(IRecipe<? super CraftingInventory> arg0) {
-        return arg0.matches(craftingInventory, player.world);
+    public boolean recipeMatches(IRecipe<? super CraftingInventory> arg0) {
+        return arg0.matches(craftingInventory, player.level);
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity playerIn) {
-        super.onContainerClosed(playerIn);
-        craftResultInventory.clear();
-        if (!playerIn.world.isRemote)
-            clearContainer(playerIn, playerIn.world, craftingInventory);
+    public void removed(PlayerEntity playerIn) {
+        super.removed(playerIn);
+        craftResultInventory.clearContent();
+        if (!playerIn.level.isClientSide)
+            clearContainer(playerIn, playerIn.level, craftingInventory);
     }
 
     @Override
-    public void onCraftMatrixChanged(IInventory inventoryIn) {
-        updateCrafting(this.windowId, player.world, player, craftingInventory, craftResultInventory);
+    public void slotsChanged(IInventory inventoryIn) {
+        updateCrafting(this.containerId, player.level, player, craftingInventory, craftResultInventory);
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int slotNumber) {
+    public ItemStack quickMoveStack(PlayerEntity player, int slotNumber) {
         ItemStack stack = ItemStack.EMPTY;
-        Slot slot = inventorySlots.get(slotNumber);
+        Slot slot = slots.get(slotNumber);
 
-        if ((slot != null) && (slot.getHasStack())) {
-            ItemStack stack1 = slot.getStack();
+        if ((slot != null) && (slot.hasItem())) {
+            ItemStack stack1 = slot.getItem();
             stack = stack1.copy();
-            EquipmentSlotType desiredSlot = MobEntity.getSlotForItemStack(stack);
+            EquipmentSlotType desiredSlot = MobEntity.getEquipmentSlotForItem(stack);
 
             if (slotNumber == 0) // CraftingResult
             {
-                if (!mergeItemStack(stack1, 9, 45, true))
+                if (!moveItemStackTo(stack1, 9, 45, true))
                     return ItemStack.EMPTY;
 
-                slot.onSlotChange(stack1, stack);
+                slot.onQuickCraft(stack1, stack);
             } else if ((slotNumber >= 1) && (slotNumber < 5)) // CraftingGrid
             {
-                if (!mergeItemStack(stack1, 9, 45, false))
+                if (!moveItemStackTo(stack1, 9, 45, false))
                     return ItemStack.EMPTY;
             } else if ((slotNumber >= 5) && (slotNumber < 9)) // NormalArmor
             {
-                if (!mergeItemStack(stack1, 9, 45, false))
+                if (!moveItemStackTo(stack1, 9, 45, false))
                     return ItemStack.EMPTY;
             } else if ((slotNumber >= 46) && (slotNumber < 50)) // CosmeticArmor
             {
-                if (!mergeItemStack(stack1, 9, 45, false))
+                if (!moveItemStackTo(stack1, 9, 45, false))
                     return ItemStack.EMPTY;
-            } else if (desiredSlot.getSlotType() == EquipmentSlotType.Group.ARMOR && !inventorySlots.get(8 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check NormalArmor slots
+            } else if (desiredSlot.getType() == EquipmentSlotType.Group.ARMOR && !slots.get(8 - desiredSlot.getIndex()).hasItem()) // ItemArmor - check NormalArmor slots
             {
                 int j = 8 - desiredSlot.getIndex();
 
-                if (!mergeItemStack(stack1, j, j + 1, false))
+                if (!moveItemStackTo(stack1, j, j + 1, false))
                     return ItemStack.EMPTY;
-            } else if (desiredSlot.getSlotType() == EquipmentSlotType.Group.ARMOR && !inventorySlots.get(49 - desiredSlot.getIndex()).getHasStack()) // ItemArmor - check CosmeticArmor slots
+            } else if (desiredSlot.getType() == EquipmentSlotType.Group.ARMOR && !slots.get(49 - desiredSlot.getIndex()).hasItem()) // ItemArmor - check CosmeticArmor slots
             {
                 int j = 49 - desiredSlot.getIndex();
 
-                if (!mergeItemStack(stack1, j, j + 1, false))
+                if (!moveItemStackTo(stack1, j, j + 1, false))
                     return ItemStack.EMPTY;
             } else if ((slotNumber >= 9) && (slotNumber < 36)) // PlayerInventory
             {
-                if (!mergeItemStack(stack1, 36, 45, false))
+                if (!moveItemStackTo(stack1, 36, 45, false))
                     return ItemStack.EMPTY;
             } else if ((slotNumber >= 36) && (slotNumber < 45)) // PlayerHotBar
             {
-                if (!mergeItemStack(stack1, 9, 36, false))
+                if (!moveItemStackTo(stack1, 9, 36, false))
                     return ItemStack.EMPTY;
-            } else if (!mergeItemStack(stack1, 9, 45, false)) {
+            } else if (!moveItemStackTo(stack1, 9, 45, false)) {
                 return ItemStack.EMPTY;
             }
 
             if (stack1.isEmpty())
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             else
-                slot.onSlotChanged();
+                slot.setChanged();
 
             if (stack1.getCount() == stack.getCount())
                 return ItemStack.EMPTY;
@@ -269,7 +269,7 @@ public class ContainerCosArmor extends RecipeBookContainer<CraftingInventory> {
             ItemStack stack2 = slot.onTake(player, stack1);
 
             if (slotNumber == 0)
-                player.dropItem(stack2, false);
+                player.drop(stack2, false);
         }
 
         return stack;

@@ -43,7 +43,7 @@ public enum PlayerRenderHandler {
         PlayerEntity player = event.getPlayer();
         Deque<Runnable> queue = cache.getUnchecked(player);
         restoreItems(queue);
-        NonNullList<ItemStack> armor = player.inventory.armorInventory;
+        NonNullList<ItemStack> armor = player.inventory.armor;
 
         for (int i = 0; i < armor.size(); i++) {
             int slot = i;
@@ -54,7 +54,7 @@ public enum PlayerRenderHandler {
         if (Disabled)
             return;
 
-        InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(player.getUniqueID());
+        InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(player.getUUID());
         ItemStack stack;
         for (int i = 0; i < armor.size(); i++) {
             if (invCosArmor.isSkinArmor(i))

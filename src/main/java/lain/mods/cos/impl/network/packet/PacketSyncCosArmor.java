@@ -45,7 +45,7 @@ public class PacketSyncCosArmor implements NetworkPacket {
         uuid = new UUID(buffer.readLong(), buffer.readLong());
         slot = buffer.readByte();
         isSkinArmor = buffer.readBoolean();
-        itemCosArmor = buffer.readItemStack();
+        itemCosArmor = buffer.readItem();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PacketSyncCosArmor implements NetworkPacket {
         buffer.writeLong(uuid.getLeastSignificantBits());
         buffer.writeByte(slot);
         buffer.writeBoolean(isSkinArmor);
-        buffer.writeItemStack(itemCosArmor);
+        buffer.writeItem(itemCosArmor);
     }
 
 }

@@ -141,13 +141,13 @@ public class InventoryManager {
     }
 
     protected File getDataFile(UUID uuid) {
-        return new File(LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).playerDataManager.getPlayerDataFolder(), uuid + ".cosarmor");
+        return new File(LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).playerDataStorage.getPlayerDataFolder(), uuid + ".cosarmor");
     }
 
     private void handlePlayerDrops(LivingDropsEvent event) {
         if (event.getEntityLiving() instanceof PlayerEntity) {
-            if (event.getEntityLiving().isServerWorld() && !event.getEntityLiving().getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY) && !ModConfigs.CosArmorKeepThroughDeath.get()) {
-                InventoryCosArmor inv = getCosArmorInventory(event.getEntityLiving().getUniqueID());
+            if (event.getEntityLiving().isEffectiveAi() && !event.getEntityLiving().getCommandSenderWorld().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && !ModConfigs.CosArmorKeepThroughDeath.get()) {
+                InventoryCosArmor inv = getCosArmorInventory(event.getEntityLiving().getUUID());
                 if (MinecraftForge.EVENT_BUS.post(new CosArmorDeathDrops((PlayerEntity) event.getEntityLiving(), inv)))
                     return;
                 for (int i = 0; i < inv.getSlots(); i++) {
@@ -159,8 +159,8 @@ public class InventoryManager {
                     float fY = RANDOM.nextFloat() * 0.75F;
                     float fZ = RANDOM.nextFloat() * 0.75F + 0.125F;
                     while (!stack.isEmpty()) {
-                        ItemEntity entity = new ItemEntity(event.getEntityLiving().getEntityWorld(), event.getEntityLiving().getPosX() + (double) fX, event.getEntityLiving().getPosY() + (double) fY, event.getEntityLiving().getPosZ() + (double) fZ, stack.split(RANDOM.nextInt(21) + 10));
-                        entity.setMotion(RANDOM.nextGaussian() * (double) 0.05F, RANDOM.nextGaussian() * (double) 0.05F + (double) 0.2F, RANDOM.nextGaussian() * (double) 0.05F);
+                        ItemEntity entity = new ItemEntity(event.getEntityLiving().getCommandSenderWorld(), event.getEntityLiving().getX() + (double) fX, event.getEntityLiving().getY() + (double) fY, event.getEntityLiving().getZ() + (double) fZ, stack.split(RANDOM.nextInt(21) + 10));
+                        entity.setDeltaMovement(RANDOM.nextGaussian() * (double) 0.05F, RANDOM.nextGaussian() * (double) 0.05F + (double) 0.2F, RANDOM.nextGaussian() * (double) 0.05F);
                         event.getDrops().add(entity);
                     }
 
@@ -171,15 +171,15 @@ public class InventoryManager {
     }
 
     private void handlePlayerLoggedIn(PlayerLoggedInEvent event) {
-        CommonCache.invalidate(event.getPlayer().getUniqueID());
-        getCosArmorInventory(event.getPlayer().getUniqueID());
+        CommonCache.invalidate(event.getPlayer().getUUID());
+        getCosArmorInventory(event.getPlayer().getUUID());
 
         if (event.getPlayer() instanceof ServerPlayerEntity) {
             ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
             for (ServerPlayerEntity other : LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).getPlayerList().getPlayers()) {
                 if (other == player)
                     continue;
-                UUID uuid = other.getUniqueID();
+                UUID uuid = other.getUUID();
                 InventoryCosArmor inv = getCosArmorInventory(uuid);
                 for (int i = 0; i < inv.getSlots(); i++)
                     ModObjects.network.sendTo(new PacketSyncCosArmor(uuid, inv, i), player);
@@ -191,7 +191,7 @@ public class InventoryManager {
     private void handlePlayerLoggedOut(PlayerLoggedOutEvent event) {
         UUID uuid;
         InventoryCosArmor inv;
-        if ((inv = CommonCache.getIfPresent(uuid = event.getPlayer().getUniqueID())) != null) {
+        if ((inv = CommonCache.getIfPresent(uuid = event.getPlayer().getUUID())) != null) {
             saveInventory(uuid, inv);
             CommonCache.invalidate(uuid);
         }
@@ -199,27 +199,27 @@ public class InventoryManager {
 
     private void handleRegisterCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("clearcosarmor").requires(s -> {
-            return s.hasPermissionLevel(2);
+            return s.hasPermission(2);
         }).executes(s -> {
             int count = 0;
-            ServerPlayerEntity player = s.getSource().asPlayer();
-            InventoryCosArmor inv = getCosArmorInventory(player.getUniqueID());
+            ServerPlayerEntity player = s.getSource().getPlayerOrException();
+            InventoryCosArmor inv = getCosArmorInventory(player.getUUID());
             for (int i = 0; i < inv.getSlots(); i++)
                 count += inv.extractItem(i, Integer.MAX_VALUE, false).getCount();
-            s.getSource().sendFeedback(new TranslationTextComponent("cos.command.clearcosarmor.success.single", count, player.getDisplayName()), true);
+            s.getSource().sendSuccess(new TranslationTextComponent("cos.command.clearcosarmor.success.single", count, player.getDisplayName()), true);
             return count;
         }).then(Commands.argument("targets", EntityArgument.players()).executes(s -> {
             int count = 0;
             Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(s, "targets");
             for (ServerPlayerEntity player : players) {
-                InventoryCosArmor inv = getCosArmorInventory(player.getUniqueID());
+                InventoryCosArmor inv = getCosArmorInventory(player.getUUID());
                 for (int i = 0; i < inv.getSlots(); i++)
                     count += inv.extractItem(i, Integer.MAX_VALUE, false).getCount();
             }
             if (players.size() == 1)
-                s.getSource().sendFeedback(new TranslationTextComponent("cos.command.clearcosarmor.success.single", count, players.iterator().next().getDisplayName()), true);
+                s.getSource().sendSuccess(new TranslationTextComponent("cos.command.clearcosarmor.success.single", count, players.iterator().next().getDisplayName()), true);
             else
-                s.getSource().sendFeedback(new TranslationTextComponent("cos.command.clearcosarmor.success.multiple", count, players.size()), true);
+                s.getSource().sendSuccess(new TranslationTextComponent("cos.command.clearcosarmor.success.multiple", count, players.size()), true);
             return count;
         })));
     }

@@ -31,7 +31,7 @@ public class InventoryManagerClient extends InventoryManager {
     @Override
     public ContainerCosArmor createContainerClient(int windowId, PlayerInventory invPlayer, PacketBuffer extraData) {
         PlayerEntity player = LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).player;
-        return new ContainerCosArmor(invPlayer, getCosArmorInventoryClient(player.getUniqueID()), player, windowId);
+        return new ContainerCosArmor(invPlayer, getCosArmorInventoryClient(player.getUUID()), player, windowId);
     }
 
     @Override
