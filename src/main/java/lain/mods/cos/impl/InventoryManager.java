@@ -14,6 +14,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.PacketBuffer;
@@ -222,6 +223,18 @@ public class InventoryManager {
                 s.getSource().sendSuccess(new TranslationTextComponent("cos.command.clearcosarmor.success.multiple", count, players.size()), true);
             return count;
         })));
+
+        event.getDispatcher().register(Commands.literal("coshat").requires(s -> {
+            return s.hasPermission(0);
+        }).executes(s -> {
+            ServerPlayerEntity player = s.getSource().getPlayerOrException();
+            InventoryCosArmor inv = getCosArmorInventory(player.getUUID());
+            ItemStack stack1 = player.getItemBySlot(EquipmentSlotType.MAINHAND);
+            ItemStack stack2 = inv.getStackInSlot(3);
+            player.setItemSlot(EquipmentSlotType.MAINHAND, stack2);
+            inv.setStackInSlot(3, stack1);
+            return 0;
+        }));
     }
 
     private void handleSaveToFile(PlayerEvent.SaveToFile event) {
