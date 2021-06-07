@@ -224,17 +224,19 @@ public class InventoryManager {
             return count;
         })));
 
-        event.getDispatcher().register(Commands.literal("coshat").requires(s -> {
-            return s.hasPermission(0);
-        }).executes(s -> {
-            ServerPlayerEntity player = s.getSource().getPlayerOrException();
-            InventoryCosArmor inv = getCosArmorInventory(player.getUUID());
-            ItemStack stack1 = player.getItemBySlot(EquipmentSlotType.MAINHAND);
-            ItemStack stack2 = inv.getStackInSlot(3);
-            player.setItemSlot(EquipmentSlotType.MAINHAND, stack2);
-            inv.setStackInSlot(3, stack1);
-            return 0;
-        }));
+        if (!ModConfigs.CosArmorDisableCosHatCommand.get()) {
+            event.getDispatcher().register(Commands.literal("coshat").requires(s -> {
+                return s.hasPermission(0);
+            }).executes(s -> {
+                ServerPlayerEntity player = s.getSource().getPlayerOrException();
+                InventoryCosArmor inv = getCosArmorInventory(player.getUUID());
+                ItemStack stack1 = player.getItemBySlot(EquipmentSlotType.MAINHAND);
+                ItemStack stack2 = inv.getStackInSlot(3);
+                player.setItemSlot(EquipmentSlotType.MAINHAND, stack2);
+                inv.setStackInSlot(3, stack1);
+                return 0;
+            }));
+        }
     }
 
     private void handleSaveToFile(PlayerEvent.SaveToFile event) {
