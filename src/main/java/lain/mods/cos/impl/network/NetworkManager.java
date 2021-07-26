@@ -1,16 +1,14 @@
 package lain.mods.cos.impl.network;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.PacketDistributor.PacketTarget;
-import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -56,13 +54,13 @@ public class NetworkManager {
         });
     }
 
-    public <T extends NetworkPacket> void send(T packet, PacketTarget target) {
+    public <T extends NetworkPacket> void send(T packet, PacketDistributor.PacketTarget target) {
         if (packet == null || target == null)
             throw new IllegalArgumentException();
         channel.send(target, packet);
     }
 
-    public <T extends NetworkPacket> void sendTo(T packet, ServerPlayerEntity player) {
+    public <T extends NetworkPacket> void sendTo(T packet, ServerPlayer player) {
         if (packet == null || player == null)
             throw new IllegalArgumentException();
         channel.send(PacketDistributor.PLAYER.with(() -> player), packet);
@@ -74,13 +72,13 @@ public class NetworkManager {
         channel.send(PacketDistributor.ALL.noArg(), packet);
     }
 
-    public <T extends NetworkPacket> void sendToAllAround(T packet, TargetPoint point) {
+    public <T extends NetworkPacket> void sendToAllAround(T packet, PacketDistributor.TargetPoint point) {
         if (packet == null || point == null)
             throw new IllegalArgumentException();
         channel.send(PacketDistributor.NEAR.with(() -> point), packet);
     }
 
-    public <T extends NetworkPacket> void sendToDimension(T packet, RegistryKey<World> dimension) {
+    public <T extends NetworkPacket> void sendToDimension(T packet, ResourceKey<Level> dimension) {
         if (packet == null || dimension == null)
             throw new IllegalArgumentException();
         channel.send(PacketDistributor.DIMENSION.with(() -> dimension), packet);
@@ -94,13 +92,13 @@ public class NetworkManager {
 
     public interface NetworkPacket {
 
-        void handlePacketClient(Context context);
+        void handlePacketClient(NetworkEvent.Context context);
 
-        void handlePacketServer(Context context);
+        void handlePacketServer(NetworkEvent.Context context);
 
-        void readFromBuffer(PacketBuffer buffer);
+        void readFromBuffer(FriendlyByteBuf buffer);
 
-        void writeToBuffer(PacketBuffer buffer);
+        void writeToBuffer(FriendlyByteBuf buffer);
 
     }
 

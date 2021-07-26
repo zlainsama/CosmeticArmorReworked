@@ -1,22 +1,22 @@
 package lain.mods.cos.impl.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.client.gui.GuiCosArmorInventory;
 import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.LogicalSidedProvider;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
+import net.minecraftforge.fmllegacy.LogicalSidedProvider;
 
 public enum KeyHandler {
 
     INSTANCE;
 
-    public KeyBinding keyOpenCosArmorInventory = new KeyBinding("cos.key.opencosarmorinventory", InputMappings.UNKNOWN.getValue(), "key.categories.inventory");
+    public KeyMapping keyOpenCosArmorInventory = new KeyMapping("cos.key.opencosarmorinventory", InputConstants.UNKNOWN.getValue(), "key.categories.inventory");
 
     private void handleClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START || !LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).isWindowActive())

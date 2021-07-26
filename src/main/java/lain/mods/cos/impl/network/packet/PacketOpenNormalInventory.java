@@ -1,8 +1,8 @@
 package lain.mods.cos.impl.network.packet;
 
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class PacketOpenNormalInventory implements NetworkPacket {
 
@@ -10,22 +10,22 @@ public class PacketOpenNormalInventory implements NetworkPacket {
     }
 
     @Override
-    public void handlePacketClient(Context context) {
+    public void handlePacketClient(NetworkEvent.Context context) {
     }
 
     @Override
-    public void handlePacketServer(Context context) {
+    public void handlePacketServer(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
             context.getSender().doCloseContainer();
         });
     }
 
     @Override
-    public void readFromBuffer(PacketBuffer buffer) {
+    public void readFromBuffer(FriendlyByteBuf buffer) {
     }
 
     @Override
-    public void writeToBuffer(PacketBuffer buffer) {
+    public void writeToBuffer(FriendlyByteBuf buffer) {
     }
 
 }

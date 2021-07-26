@@ -8,7 +8,7 @@ import java.util.UUID;
 public class CosArmorAPI {
 
     /**
-     * @param uuid the UniqueID of a player (Use {@link net.minecraft.entity.player.EntityPlayer#getUniqueID() EntityPlayer.getUniqueID()})
+     * @param uuid the UniqueID of a player (Use {@link net.minecraft.world.entity.player.Player#getUUID() Player.getUUID()})
      * @return associated {@link CAStacksBase CAStacks} for the input uuid
      */
     public static CAStacksBase getCAStacks(UUID uuid) {
@@ -16,7 +16,7 @@ public class CosArmorAPI {
     }
 
     /**
-     * @param uuid the UniqueID of a player (Use {@link net.minecraft.entity.player.EntityPlayer#getUniqueID() EntityPlayer.getUniqueID()})
+     * @param uuid the UniqueID of a player (Use {@link net.minecraft.world.entity.player.Player#getUUID() Player.getUUID()})
      * @return associated {@link CAStacksBase CAStacks} for the input uuid on the Client
      * @throws UnsupportedOperationException if called in a DedicatedServer
      */

@@ -8,19 +8,19 @@ import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.packet.PacketSyncCosArmor;
 import lain.mods.cos.impl.network.packet.PacketSyncHiddenFlags;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.GameRules;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -28,9 +28,9 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fmllegacy.LogicalSidedProvider;
+import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -125,7 +125,7 @@ public class InventoryManager {
         return false;
     }
 
-    public ContainerCosArmor createContainerClient(int windowId, PlayerInventory invPlayer, PacketBuffer extraData) {
+    public ContainerCosArmor createContainerClient(int windowId, Inventory invPlayer, FriendlyByteBuf extraData) {
         throw new UnsupportedOperationException();
     }
 
@@ -146,10 +146,10 @@ public class InventoryManager {
     }
 
     private void handlePlayerDrops(LivingDropsEvent event) {
-        if (event.getEntityLiving() instanceof PlayerEntity) {
+        if (event.getEntityLiving() instanceof Player) {
             if (event.getEntityLiving().isEffectiveAi() && !event.getEntityLiving().getCommandSenderWorld().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && !ModConfigs.CosArmorKeepThroughDeath.get()) {
                 InventoryCosArmor inv = getCosArmorInventory(event.getEntityLiving().getUUID());
-                if (MinecraftForge.EVENT_BUS.post(new CosArmorDeathDrops((PlayerEntity) event.getEntityLiving(), inv)))
+                if (MinecraftForge.EVENT_BUS.post(new CosArmorDeathDrops((Player) event.getEntityLiving(), inv)))
                     return;
                 for (int i = 0; i < inv.getSlots(); i++) {
                     ItemStack stack = inv.getStackInSlot(i).copy();
@@ -175,9 +175,9 @@ public class InventoryManager {
         CommonCache.invalidate(event.getPlayer().getUUID());
         getCosArmorInventory(event.getPlayer().getUUID());
 
-        if (event.getPlayer() instanceof ServerPlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
-            for (ServerPlayerEntity other : LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).getPlayerList().getPlayers()) {
+        if (event.getPlayer() instanceof ServerPlayer) {
+            ServerPlayer player = (ServerPlayer) event.getPlayer();
+            for (ServerPlayer other : LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).getPlayerList().getPlayers()) {
                 if (other == player)
                     continue;
                 UUID uuid = other.getUUID();
@@ -203,24 +203,24 @@ public class InventoryManager {
             return s.hasPermission(2);
         }).executes(s -> {
             int count = 0;
-            ServerPlayerEntity player = s.getSource().getPlayerOrException();
+            ServerPlayer player = s.getSource().getPlayerOrException();
             InventoryCosArmor inv = getCosArmorInventory(player.getUUID());
             for (int i = 0; i < inv.getSlots(); i++)
                 count += inv.extractItem(i, Integer.MAX_VALUE, false).getCount();
-            s.getSource().sendSuccess(new TranslationTextComponent("cos.command.clearcosarmor.success.single", count, player.getDisplayName()), true);
+            s.getSource().sendSuccess(new TranslatableComponent("cos.command.clearcosarmor.success.single", count, player.getDisplayName()), true);
             return count;
         }).then(Commands.argument("targets", EntityArgument.players()).executes(s -> {
             int count = 0;
-            Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(s, "targets");
-            for (ServerPlayerEntity player : players) {
+            Collection<ServerPlayer> players = EntityArgument.getPlayers(s, "targets");
+            for (ServerPlayer player : players) {
                 InventoryCosArmor inv = getCosArmorInventory(player.getUUID());
                 for (int i = 0; i < inv.getSlots(); i++)
                     count += inv.extractItem(i, Integer.MAX_VALUE, false).getCount();
             }
             if (players.size() == 1)
-                s.getSource().sendSuccess(new TranslationTextComponent("cos.command.clearcosarmor.success.single", count, players.iterator().next().getDisplayName()), true);
+                s.getSource().sendSuccess(new TranslatableComponent("cos.command.clearcosarmor.success.single", count, players.iterator().next().getDisplayName()), true);
             else
-                s.getSource().sendSuccess(new TranslationTextComponent("cos.command.clearcosarmor.success.multiple", count, players.size()), true);
+                s.getSource().sendSuccess(new TranslatableComponent("cos.command.clearcosarmor.success.multiple", count, players.size()), true);
             return count;
         })));
 
@@ -228,11 +228,11 @@ public class InventoryManager {
             event.getDispatcher().register(Commands.literal("coshat").requires(s -> {
                 return s.hasPermission(0);
             }).executes(s -> {
-                ServerPlayerEntity player = s.getSource().getPlayerOrException();
+                ServerPlayer player = s.getSource().getPlayerOrException();
                 InventoryCosArmor inv = getCosArmorInventory(player.getUUID());
-                ItemStack stack1 = player.getItemBySlot(EquipmentSlotType.MAINHAND);
+                ItemStack stack1 = player.getItemBySlot(EquipmentSlot.MAINHAND);
                 ItemStack stack2 = inv.getStackInSlot(3);
-                player.setItemSlot(EquipmentSlotType.MAINHAND, stack2);
+                player.setItemSlot(EquipmentSlot.MAINHAND, stack2);
                 inv.setStackInSlot(3, stack1);
                 return 0;
             }));
@@ -261,7 +261,7 @@ public class InventoryManager {
         try {
             File file;
             if ((file = getDataFile(uuid)).exists())
-                inventory.deserializeNBT(CompressedStreamTools.read(file));
+                inventory.deserializeNBT(NbtIo.read(file));
         } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to load CosmeticArmor data", t);
         }
@@ -292,7 +292,7 @@ public class InventoryManager {
         if (inventory == Dummy)
             return;
         try {
-            CompressedStreamTools.write(inventory.serializeNBT(), getDataFile(uuid));
+            NbtIo.write(inventory.serializeNBT(), getDataFile(uuid));
         } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to save CosmeticArmor data", t);
         }

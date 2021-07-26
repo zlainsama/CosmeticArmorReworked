@@ -7,13 +7,13 @@ import lain.mods.cos.impl.InventoryManager;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fmllegacy.LogicalSidedProvider;
 
 import java.util.UUID;
 
@@ -29,8 +29,8 @@ public class InventoryManagerClient extends InventoryManager {
     });
 
     @Override
-    public ContainerCosArmor createContainerClient(int windowId, PlayerInventory invPlayer, PacketBuffer extraData) {
-        PlayerEntity player = LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).player;
+    public ContainerCosArmor createContainerClient(int windowId, Inventory invPlayer, FriendlyByteBuf extraData) {
+        Player player = LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).player;
         return new ContainerCosArmor(invPlayer, getCosArmorInventoryClient(player.getUUID()), player, windowId);
     }
 

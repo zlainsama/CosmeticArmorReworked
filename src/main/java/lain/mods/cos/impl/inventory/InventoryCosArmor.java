@@ -1,21 +1,21 @@
 package lain.mods.cos.impl.inventory;
 
 import lain.mods.cos.api.inventory.CAStacksBase;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class InventoryCosArmor extends CAStacksBase implements IInventory, INamedContainerProvider {
+public class InventoryCosArmor extends CAStacksBase implements Container, MenuProvider {
 
-    protected static final ITextComponent Name = new StringTextComponent("InventoryCosArmor");
+    protected static final Component Name = new TextComponent("InventoryCosArmor");
     protected static final int MINSIZE = 11;
 
     protected final Collection<Object> listeners = new CopyOnWriteArrayList<>();
@@ -31,11 +31,11 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IName
     }
 
     @Override
-    public void stopOpen(PlayerEntity player) {
+    public void stopOpen(Player player) {
     }
 
     @Override
-    public Container createMenu(int windowId, PlayerInventory invPlayer, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int windowId, Inventory invPlayer, Player player) {
         return new ContainerCosArmor(invPlayer, this, player, windowId);
     }
 
@@ -45,7 +45,7 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IName
     }
 
     @Override
-    public ITextComponent getDisplayName() {
+    public Component getDisplayName() {
         return Name;
     }
 
@@ -83,7 +83,7 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IName
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return true;
     }
 
@@ -110,7 +110,7 @@ public class InventoryCosArmor extends CAStacksBase implements IInventory, IName
     }
 
     @Override
-    public void startOpen(PlayerEntity player) {
+    public void startOpen(Player player) {
     }
 
     @Override

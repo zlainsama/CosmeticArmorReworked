@@ -6,7 +6,7 @@ import lain.mods.cos.impl.client.GuiHandler;
 import lain.mods.cos.impl.client.KeyHandler;
 import lain.mods.cos.impl.client.PlayerRenderHandler;
 import lain.mods.cos.impl.network.packet.*;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -48,7 +48,7 @@ public class ForgeCosmeticArmorReworked {
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
         @SubscribeEvent
-        public static void setupRegistryContainerType(RegistryEvent.Register<ContainerType<?>> event) {
+        public static void setupRegistryContainerType(RegistryEvent.Register<MenuType<?>> event) {
             event.getRegistry().register(IForgeContainerType.create(ModObjects.invMan::createContainerClient).setRegistryName("cosmeticarmorreworked:inventorycosarmor"));
         }
     }

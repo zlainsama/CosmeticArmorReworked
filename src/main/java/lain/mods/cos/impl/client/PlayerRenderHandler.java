@@ -5,9 +5,9 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,10 +40,10 @@ public enum PlayerRenderHandler {
     }
 
     private void handlePreRenderPlayer_High(RenderPlayerEvent.Pre event) {
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         Deque<Runnable> queue = cache.getUnchecked(player);
         restoreItems(queue);
-        NonNullList<ItemStack> armor = player.inventory.armor;
+        NonNullList<ItemStack> armor = player.getInventory().armor;
 
         for (int i = 0; i < armor.size(); i++) {
             int slot = i;

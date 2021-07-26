@@ -6,13 +6,13 @@ import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.client.gui.*;
 import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
 import lain.mods.cos.impl.network.packet.PacketOpenNormalInventory;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.screen.inventory.CreativeScreen;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -28,34 +28,34 @@ public enum GuiHandler {
     private int lastCreativeTabIndex;
 
     private void handleGuiDrawPre(GuiScreenEvent.DrawScreenEvent.Pre event) {
-        if (event.getGui() instanceof ContainerScreen) {
-            ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
+        if (event.getGui() instanceof AbstractContainerScreen) {
+            AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) event.getGui();
 
             if (lastLeft != screen.leftPos) {
                 int diffLeft = screen.leftPos - lastLeft;
                 lastLeft = screen.leftPos;
-                screen.buttons.stream().filter(IShiftingWidget.class::isInstance).map(IShiftingWidget.class::cast).forEach(b -> b.shiftLeft(diffLeft));
+                screen.children.stream().filter(IShiftingWidget.class::isInstance).map(IShiftingWidget.class::cast).forEach(b -> b.shiftLeft(diffLeft));
             }
-            if (event.getGui() instanceof CreativeScreen) {
-                int currentTabIndex = CreativeScreen.selectedTab;
+            if (event.getGui() instanceof CreativeModeInventoryScreen) {
+                int currentTabIndex = CreativeModeInventoryScreen.selectedTab;
                 if (lastCreativeTabIndex != currentTabIndex) {
                     lastCreativeTabIndex = currentTabIndex;
-                    screen.buttons.stream().filter(ICreativeInvWidget.class::isInstance).map(ICreativeInvWidget.class::cast).forEach(b -> b.onSelectedTabChanged(currentTabIndex));
+                    screen.children.stream().filter(ICreativeInvWidget.class::isInstance).map(ICreativeInvWidget.class::cast).forEach(b -> b.onSelectedTabChanged(currentTabIndex));
                 }
             }
         }
     }
 
     private void handleGuiInitPost(GuiScreenEvent.InitGuiEvent.Post event) {
-        if (event.getGui() instanceof ContainerScreen) {
-            ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
+        if (event.getGui() instanceof AbstractContainerScreen) {
+            AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) event.getGui();
 
             lastLeft = screen.leftPos;
             lastCreativeTabIndex = -1;
         }
 
         if (event.getGui() instanceof InventoryScreen || event.getGui() instanceof GuiCosArmorInventory) {
-            ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
+            AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) event.getGui();
 
             if (!ModConfigs.CosArmorGuiButton_Hidden.get()) {
                 event.addWidget(new GuiCosArmorButton(
@@ -63,8 +63,8 @@ public enum GuiHandler {
                         screen.topPos + ModConfigs.CosArmorGuiButton_Top.get()/* 67 */,
                         10, 10,
                         event.getGui() instanceof GuiCosArmorInventory ?
-                                new TranslationTextComponent("cos.gui.buttonnormal") :
-                                new TranslationTextComponent("cos.gui.buttoncos"),
+                                new TranslatableComponent("cos.gui.buttonnormal") :
+                                new TranslatableComponent("cos.gui.buttoncos"),
                         button -> {
                             if (screen instanceof GuiCosArmorInventory) {
                                 InventoryScreen newGui = new InventoryScreen(screen.getMinecraft().player);
@@ -83,27 +83,27 @@ public enum GuiHandler {
                         screen.leftPos + ModConfigs.CosArmorToggleButton_Left.get()/* 59 */,
                         screen.topPos + ModConfigs.CosArmorToggleButton_Top.get()/* 72 */,
                         5, 5,
-                        new StringTextComponent(""),
+                        new TextComponent(""),
                         PlayerRenderHandler.Disabled ? 1 : 0,
                         button -> {
                             PlayerRenderHandler.Disabled = !PlayerRenderHandler.Disabled;
                             ((GuiCosArmorToggleButton) button).state = PlayerRenderHandler.Disabled ? 1 : 0;
                         }));
             }
-        } else if (event.getGui() instanceof CreativeScreen) {
-            ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
+        } else if (event.getGui() instanceof CreativeModeInventoryScreen) {
+            AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) event.getGui();
 
             if (!ModConfigs.CosArmorCreativeGuiButton_Hidden.get()) {
                 event.addWidget(new GuiCosArmorButton(
                         /*screen.leftPos + */ModConfigs.CosArmorCreativeGuiButton_Left.get()/* 95 */,
                         screen.topPos + ModConfigs.CosArmorCreativeGuiButton_Top.get()/* 38 */,
                         10, 10,
-                        new TranslationTextComponent("cos.gui.buttoncos"),
+                        new TranslatableComponent("cos.gui.buttoncos"),
                         button -> {
                             ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
                         },
                         (button, newTabIndex) -> {
-                            button.visible = newTabIndex == ItemGroup.TAB_INVENTORY.getId();
+                            button.visible = newTabIndex == CreativeModeTab.TAB_INVENTORY.getId();
                         }));
             }
         }
@@ -116,7 +116,7 @@ public enum GuiHandler {
     }
 
     private void setupGuiFactory() {
-        ScreenManager.register(ModObjects.typeContainerCosArmor, GuiCosArmorInventory::new);
+        MenuScreens.register(ModObjects.typeContainerCosArmor, GuiCosArmorInventory::new);
     }
 
 }

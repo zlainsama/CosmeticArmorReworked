@@ -1,35 +1,36 @@
 package lain.mods.cos.impl.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.packet.PacketSetSkinArmor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.DisplayEffectsScreen;
-import net.minecraft.client.gui.recipebook.IRecipeShownListener;
-import net.minecraft.client.gui.recipebook.RecipeBookGui;
-import net.minecraft.client.gui.screen.inventory.CreativeScreen;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.client.gui.widget.button.ImageButton;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
+import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fmllegacy.LogicalSidedProvider;
 
-public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor> implements IRecipeShownListener {
+public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<ContainerCosArmor> implements RecipeUpdateListener {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
     public static final ResourceLocation RECIPE_BUTTON_TEXTURE = new ResourceLocation("textures/gui/recipe_button.png");
 
-    private final RecipeBookGui recipeBook = new RecipeBookGui() {
+    private final RecipeBookComponent recipeBook = new RecipeBookComponent() {
 
         @Override
         public boolean isVisible() {
@@ -42,26 +43,26 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         }
 
     };
-    private final ITextComponent craftingText;
+    private final Component craftingText;
+    private final Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
     public float oldMouseX;
     public float oldMouseY;
-    protected Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
     private boolean useMousePos;
     private boolean widthTooNarrow;
     private boolean buttonClicked;
 
-    public GuiCosArmorInventory(ContainerCosArmor container, PlayerInventory invPlayer, ITextComponent displayName) {
+    public GuiCosArmorInventory(ContainerCosArmor container, Inventory invPlayer, Component displayName) {
         super(container, invPlayer, displayName);
         passEvents = true;
         titleLabelX = 97;
 
-        craftingText = new TranslationTextComponent("container.crafting");
+        craftingText = new TranslatableComponent("container.crafting");
 
         smoothTransition();
     }
 
     @Override
-    public void render(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         renderBackground(matrix);
         doRenderEffects = !recipeBook.isVisible();
         if (recipeBook.isVisible() && widthTooNarrow) {
@@ -80,9 +81,10 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     }
 
     @Override
-    protected void renderBg(MatrixStack matrix, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.getTextureManager().bind(TEXTURE);
+    protected void renderBg(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         int i = leftPos;
         int j = topPos;
         blit(matrix, i, j, 0, 0, imageWidth, imageHeight);
@@ -95,12 +97,12 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     }
 
     @Override
-    protected void renderLabels(MatrixStack matrix, int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack matrix, int mouseX, int mouseY) {
         font.draw(matrix, craftingText, (float) titleLabelX, (float) titleLabelY, 4210752);
     }
 
     @Override
-    public void tick() {
+    protected void containerTick() {
         recipeBook.tick();
     }
 
@@ -128,14 +130,13 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         super.init();
         widthTooNarrow = width < 379;
         recipeBook.init(width, height, mc, widthTooNarrow, menu);
-        leftPos = recipeBook.updateScreenPosition(widthTooNarrow, width, imageWidth);
-        children.add(recipeBook);
+        leftPos = recipeBook.updateScreenPosition(width, imageWidth);
+        addWidget(recipeBook);
         setInitialFocus(recipeBook);
         if (!ModConfigs.CosArmorDisableRecipeBook.get()) {
-            addButton(new ImageButton(leftPos + 76, topPos + 27, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
-                recipeBook.initVisuals(widthTooNarrow);
+            addRenderableWidget(new ImageButton(leftPos + 76, topPos + 27, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
                 recipeBook.toggleVisibility();
-                leftPos = recipeBook.updateScreenPosition(widthTooNarrow, width, imageWidth);
+                leftPos = recipeBook.updateScreenPosition(width, imageWidth);
                 ((ImageButton) button).setPosition(leftPos + 76, topPos + 27);
                 buttonClicked = true;
             }));
@@ -143,7 +144,7 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUUID());
         for (int i = 0; i < 4; i++) {
             int j = 3 - i;
-            addButton(new GuiCosArmorToggleButton(leftPos + 97 + 18 * i, topPos + 61, 5, 5, new StringTextComponent(""), invCosArmor.isSkinArmor(j) ? 1 : 0, button -> {
+            addRenderableWidget(new GuiCosArmorToggleButton(leftPos + 97 + 18 * i, topPos + 61, 5, 5, new TextComponent(""), invCosArmor.isSkinArmor(j) ? 1 : 0, button -> {
                 InventoryCosArmor inv = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUUID());
                 inv.setSkinArmor(j, !inv.isSkinArmor(j));
                 ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(j) ? 1 : 0;
@@ -160,7 +161,7 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
     }
 
     @Override
-    public RecipeBookGui getRecipeBookComponent() {
+    public RecipeBookComponent getRecipeBookComponent() {
         return recipeBook;
     }
 
@@ -190,7 +191,7 @@ public class GuiCosArmorInventory extends DisplayEffectsScreen<ContainerCosArmor
         if (mc.screen instanceof InventoryScreen) {
             oldMouseX = ((InventoryScreen) mc.screen).xMouse;
             oldMouseY = ((InventoryScreen) mc.screen).yMouse;
-        } else if (mc.screen instanceof CreativeScreen) {
+        } else if (mc.screen instanceof CreativeModeInventoryScreen) {
             useMousePos = true;
         }
     }

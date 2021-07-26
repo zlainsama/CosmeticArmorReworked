@@ -3,8 +3,8 @@ package lain.mods.cos.impl.network.packet;
 import lain.mods.cos.impl.InventoryManager;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class PacketSetHiddenFlags implements NetworkPacket {
 
@@ -22,11 +22,11 @@ public class PacketSetHiddenFlags implements NetworkPacket {
     }
 
     @Override
-    public void handlePacketClient(Context context) {
+    public void handlePacketClient(NetworkEvent.Context context) {
     }
 
     @Override
-    public void handlePacketServer(Context context) {
+    public void handlePacketServer(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
             if (InventoryManager.checkIdentifier(modid, identifier)) {
                 ModObjects.invMan.getCosArmorInventory(context.getSender().getUUID()).setHidden(modid, identifier, set);
@@ -35,14 +35,14 @@ public class PacketSetHiddenFlags implements NetworkPacket {
     }
 
     @Override
-    public void readFromBuffer(PacketBuffer buffer) {
+    public void readFromBuffer(FriendlyByteBuf buffer) {
         modid = buffer.readUtf(Short.MAX_VALUE);
         identifier = buffer.readUtf(Short.MAX_VALUE);
         set = buffer.readBoolean();
     }
 
     @Override
-    public void writeToBuffer(PacketBuffer buffer) {
+    public void writeToBuffer(FriendlyByteBuf buffer) {
         buffer.writeUtf(modid, Short.MAX_VALUE);
         buffer.writeUtf(identifier, Short.MAX_VALUE);
         buffer.writeBoolean(set);

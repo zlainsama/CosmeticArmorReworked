@@ -1,8 +1,8 @@
 package lain.mods.cos.api.inventory;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * This class extends {@link ItemStackHandler}. <br>
  * <br>
  * CosmeticArmorReworked uses 4 slots. <br>
- * Slot 0-3 are {@link net.minecraft.inventory.EquipmentSlotType#FEET FEET}, {@link net.minecraft.inventory.EquipmentSlotType#LEGS LEGS}, {@link net.minecraft.inventory.EquipmentSlotType#CHEST CHEST}, {@link net.minecraft.inventory.EquipmentSlotType#HEAD HEAD}. <br>
+ * Slot 0-3 are {@link net.minecraft.world.entity.EquipmentSlot#FEET FEET}, {@link net.minecraft.world.entity.EquipmentSlot#LEGS LEGS}, {@link net.minecraft.world.entity.EquipmentSlot#CHEST CHEST}, {@link net.minecraft.world.entity.EquipmentSlot#HEAD HEAD}. <br>
  * <br>
  * For toggling visibilities of other mods, use these methods: <br>
  * {@link #setHidden(String, String, boolean) setHidden}, {@link #isHidden(String, String) isHidden}, {@link #forEachHidden(BiConsumer) forEachHidden}.
@@ -39,11 +39,11 @@ public class CAStacksBase extends ItemStackHandler {
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         setSize(nbt.contains("Size", Constants.NBT.TAG_INT) ? nbt.getInt("Size") : stacks.size());
-        ListNBT tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
+        ListTag tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++) {
-            CompoundNBT itemTags = tagList.getCompound(i);
+            CompoundTag itemTags = tagList.getCompound(i);
             int slot = itemTags.getInt("Slot");
 
             if (slot >= 0 && slot < stacks.size()) {
@@ -90,11 +90,11 @@ public class CAStacksBase extends ItemStackHandler {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        ListNBT nbtTagList = new ListNBT();
+    public CompoundTag serializeNBT() {
+        ListTag nbtTagList = new ListTag();
         for (int i = 0; i < stacks.size(); i++) {
             if (!stacks.get(i).isEmpty() || isSkinArmor[i]) {
-                CompoundNBT itemTag = new CompoundNBT();
+                CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
                 if (!stacks.get(i).isEmpty())
                     stacks.get(i).save(itemTag);
@@ -103,7 +103,7 @@ public class CAStacksBase extends ItemStackHandler {
                 nbtTagList.add(itemTag);
             }
         }
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.put("Items", nbtTagList);
         nbt.putInt("Size", stacks.size());
         // writeUTF limit = a 16-bit unsigned integer = 65535 - Should be enough

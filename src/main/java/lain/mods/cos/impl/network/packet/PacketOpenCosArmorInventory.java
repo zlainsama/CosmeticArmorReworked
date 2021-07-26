@@ -2,9 +2,9 @@ package lain.mods.cos.impl.network.packet;
 
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class PacketOpenCosArmorInventory implements NetworkPacket {
 
@@ -12,22 +12,22 @@ public class PacketOpenCosArmorInventory implements NetworkPacket {
     }
 
     @Override
-    public void handlePacketClient(Context context) {
+    public void handlePacketClient(NetworkEvent.Context context) {
     }
 
     @Override
-    public void handlePacketServer(Context context) {
+    public void handlePacketServer(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
             NetworkHooks.openGui(context.getSender(), ModObjects.invMan.getCosArmorInventory(context.getSender().getUUID()));
         });
     }
 
     @Override
-    public void readFromBuffer(PacketBuffer buffer) {
+    public void readFromBuffer(FriendlyByteBuf buffer) {
     }
 
     @Override
-    public void writeToBuffer(PacketBuffer buffer) {
+    public void writeToBuffer(FriendlyByteBuf buffer) {
     }
 
 }
