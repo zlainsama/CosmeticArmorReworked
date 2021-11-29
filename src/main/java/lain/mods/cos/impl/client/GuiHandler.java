@@ -50,7 +50,7 @@ public enum GuiHandler {
         if (event.getGui() instanceof ContainerScreen) {
             ContainerScreen<?> screen = (ContainerScreen<?>) event.getGui();
 
-            lastLeft = screen.leftPos;
+            lastLeft = screen instanceof CreativeScreen ? 0 : screen.leftPos;
             lastCreativeTabIndex = -1;
         }
 
