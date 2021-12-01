@@ -4,7 +4,7 @@ import lain.mods.cos.impl.InventoryManager;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketSetHiddenFlags implements NetworkPacket {
 

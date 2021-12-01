@@ -12,8 +12,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.LogicalSidedProvider;
 
 import java.util.UUID;
 
@@ -30,7 +28,7 @@ public class InventoryManagerClient extends InventoryManager {
 
     @Override
     public ContainerCosArmor createContainerClient(int windowId, Inventory invPlayer, FriendlyByteBuf extraData) {
-        Player player = LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).player;
+        Player player = Minecraft.getInstance().player;
         return new ContainerCosArmor(invPlayer, getCosArmorInventoryClient(player.getUUID()), player, windowId);
     }
 

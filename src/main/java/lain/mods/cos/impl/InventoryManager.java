@@ -22,15 +22,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fmllegacy.LogicalSidedProvider;
-import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -142,7 +142,7 @@ public class InventoryManager {
     }
 
     protected File getDataFile(UUID uuid) {
-        return new File(LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).playerDataStorage.getPlayerDataFolder(), uuid + ".cosarmor");
+        return new File(((MinecraftServer) LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER)).playerDataStorage.getPlayerDataFolder(), uuid + ".cosarmor");
     }
 
     private void handlePlayerDrops(LivingDropsEvent event) {
@@ -177,7 +177,7 @@ public class InventoryManager {
 
         if (event.getPlayer() instanceof ServerPlayer) {
             ServerPlayer player = (ServerPlayer) event.getPlayer();
-            for (ServerPlayer other : LogicalSidedProvider.INSTANCE.<MinecraftServer>get(LogicalSide.SERVER).getPlayerList().getPlayers()) {
+            for (ServerPlayer other : ((MinecraftServer) LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER)).getPlayerList().getPlayers()) {
                 if (other == player)
                     continue;
                 UUID uuid = other.getUUID();
@@ -246,7 +246,7 @@ public class InventoryManager {
             saveInventory(uuid, inv);
     }
 
-    private void handleServerStopping(FMLServerStoppingEvent event) {
+    private void handleServerStopping(ServerStoppingEvent event) {
         ModObjects.logger.debug("Server is stopping... try to save all still loaded CosmeticArmor data");
         CommonCache.asMap().entrySet().forEach(e -> {
             ModObjects.logger.debug(e.getKey());

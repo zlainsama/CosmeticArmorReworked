@@ -22,8 +22,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.LogicalSidedProvider;
 
 public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<ContainerCosArmor> implements RecipeUpdateListener {
 
@@ -44,7 +42,7 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
 
     };
     private final Component craftingText;
-    private final Minecraft mc = LogicalSidedProvider.INSTANCE.get(LogicalSide.CLIENT);
+    private final Minecraft mc = Minecraft.getInstance();
     public float oldMouseX;
     public float oldMouseY;
     private boolean useMousePos;
@@ -64,7 +62,6 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
     @Override
     public void render(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         renderBackground(matrix);
-        doRenderEffects = !recipeBook.isVisible();
         if (recipeBook.isVisible() && widthTooNarrow) {
             renderBg(matrix, partialTicks, mouseX, mouseY);
             recipeBook.render(matrix, mouseX, mouseY, partialTicks);

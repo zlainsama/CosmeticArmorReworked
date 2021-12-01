@@ -2,7 +2,7 @@ package lain.mods.cos.impl.network.packet;
 
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketOpenNormalInventory implements NetworkPacket {
 
