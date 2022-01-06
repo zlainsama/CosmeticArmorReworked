@@ -22,15 +22,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -142,7 +141,7 @@ public class InventoryManager {
     }
 
     protected File getDataFile(UUID uuid) {
-        return new File(((MinecraftServer) LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER)).playerDataStorage.getPlayerDataFolder(), uuid + ".cosarmor");
+        return new File(ServerLifecycleHooks.getCurrentServer().playerDataStorage.getPlayerDataFolder(), uuid + ".cosarmor");
     }
 
     private void handlePlayerDrops(LivingDropsEvent event) {
@@ -177,7 +176,7 @@ public class InventoryManager {
 
         if (event.getPlayer() instanceof ServerPlayer) {
             ServerPlayer player = (ServerPlayer) event.getPlayer();
-            for (ServerPlayer other : ((MinecraftServer) LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER)).getPlayerList().getPlayers()) {
+            for (ServerPlayer other : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
                 if (other == player)
                     continue;
                 UUID uuid = other.getUUID();
@@ -268,11 +267,19 @@ public class InventoryManager {
     }
 
     protected void onHiddenFlagsChanged(UUID uuid, InventoryCosArmor inventory, String modid, String identifier) {
-        ModObjects.network.sendToAll(new PacketSyncHiddenFlags(uuid, inventory, modid, identifier));
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server.isDedicatedServer())
+            ModObjects.network.sendToAll(new PacketSyncHiddenFlags(uuid, inventory, modid, identifier));
+        else
+            server.getPlayerList().getPlayers().forEach(player -> ModObjects.network.sendTo(new PacketSyncHiddenFlags(uuid, inventory, modid, identifier), player));
     }
 
     protected void onInventoryChanged(UUID uuid, InventoryCosArmor inventory, int slot) {
-        ModObjects.network.sendToAll(new PacketSyncCosArmor(uuid, inventory, slot));
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server.isDedicatedServer())
+            ModObjects.network.sendToAll(new PacketSyncCosArmor(uuid, inventory, slot));
+        else
+            server.getPlayerList().getPlayers().forEach(player -> ModObjects.network.sendTo(new PacketSyncCosArmor(uuid, inventory, slot), player));
     }
 
     public void registerEvents() {
