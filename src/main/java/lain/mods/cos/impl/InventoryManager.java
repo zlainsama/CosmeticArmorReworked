@@ -268,11 +268,19 @@ public class InventoryManager {
     }
 
     protected void onHiddenFlagsChanged(UUID uuid, InventoryCosArmor inventory, String modid, String identifier) {
-        ModObjects.network.sendToAll(new PacketSyncHiddenFlags(uuid, inventory, modid, identifier));
+        MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
+        if (server.isDedicatedServer())
+            ModObjects.network.sendToAll(new PacketSyncHiddenFlags(uuid, inventory, modid, identifier));
+        else
+            server.getPlayerList().getPlayers().forEach(player -> ModObjects.network.sendTo(new PacketSyncHiddenFlags(uuid, inventory, modid, identifier), player));
     }
 
     protected void onInventoryChanged(UUID uuid, InventoryCosArmor inventory, int slot) {
-        ModObjects.network.sendToAll(new PacketSyncCosArmor(uuid, inventory, slot));
+        MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
+        if (server.isDedicatedServer())
+            ModObjects.network.sendToAll(new PacketSyncCosArmor(uuid, inventory, slot));
+        else
+            server.getPlayerList().getPlayers().forEach(player -> ModObjects.network.sendTo(new PacketSyncCosArmor(uuid, inventory, slot), player));
     }
 
     public void registerEvents() {
