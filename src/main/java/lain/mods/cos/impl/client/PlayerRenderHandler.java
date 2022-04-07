@@ -5,13 +5,17 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.LogicalSidedProvider;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -33,10 +37,6 @@ public enum PlayerRenderHandler {
 
     private void handleLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
         Disabled = false;
-    }
-
-    private void handlePostRenderPlayer_Low(RenderPlayerEvent.Post event) {
-        restoreItems(cache.getUnchecked(event.getPlayer()));
     }
 
     private void handlePreRenderPlayer_High(RenderPlayerEvent.Pre event) {
@@ -64,6 +64,10 @@ public enum PlayerRenderHandler {
         }
     }
 
+    private void handlePostRenderPlayer_Low(RenderPlayerEvent.Post event) {
+        restoreItems(cache.getUnchecked(event.getPlayer()));
+    }
+
     private void handlePreRenderPlayer_LowestCanceled(RenderPlayerEvent.Pre event) {
         if (!event.isCanceled())
             return;
@@ -71,10 +75,41 @@ public enum PlayerRenderHandler {
         restoreItems(cache.getUnchecked(event.getPlayer()));
     }
 
+    private void handleRenderHand_High(RenderHandEvent event) {
+        PlayerEntity player = LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).player;
+        Deque<Runnable> queue = cache.getUnchecked(player);
+        restoreItems(queue);
+        NonNullList<ItemStack> armor = player.inventory.armor;
+
+        for (int i = 0; i < armor.size(); i++) {
+            int slot = i;
+            ItemStack stack = armor.get(slot);
+            queue.add(() -> armor.set(slot, stack));
+        }
+
+        if (Disabled)
+            return;
+
+        InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(player.getUUID());
+        ItemStack stack;
+        for (int i = 0; i < armor.size(); i++) {
+            if (invCosArmor.isSkinArmor(i))
+                armor.set(i, ItemStack.EMPTY);
+            else if (!(stack = invCosArmor.getStackInSlot(i)).isEmpty())
+                armor.set(i, stack);
+        }
+    }
+
+    private void handleRenderHand_LowestCanceled(RenderHandEvent event) {
+        restoreItems(cache.getUnchecked(LogicalSidedProvider.INSTANCE.<Minecraft>get(LogicalSide.CLIENT).player));
+    }
+
     public void registerEvents() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::handlePostRenderPlayer_Low);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handlePreRenderPlayer_High);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::handlePostRenderPlayer_Low);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handlePreRenderPlayer_LowestCanceled);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handleRenderHand_High);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handleRenderHand_LowestCanceled);
         MinecraftForge.EVENT_BUS.addListener(this::handleLoggedOut);
     }
 
