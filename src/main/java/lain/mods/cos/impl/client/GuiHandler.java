@@ -115,7 +115,7 @@ public enum GuiHandler {
     }
 
     private void setupGuiFactory() {
-        MenuScreens.register(ModObjects.typeContainerCosArmor, GuiCosArmorInventory::new);
+        MenuScreens.register(ModObjects.getTypeContainerCosArmor(), GuiCosArmorInventory::new);
     }
 
 }

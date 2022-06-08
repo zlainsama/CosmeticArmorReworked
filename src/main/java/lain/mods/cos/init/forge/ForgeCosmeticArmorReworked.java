@@ -5,27 +5,30 @@ import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.client.GuiHandler;
 import lain.mods.cos.impl.client.KeyHandler;
 import lain.mods.cos.impl.client.PlayerRenderHandler;
+import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.network.packet.*;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod("cosmeticarmorreworked")
 public class ForgeCosmeticArmorReworked {
 
+    private static final DeferredRegister<MenuType<?>> MENU = DeferredRegister.create(ForgeRegistries.Keys.CONTAINER_TYPES, "cosmeticarmorreworked");
+
+    public static final RegistryObject<MenuType<ContainerCosArmor>> typeContainerCosArmor = MENU.register("inventorycosarmor", () -> IForgeMenuType.create(ModObjects.invMan::createContainerClient));
+
     public ForgeCosmeticArmorReworked() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerContainers);
+        MENU.register(FMLJavaModLoadingContext.get().getModEventBus());
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
         ModConfigs.registerConfigs();
-    }
-
-    private void registerContainers(RegisterEvent event) {
-        event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper -> helper.register("inventorycosarmor", IForgeMenuType.create(ModObjects.invMan::createContainerClient)));
     }
 
     private void setup(FMLCommonSetupEvent event) {

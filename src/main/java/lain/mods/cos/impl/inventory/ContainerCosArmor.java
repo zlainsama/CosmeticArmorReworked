@@ -35,7 +35,7 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
     private final ResultContainer craftResultInventory = new ResultContainer();
 
     public ContainerCosArmor(Inventory invPlayer, InventoryCosArmor invCosArmor, Player player, int windowId) {
-        super(ModObjects.typeContainerCosArmor, windowId);
+        super(ModObjects.getTypeContainerCosArmor(), windowId);
 
         this.player = player;
 

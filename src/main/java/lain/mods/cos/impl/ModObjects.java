@@ -7,7 +7,6 @@ import lain.mods.cos.init.forge.ForgeCosmeticArmorReworked;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,7 +16,8 @@ public class ModObjects {
     public static final InventoryManager invMan = DistExecutor.safeRunForDist(() -> InventoryManagerClient::new, () -> InventoryManager::new);
     public static final NetworkManager network = new NetworkManager(new ResourceLocation("cosmeticarmorreworked:main"), "2");
 
-    @ObjectHolder(registryName = "menu", value = "cosmeticarmorreworked:inventorycosarmor")
-    public static MenuType<ContainerCosArmor> typeContainerCosArmor;
+    public static MenuType<ContainerCosArmor> getTypeContainerCosArmor() {
+        return ForgeCosmeticArmorReworked.typeContainerCosArmor.get();
+    }
 
 }
