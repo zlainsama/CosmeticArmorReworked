@@ -6,22 +6,26 @@ import lain.mods.cos.impl.client.GuiHandler;
 import lain.mods.cos.impl.client.KeyHandler;
 import lain.mods.cos.impl.client.PlayerRenderHandler;
 import lain.mods.cos.impl.network.packet.*;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 @Mod("cosmeticarmorreworked")
 public class ForgeCosmeticArmorReworked {
 
     public ForgeCosmeticArmorReworked() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerContainers);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
         ModConfigs.registerConfigs();
+    }
+
+    private void registerContainers(RegisterEvent event) {
+        event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper -> helper.register("cosmeticarmorreworked:inventorycosarmor", IForgeMenuType.create(ModObjects.invMan::createContainerClient)));
     }
 
     private void setup(FMLCommonSetupEvent event) {
@@ -43,14 +47,6 @@ public class ForgeCosmeticArmorReworked {
         ModObjects.network.registerPacket(4, PacketOpenNormalInventory.class, PacketOpenNormalInventory::new);
         ModObjects.network.registerPacket(5, PacketSyncHiddenFlags.class, PacketSyncHiddenFlags::new);
         ModObjects.network.registerPacket(6, PacketSetHiddenFlags.class, PacketSetHiddenFlags::new);
-    }
-
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
-        @SubscribeEvent
-        public static void setupRegistryContainerType(RegistryEvent.Register<MenuType<?>> event) {
-            event.getRegistry().register(IForgeMenuType.create(ModObjects.invMan::createContainerClient).setRegistryName("cosmeticarmorreworked:inventorycosarmor"));
-        }
     }
 
 }

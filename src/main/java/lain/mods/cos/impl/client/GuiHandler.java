@@ -10,8 +10,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -63,8 +62,8 @@ public enum GuiHandler {
                         screen.topPos + ModConfigs.CosArmorGuiButton_Top.get()/* 67 */,
                         10, 10,
                         event.getScreen() instanceof GuiCosArmorInventory ?
-                                new TranslatableComponent("cos.gui.buttonnormal") :
-                                new TranslatableComponent("cos.gui.buttoncos"),
+                                Component.translatable("cos.gui.buttonnormal") :
+                                Component.translatable("cos.gui.buttoncos"),
                         button -> {
                             if (screen instanceof GuiCosArmorInventory) {
                                 InventoryScreen newGui = new InventoryScreen(screen.getMinecraft().player);
@@ -83,7 +82,7 @@ public enum GuiHandler {
                         screen.leftPos + ModConfigs.CosArmorToggleButton_Left.get()/* 59 */,
                         screen.topPos + ModConfigs.CosArmorToggleButton_Top.get()/* 72 */,
                         5, 5,
-                        new TextComponent(""),
+                        Component.empty(),
                         PlayerRenderHandler.Disabled ? 1 : 0,
                         button -> {
                             PlayerRenderHandler.Disabled = !PlayerRenderHandler.Disabled;
@@ -98,7 +97,7 @@ public enum GuiHandler {
                         /*screen.leftPos + */ModConfigs.CosArmorCreativeGuiButton_Left.get()/* 95 */,
                         screen.topPos + ModConfigs.CosArmorCreativeGuiButton_Top.get()/* 38 */,
                         10, 10,
-                        new TranslatableComponent("cos.gui.buttoncos"),
+                        Component.translatable("cos.gui.buttoncos"),
                         button -> {
                             ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
                         },

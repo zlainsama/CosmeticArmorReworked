@@ -2,7 +2,6 @@ package lain.mods.cos.impl.inventory;
 
 import lain.mods.cos.api.inventory.CAStacksBase;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -15,7 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InventoryCosArmor extends CAStacksBase implements Container, MenuProvider {
 
-    protected static final Component Name = new TextComponent("InventoryCosArmor");
+    protected static final Component Name = Component.literal("InventoryCosArmor");
     protected static final int MINSIZE = 11;
 
     protected final Collection<Object> listeners = new CopyOnWriteArrayList<>();

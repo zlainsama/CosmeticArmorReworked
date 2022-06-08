@@ -12,7 +12,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -206,7 +206,7 @@ public class InventoryManager {
             InventoryCosArmor inv = getCosArmorInventory(player.getUUID());
             for (int i = 0; i < inv.getSlots(); i++)
                 count += inv.extractItem(i, Integer.MAX_VALUE, false).getCount();
-            s.getSource().sendSuccess(new TranslatableComponent("cos.command.clearcosarmor.success.single", count, player.getDisplayName()), true);
+            s.getSource().sendSuccess(Component.translatable("cos.command.clearcosarmor.success.single", count, player.getDisplayName()), true);
             return count;
         }).then(Commands.argument("targets", EntityArgument.players()).executes(s -> {
             int count = 0;
@@ -217,9 +217,9 @@ public class InventoryManager {
                     count += inv.extractItem(i, Integer.MAX_VALUE, false).getCount();
             }
             if (players.size() == 1)
-                s.getSource().sendSuccess(new TranslatableComponent("cos.command.clearcosarmor.success.single", count, players.iterator().next().getDisplayName()), true);
+                s.getSource().sendSuccess(Component.translatable("cos.command.clearcosarmor.success.single", count, players.iterator().next().getDisplayName()), true);
             else
-                s.getSource().sendSuccess(new TranslatableComponent("cos.command.clearcosarmor.success.multiple", count, players.size()), true);
+                s.getSource().sendSuccess(Component.translatable("cos.command.clearcosarmor.success.multiple", count, players.size()), true);
             return count;
         })));
 

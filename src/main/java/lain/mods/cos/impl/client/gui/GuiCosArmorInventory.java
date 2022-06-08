@@ -16,8 +16,6 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -54,7 +52,7 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
         passEvents = true;
         titleLabelX = 97;
 
-        craftingText = new TranslatableComponent("container.crafting");
+        craftingText = Component.translatable("container.crafting");
 
         smoothTransition();
     }
@@ -141,7 +139,7 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
         InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUUID());
         for (int i = 0; i < 4; i++) {
             int j = 3 - i;
-            addRenderableWidget(new GuiCosArmorToggleButton(leftPos + 97 + 18 * i, topPos + 61, 5, 5, new TextComponent(""), invCosArmor.isSkinArmor(j) ? 1 : 0, button -> {
+            addRenderableWidget(new GuiCosArmorToggleButton(leftPos + 97 + 18 * i, topPos + 61, 5, 5, Component.empty(), invCosArmor.isSkinArmor(j) ? 1 : 0, button -> {
                 InventoryCosArmor inv = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUUID());
                 inv.setSkinArmor(j, !inv.isSkinArmor(j));
                 ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(j) ? 1 : 0;
