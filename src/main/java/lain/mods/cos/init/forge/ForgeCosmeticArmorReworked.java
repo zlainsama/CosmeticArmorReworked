@@ -25,7 +25,7 @@ public class ForgeCosmeticArmorReworked {
     }
 
     private void registerContainers(RegisterEvent event) {
-        event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper -> helper.register("cosmeticarmorreworked:inventorycosarmor", IForgeMenuType.create(ModObjects.invMan::createContainerClient)));
+        event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper -> helper.register("inventorycosarmor", IForgeMenuType.create(ModObjects.invMan::createContainerClient)));
     }
 
     private void setup(FMLCommonSetupEvent event) {
