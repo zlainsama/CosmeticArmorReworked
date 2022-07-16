@@ -26,7 +26,7 @@ public enum GuiHandler {
     private int lastLeft;
     private int lastCreativeTabIndex;
 
-    private void handleGuiDrawPre(ScreenEvent.DrawScreenEvent.Pre event) {
+    private void handleGuiDrawPre(ScreenEvent.Render.Pre event) {
         if (event.getScreen() instanceof AbstractContainerScreen) {
             AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) event.getScreen();
 
@@ -45,7 +45,7 @@ public enum GuiHandler {
         }
     }
 
-    private void handleGuiInitPost(ScreenEvent.InitScreenEvent.Post event) {
+    private void handleGuiInitPost(ScreenEvent.Init.Post event) {
         if (event.getScreen() instanceof AbstractContainerScreen) {
             AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) event.getScreen();
 

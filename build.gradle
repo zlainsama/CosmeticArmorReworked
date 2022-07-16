@@ -1,13 +1,13 @@
 plugins {
     id 'eclipse'
-    id 'net.minecraftforge.gradle' version '5.+'
+    id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
 import net.minecraftforge.gradle.common.tasks.SignJar
 
 import java.nio.file.Files
 
-version = "1.19-v1b"
+version = "1.19-v2"
 group = "lain.mods.cos"
 archivesBaseName = "CosmeticArmorReworked"
 
@@ -22,7 +22,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19-41.0.1'
+    minecraft 'net.minecraftforge:forge:1.19-41.0.99'
 }
 
 processResources {

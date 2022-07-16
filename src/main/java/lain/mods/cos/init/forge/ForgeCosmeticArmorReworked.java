@@ -8,6 +8,7 @@ import lain.mods.cos.impl.client.PlayerRenderHandler;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.network.packet.*;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -20,7 +21,7 @@ import net.minecraftforge.registries.RegistryObject;
 @Mod("cosmeticarmorreworked")
 public class ForgeCosmeticArmorReworked {
 
-    private static final DeferredRegister<MenuType<?>> MENU = DeferredRegister.create(ForgeRegistries.Keys.CONTAINER_TYPES, "cosmeticarmorreworked");
+    private static final DeferredRegister<MenuType<?>> MENU = DeferredRegister.create(ForgeRegistries.Keys.MENU_TYPES, "cosmeticarmorreworked");
 
     public static final RegistryObject<MenuType<ContainerCosArmor>> typeContainerCosArmor = MENU.register("inventorycosarmor", () -> IForgeMenuType.create(ModObjects.invMan::createContainerClient));
 
@@ -28,6 +29,7 @@ public class ForgeCosmeticArmorReworked {
         MENU.register(FMLJavaModLoadingContext.get().getModEventBus());
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupKeyMappings);
         ModConfigs.registerConfigs();
     }
 
@@ -41,6 +43,10 @@ public class ForgeCosmeticArmorReworked {
         GuiHandler.INSTANCE.registerEvents();
         KeyHandler.INSTANCE.registerEvents();
         PlayerRenderHandler.INSTANCE.registerEvents();
+    }
+
+    private void setupKeyMappings(RegisterKeyMappingsEvent event) {
+        KeyHandler.INSTANCE.registerKeyMappings(event::register);
     }
 
     private void setupNetworkPackets() {

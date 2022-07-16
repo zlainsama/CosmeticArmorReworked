@@ -39,7 +39,7 @@ public class InventoryManagerClient extends InventoryManager {
         return ClientCache.getUnchecked(uuid);
     }
 
-    private void handleLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+    private void handleLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
         ClientCache.invalidateAll();
     }
 

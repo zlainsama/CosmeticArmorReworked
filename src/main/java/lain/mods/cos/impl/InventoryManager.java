@@ -145,10 +145,10 @@ public class InventoryManager {
     }
 
     private void handlePlayerDrops(LivingDropsEvent event) {
-        if (event.getEntityLiving() instanceof Player) {
-            if (event.getEntityLiving().isEffectiveAi() && !event.getEntityLiving().getCommandSenderWorld().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && !ModConfigs.CosArmorKeepThroughDeath.get()) {
-                InventoryCosArmor inv = getCosArmorInventory(event.getEntityLiving().getUUID());
-                if (MinecraftForge.EVENT_BUS.post(new CosArmorDeathDrops((Player) event.getEntityLiving(), inv)))
+        if (event.getEntity() instanceof Player) {
+            if (event.getEntity().isEffectiveAi() && !event.getEntity().getCommandSenderWorld().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && !ModConfigs.CosArmorKeepThroughDeath.get()) {
+                InventoryCosArmor inv = getCosArmorInventory(event.getEntity().getUUID());
+                if (MinecraftForge.EVENT_BUS.post(new CosArmorDeathDrops((Player) event.getEntity(), inv)))
                     return;
                 for (int i = 0; i < inv.getSlots(); i++) {
                     ItemStack stack = inv.getStackInSlot(i).copy();
@@ -159,7 +159,7 @@ public class InventoryManager {
                     float fY = RANDOM.nextFloat() * 0.75F;
                     float fZ = RANDOM.nextFloat() * 0.75F + 0.125F;
                     while (!stack.isEmpty()) {
-                        ItemEntity entity = new ItemEntity(event.getEntityLiving().getCommandSenderWorld(), event.getEntityLiving().getX() + (double) fX, event.getEntityLiving().getY() + (double) fY, event.getEntityLiving().getZ() + (double) fZ, stack.split(RANDOM.nextInt(21) + 10));
+                        ItemEntity entity = new ItemEntity(event.getEntity().getCommandSenderWorld(), event.getEntity().getX() + (double) fX, event.getEntity().getY() + (double) fY, event.getEntity().getZ() + (double) fZ, stack.split(RANDOM.nextInt(21) + 10));
                         entity.setDeltaMovement(RANDOM.nextGaussian() * (double) 0.05F, RANDOM.nextGaussian() * (double) 0.05F + (double) 0.2F, RANDOM.nextGaussian() * (double) 0.05F);
                         event.getDrops().add(entity);
                     }
@@ -171,11 +171,11 @@ public class InventoryManager {
     }
 
     private void handlePlayerLoggedIn(PlayerLoggedInEvent event) {
-        CommonCache.invalidate(event.getPlayer().getUUID());
-        getCosArmorInventory(event.getPlayer().getUUID());
+        CommonCache.invalidate(event.getEntity().getUUID());
+        getCosArmorInventory(event.getEntity().getUUID());
 
-        if (event.getPlayer() instanceof ServerPlayer) {
-            ServerPlayer player = (ServerPlayer) event.getPlayer();
+        if (event.getEntity() instanceof ServerPlayer) {
+            ServerPlayer player = (ServerPlayer) event.getEntity();
             for (ServerPlayer other : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
                 if (other == player)
                     continue;
@@ -191,7 +191,7 @@ public class InventoryManager {
     private void handlePlayerLoggedOut(PlayerLoggedOutEvent event) {
         UUID uuid;
         InventoryCosArmor inv;
-        if ((inv = CommonCache.getIfPresent(uuid = event.getPlayer().getUUID())) != null) {
+        if ((inv = CommonCache.getIfPresent(uuid = event.getEntity().getUUID())) != null) {
             saveInventory(uuid, inv);
             CommonCache.invalidate(uuid);
         }

@@ -33,12 +33,12 @@ public enum PlayerRenderHandler {
 
     });
 
-    private void handleLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+    private void handleLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
         Disabled = false;
     }
 
     private void handlePreRenderPlayer_High(RenderPlayerEvent.Pre event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         Deque<Runnable> queue = cache.getUnchecked(player);
         restoreItems(queue);
         NonNullList<ItemStack> armor = player.getInventory().armor;
@@ -63,14 +63,14 @@ public enum PlayerRenderHandler {
     }
 
     private void handlePostRenderPlayer_Low(RenderPlayerEvent.Post event) {
-        restoreItems(cache.getUnchecked(event.getPlayer()));
+        restoreItems(cache.getUnchecked(event.getEntity()));
     }
 
     private void handlePreRenderPlayer_LowestCanceled(RenderPlayerEvent.Pre event) {
         if (!event.isCanceled())
             return;
 
-        restoreItems(cache.getUnchecked(event.getPlayer()));
+        restoreItems(cache.getUnchecked(event.getEntity()));
     }
 
     private void handleRenderHand_High(RenderHandEvent event) {

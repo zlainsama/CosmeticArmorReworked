@@ -18,7 +18,7 @@ public class PacketOpenCosArmorInventory implements NetworkPacket {
     @Override
     public void handlePacketServer(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
-            NetworkHooks.openGui(context.getSender(), ModObjects.invMan.getCosArmorInventory(context.getSender().getUUID()));
+            NetworkHooks.openScreen(context.getSender(), ModObjects.invMan.getCosArmorInventory(context.getSender().getUUID()));
         });
     }
 
