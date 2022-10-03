@@ -10,6 +10,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.RenderArmEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -102,12 +103,43 @@ public enum PlayerRenderHandler {
         restoreItems(cache.getUnchecked(Minecraft.getInstance().player));
     }
 
+    private void handleRenderArm_High(RenderArmEvent event) {
+        Player player = Minecraft.getInstance().player;
+        Deque<Runnable> queue = cache.getUnchecked(player);
+        restoreItems(queue);
+        NonNullList<ItemStack> armor = player.getInventory().armor;
+
+        for (int i = 0; i < armor.size(); i++) {
+            int slot = i;
+            ItemStack stack = armor.get(slot);
+            queue.add(() -> armor.set(slot, stack));
+        }
+
+        if (Disabled)
+            return;
+
+        InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(player.getUUID());
+        ItemStack stack;
+        for (int i = 0; i < armor.size(); i++) {
+            if (invCosArmor.isSkinArmor(i))
+                armor.set(i, ItemStack.EMPTY);
+            else if (!(stack = invCosArmor.getStackInSlot(i)).isEmpty())
+                armor.set(i, stack);
+        }
+    }
+
+    private void handleRenderArm_LowestCanceled(RenderArmEvent event) {
+        restoreItems(cache.getUnchecked(Minecraft.getInstance().player));
+    }
+
     public void registerEvents() {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handlePreRenderPlayer_High);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::handlePostRenderPlayer_Low);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handlePreRenderPlayer_LowestCanceled);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handleRenderHand_High);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handleRenderHand_LowestCanceled);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handleRenderArm_High);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handleRenderArm_LowestCanceled);
         MinecraftForge.EVENT_BUS.addListener(this::handleLoggedOut);
     }
 
