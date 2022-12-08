@@ -1,22 +1,22 @@
-modLoader="javafml"
-loaderVersion="[25,)"
-license="Minecraft Mod Public License 1.0.1"
-issueTrackerURL="https://github.com/zlainsama/CosmeticArmorReworked/issues"
-displayURL="https://github.com/zlainsama/CosmeticArmorReworked"
+modLoader = "javafml"
+loaderVersion = "[25,)"
+license = "Minecraft Mod Public License 1.0.1"
+issueTrackerURL = "https://github.com/zlainsama/CosmeticArmorReworked/issues"
+displayURL = "https://github.com/zlainsama/CosmeticArmorReworked"
 #logoFile=""
-credits="dmillerw - original author; azanor - some code learned from baubles; izuminya - button icon; Deph0 and sblectric for their support when i'm absent"
-authors="zlainsama"
+credits = "dmillerw - original author; azanor - some code learned from baubles; izuminya - button icon; Deph0 and sblectric for their support when i'm absent"
+authors = "zlainsama"
 [[mods]]
-modId="cosmeticarmorreworked"
-version="${file.jarVersion}"
-displayName="CosmeticArmorReworked"
+modId = "cosmeticarmorreworked"
+version = "${file.jarVersion}"
+displayName = "CosmeticArmorReworked"
 #updateJSONURL=""
-description='''
+description = '''
 This mod allows you to wear two sets of armor, one for display, one for function. You can also hide armor for your skin. For PVP, you can stop the mod from functioning on your client side.
 '''
 [[dependencies.cosmeticarmorreworked]]
-modId="forge"
-mandatory=true
-versionRange="[41.0.99,)"
-ordering="NONE"
-side="BOTH"
+modId = "forge"
+mandatory = true
+versionRange = "[41.0.99,)"
+ordering = "NONE"
+side = "BOTH"

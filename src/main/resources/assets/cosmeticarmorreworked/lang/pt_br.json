@@ -1,7 +1,7 @@
 {
-    "cos.key.opencosarmorinventory": "OpenCosmeticArmorInventory",
-    "cos.gui.buttoncos": "Armadura Cosmética",
-    "cos.gui.buttonnormal": "Normal",
-    "cos.command.clearcosarmor.success.single": "Removidos %s itens do inventário da armadura cosmética do jogador %s",
-    "cos.command.clearcosarmor.success.multiple": "Removidos %s itens do inventário dea armadura cosmética de %s jogadores"
-  }
+  "cos.key.opencosarmorinventory": "OpenCosmeticArmorInventory",
+  "cos.gui.buttoncos": "Armadura Cosmética",
+  "cos.gui.buttonnormal": "Normal",
+  "cos.command.clearcosarmor.success.single": "Removidos %s itens do inventário da armadura cosmética do jogador %s",
+  "cos.command.clearcosarmor.success.multiple": "Removidos %s itens do inventário dea armadura cosmética de %s jogadores"
+}
