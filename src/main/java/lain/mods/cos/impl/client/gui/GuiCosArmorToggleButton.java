@@ -11,7 +11,7 @@ public class GuiCosArmorToggleButton extends Button implements IShiftingWidget {
     public int state;
 
     public GuiCosArmorToggleButton(int x, int y, int width, int height, Component message, int initialState, Button.OnPress onPress) {
-        super(x, y, width, height, message, onPress);
+        super(x, y, width, height, message, onPress, DEFAULT_NARRATION);
         state = initialState;
     }
 
@@ -21,13 +21,13 @@ public class GuiCosArmorToggleButton extends Button implements IShiftingWidget {
         RenderSystem.setShaderTexture(0, GuiCosArmorInventory.TEXTURE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
         RenderSystem.disableDepthTest();
-        blit(matrix, x, y, 0 + 5 * state, 176, 5, 5);
+        blit(matrix, getX(), getY(), 0 + 5 * state, 176, 5, 5);
         RenderSystem.enableDepthTest();
     }
 
     @Override
     public void shiftLeft(int diffLeft) {
-        x += diffLeft;
+        setX(getX() + diffLeft);
     }
 
 }

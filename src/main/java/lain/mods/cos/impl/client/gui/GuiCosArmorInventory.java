@@ -149,13 +149,6 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
     }
 
     @Override
-    public void onClose() {
-        recipeBook.removed();
-
-        super.onClose();
-    }
-
-    @Override
     public RecipeBookComponent getRecipeBookComponent() {
         return recipeBook;
     }

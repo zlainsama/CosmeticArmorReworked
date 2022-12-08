@@ -6,16 +6,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
 
-import java.util.function.ObjIntConsumer;
+import java.util.function.BiConsumer;
 
 public class GuiCosArmorButton extends Button implements IShiftingWidget, ICreativeInvWidget {
 
     private final Minecraft mc = Minecraft.getInstance();
-    private final ObjIntConsumer<GuiCosArmorButton> onCreativeTabChanged;
+    private final BiConsumer<GuiCosArmorButton, CreativeModeTab> onCreativeTabChanged;
 
-    public GuiCosArmorButton(int x, int y, int width, int height, Component message, Button.OnPress onPress, ObjIntConsumer<GuiCosArmorButton> onCreativeTabChanged) {
-        super(x, y, width, height, message, onPress);
+    public GuiCosArmorButton(int x, int y, int width, int height, Component message, Button.OnPress onPress, BiConsumer<GuiCosArmorButton, CreativeModeTab> onCreativeTabChanged) {
+        super(x, y, width, height, message, onPress, DEFAULT_NARRATION);
         this.onCreativeTabChanged = onCreativeTabChanged;
     }
 
@@ -26,22 +27,22 @@ public class GuiCosArmorButton extends Button implements IShiftingWidget, ICreat
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
         RenderSystem.disableDepthTest();
         if (isHoveredOrFocused()) {
-            blit(matrix, x, y, 10, 166, 10, 10);
-            drawCenteredString(matrix, mc.font, getMessage(), x + 5, y + height, 0xffffff);
+            blit(matrix, getX(), getY(), 10, 166, 10, 10);
+            drawCenteredString(matrix, mc.font, getMessage(), getX() + 5, getY() + height, 0xffffff);
         } else {
-            blit(matrix, x, y, 0, 166, 10, 10);
+            blit(matrix, getX(), getY(), 0, 166, 10, 10);
         }
         RenderSystem.enableDepthTest();
     }
 
     @Override
     public void shiftLeft(int diffLeft) {
-        x += diffLeft;
+        setX(getX() + diffLeft);
     }
 
     @Override
-    public void onSelectedTabChanged(int newTabIndex) {
+    public void onSelectedTabChanged(CreativeModeTab newTab) {
         if (onCreativeTabChanged != null)
-            onCreativeTabChanged.accept(this, newTabIndex);
+            onCreativeTabChanged.accept(this, newTab);
     }
 }

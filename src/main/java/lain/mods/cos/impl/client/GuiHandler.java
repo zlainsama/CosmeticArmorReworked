@@ -12,6 +12,7 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -24,7 +25,7 @@ public enum GuiHandler {
     public static final Set<Integer> ButtonIds = ImmutableSet.of(76, 77);
 
     private int lastLeft;
-    private int lastCreativeTabIndex;
+    private CreativeModeTab lastCreativeTab;
 
     private void handleGuiDrawPre(ScreenEvent.Render.Pre event) {
         if (event.getScreen() instanceof AbstractContainerScreen) {
@@ -36,10 +37,10 @@ public enum GuiHandler {
                 screen.children.stream().filter(IShiftingWidget.class::isInstance).map(IShiftingWidget.class::cast).forEach(b -> b.shiftLeft(diffLeft));
             }
             if (event.getScreen() instanceof CreativeModeInventoryScreen) {
-                int currentTabIndex = CreativeModeInventoryScreen.selectedTab;
-                if (lastCreativeTabIndex != currentTabIndex) {
-                    lastCreativeTabIndex = currentTabIndex;
-                    screen.children.stream().filter(ICreativeInvWidget.class::isInstance).map(ICreativeInvWidget.class::cast).forEach(b -> b.onSelectedTabChanged(currentTabIndex));
+                CreativeModeTab currentTab = CreativeModeInventoryScreen.selectedTab;
+                if (lastCreativeTab != currentTab) {
+                    lastCreativeTab = currentTab;
+                    screen.children.stream().filter(ICreativeInvWidget.class::isInstance).map(ICreativeInvWidget.class::cast).forEach(b -> b.onSelectedTabChanged(currentTab));
                 }
             }
         }
@@ -50,7 +51,7 @@ public enum GuiHandler {
             AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) event.getScreen();
 
             lastLeft = screen instanceof CreativeModeInventoryScreen ? 0 : screen.leftPos;
-            lastCreativeTabIndex = -1;
+            lastCreativeTab = null;
         }
 
         if (event.getScreen() instanceof InventoryScreen || event.getScreen() instanceof GuiCosArmorInventory) {
@@ -101,8 +102,8 @@ public enum GuiHandler {
                         button -> {
                             ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
                         },
-                        (button, newTabIndex) -> {
-                            button.visible = newTabIndex == CreativeModeTab.TAB_INVENTORY.getId();
+                        (button, newTab) -> {
+                            button.visible = newTab == CreativeModeTabs.INVENTORY;
                         }));
             }
         }
