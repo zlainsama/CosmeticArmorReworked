@@ -88,7 +88,7 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
             oldMouseY = (float) mouseY;
             useMousePos = false;
         }
-        InventoryScreen.renderEntityInInventory(i + 51, j + 75, 30, (float) (i + 51) - oldMouseX, (float) (j + 75 - 50) - oldMouseY, mc.player);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(matrix, i + 51, j + 75, 30, (float) (i + 51) - oldMouseX, (float) (j + 75 - 50) - oldMouseY, mc.player);
     }
 
     @Override

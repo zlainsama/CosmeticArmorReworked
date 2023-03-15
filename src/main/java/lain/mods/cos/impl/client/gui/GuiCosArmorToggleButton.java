@@ -16,7 +16,7 @@ public class GuiCosArmorToggleButton extends Button implements IShiftingWidget {
     }
 
     @Override
-    public void renderButton(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, GuiCosArmorInventory.TEXTURE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);

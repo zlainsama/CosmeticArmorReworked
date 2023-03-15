@@ -132,7 +132,7 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
             if (optionalrecipe.isPresent()) {
                 CraftingRecipe recipe = optionalrecipe.get();
                 if (craftResultInventory.setRecipeUsed(world, serverplayer, recipe))
-                    stack = recipe.assemble(craftingInventory);
+                    stack = recipe.assemble(craftingInventory, world.registryAccess());
             }
 
             craftResultInventory.setItem(0, stack);
