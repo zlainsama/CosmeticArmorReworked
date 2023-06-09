@@ -11,8 +11,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -25,22 +23,22 @@ public enum GuiHandler {
     public static final Set<Integer> ButtonIds = ImmutableSet.of(76, 77);
 
     private int lastLeft;
-    private CreativeModeTab lastCreativeTab;
+    private boolean lastInventoryOpen;
 
     private void handleGuiDrawPre(ScreenEvent.Render.Pre event) {
         if (event.getScreen() instanceof AbstractContainerScreen) {
             AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) event.getScreen();
 
-            if (lastLeft != screen.leftPos) {
-                int diffLeft = screen.leftPos - lastLeft;
-                lastLeft = screen.leftPos;
-                screen.children.stream().filter(IShiftingWidget.class::isInstance).map(IShiftingWidget.class::cast).forEach(b -> b.shiftLeft(diffLeft));
+            if (lastLeft != screen.getGuiLeft()) {
+                int diffLeft = screen.getGuiLeft() - lastLeft;
+                lastLeft = screen.getGuiLeft();
+                screen.children().stream().filter(IShiftingWidget.class::isInstance).map(IShiftingWidget.class::cast).forEach(b -> b.shiftLeft(diffLeft));
             }
             if (event.getScreen() instanceof CreativeModeInventoryScreen) {
-                CreativeModeTab currentTab = CreativeModeInventoryScreen.selectedTab;
-                if (lastCreativeTab != currentTab) {
-                    lastCreativeTab = currentTab;
-                    screen.children.stream().filter(ICreativeInvWidget.class::isInstance).map(ICreativeInvWidget.class::cast).forEach(b -> b.onSelectedTabChanged(currentTab));
+                boolean isInventoryOpen = ((CreativeModeInventoryScreen) event.getScreen()).isInventoryOpen();
+                if (lastInventoryOpen != isInventoryOpen) {
+                    lastInventoryOpen = isInventoryOpen;
+                    screen.children().stream().filter(ICreativeInvWidget.class::isInstance).map(ICreativeInvWidget.class::cast).forEach(b -> b.onSelectedTabChanged(isInventoryOpen));
                 }
             }
         }
@@ -50,8 +48,8 @@ public enum GuiHandler {
         if (event.getScreen() instanceof AbstractContainerScreen) {
             AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) event.getScreen();
 
-            lastLeft = screen instanceof CreativeModeInventoryScreen ? 0 : screen.leftPos;
-            lastCreativeTab = null;
+            lastLeft = screen instanceof CreativeModeInventoryScreen ? 0 : screen.getGuiLeft();
+            lastInventoryOpen = false;
         }
 
         if (event.getScreen() instanceof InventoryScreen || event.getScreen() instanceof GuiCosArmorInventory) {
@@ -59,8 +57,8 @@ public enum GuiHandler {
 
             if (!ModConfigs.CosArmorGuiButton_Hidden.get()) {
                 event.addListener(new GuiCosArmorButton(
-                        screen.leftPos + ModConfigs.CosArmorGuiButton_Left.get()/* 65 */,
-                        screen.topPos + ModConfigs.CosArmorGuiButton_Top.get()/* 67 */,
+                        screen.getGuiLeft() + ModConfigs.CosArmorGuiButton_Left.get()/* 65 */,
+                        screen.getGuiTop() + ModConfigs.CosArmorGuiButton_Top.get()/* 67 */,
                         10, 10,
                         event.getScreen() instanceof GuiCosArmorInventory ?
                                 Component.translatable("cos.gui.buttonnormal") :
@@ -68,8 +66,8 @@ public enum GuiHandler {
                         button -> {
                             if (screen instanceof GuiCosArmorInventory) {
                                 InventoryScreen newGui = new InventoryScreen(screen.getMinecraft().player);
-                                newGui.xMouse = ((GuiCosArmorInventory) screen).oldMouseX;
-                                newGui.yMouse = ((GuiCosArmorInventory) screen).oldMouseY;
+                                InventoryScreenAccess.setXMouse(newGui, ((GuiCosArmorInventory) screen).oldMouseX);
+                                InventoryScreenAccess.setYMouse(newGui, ((GuiCosArmorInventory) screen).oldMouseY);
                                 screen.getMinecraft().setScreen(newGui);
                                 ModObjects.network.sendToServer(new PacketOpenNormalInventory());
                             } else {
@@ -80,8 +78,8 @@ public enum GuiHandler {
             }
             if (!ModConfigs.CosArmorToggleButton_Hidden.get()) {
                 event.addListener(new GuiCosArmorToggleButton(
-                        screen.leftPos + ModConfigs.CosArmorToggleButton_Left.get()/* 59 */,
-                        screen.topPos + ModConfigs.CosArmorToggleButton_Top.get()/* 72 */,
+                        screen.getGuiLeft() + ModConfigs.CosArmorToggleButton_Left.get()/* 59 */,
+                        screen.getGuiTop() + ModConfigs.CosArmorToggleButton_Top.get()/* 72 */,
                         5, 5,
                         Component.empty(),
                         PlayerRenderHandler.Disabled ? 1 : 0,
@@ -96,14 +94,14 @@ public enum GuiHandler {
             if (!ModConfigs.CosArmorCreativeGuiButton_Hidden.get()) {
                 event.addListener(new GuiCosArmorButton(
                         /*screen.leftPos + */ModConfigs.CosArmorCreativeGuiButton_Left.get()/* 95 */,
-                        screen.topPos + ModConfigs.CosArmorCreativeGuiButton_Top.get()/* 38 */,
+                        screen.getGuiTop() + ModConfigs.CosArmorCreativeGuiButton_Top.get()/* 38 */,
                         10, 10,
                         Component.translatable("cos.gui.buttoncos"),
                         button -> {
                             ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
                         },
-                        (button, newTab) -> {
-                            button.visible = newTab == CreativeModeTabs.INVENTORY;
+                        (button, isInventoryOpen) -> {
+                            button.visible = isInventoryOpen;
                         }));
             }
         }

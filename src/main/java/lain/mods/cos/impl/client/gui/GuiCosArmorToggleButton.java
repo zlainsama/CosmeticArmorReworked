@@ -1,9 +1,8 @@
 package lain.mods.cos.impl.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 
 public class GuiCosArmorToggleButton extends Button implements IShiftingWidget {
@@ -16,13 +15,12 @@ public class GuiCosArmorToggleButton extends Button implements IShiftingWidget {
     }
 
     @Override
-    public void renderWidget(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, GuiCosArmorInventory.TEXTURE);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-        RenderSystem.disableDepthTest();
-        blit(matrix, getX(), getY(), 0 + 5 * state, 176, 5, 5);
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        graphics.setColor(1.0F, 1.0F, 1.0F, alpha);
+        RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
+        graphics.blit(GuiCosArmorInventory.TEXTURE, getX(), getY(), 0 + 5 * state, 176, 5, 5);
+        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     @Override

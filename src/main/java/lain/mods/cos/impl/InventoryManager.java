@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -141,7 +142,7 @@ public class InventoryManager {
     }
 
     protected File getDataFile(UUID uuid) {
-        return new File(ServerLifecycleHooks.getCurrentServer().playerDataStorage.getPlayerDataFolder(), uuid + ".cosarmor");
+        return new File(ServerLifecycleHooks.getCurrentServer().getWorldPath(LevelResource.PLAYER_DATA_DIR).toFile(), uuid + ".cosarmor");
     }
 
     private void handlePlayerDrops(LivingDropsEvent event) {
@@ -206,8 +207,10 @@ public class InventoryManager {
             InventoryCosArmor inv = getCosArmorInventory(player.getUUID());
             for (int i = 0; i < inv.getSlots(); i++)
                 count += inv.extractItem(i, Integer.MAX_VALUE, false).getCount();
-            s.getSource().sendSuccess(Component.translatable("cos.command.clearcosarmor.success.single", count, player.getDisplayName()), true);
-            return count;
+
+            final int result = count;
+            s.getSource().sendSuccess(() -> Component.translatable("cos.command.clearcosarmor.success.single", result, player.getDisplayName()), true);
+            return result;
         }).then(Commands.argument("targets", EntityArgument.players()).executes(s -> {
             int count = 0;
             Collection<ServerPlayer> players = EntityArgument.getPlayers(s, "targets");
@@ -216,11 +219,13 @@ public class InventoryManager {
                 for (int i = 0; i < inv.getSlots(); i++)
                     count += inv.extractItem(i, Integer.MAX_VALUE, false).getCount();
             }
+
+            final int result = count;
             if (players.size() == 1)
-                s.getSource().sendSuccess(Component.translatable("cos.command.clearcosarmor.success.single", count, players.iterator().next().getDisplayName()), true);
+                s.getSource().sendSuccess(() -> Component.translatable("cos.command.clearcosarmor.success.single", result, players.iterator().next().getDisplayName()), true);
             else
-                s.getSource().sendSuccess(Component.translatable("cos.command.clearcosarmor.success.multiple", count, players.size()), true);
-            return count;
+                s.getSource().sendSuccess(() -> Component.translatable("cos.command.clearcosarmor.success.multiple", result, players.size()), true);
+            return result;
         })));
 
         if (!ModConfigs.CosArmorDisableCosHatCommand.get()) {

@@ -31,7 +31,7 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
 
     private final Player player;
 
-    private final CraftingContainer craftingInventory = new CraftingContainer(this, 2, 2);
+    private final CraftingContainer craftingInventory = new TransientCraftingContainer(this, 2, 2);
     private final ResultContainer craftResultInventory = new ResultContainer();
 
     public ContainerCosArmor(Inventory invPlayer, InventoryCosArmor invCosArmor, Player player, int windowId) {
@@ -193,7 +193,7 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
 
     @Override
     public boolean recipeMatches(Recipe<? super CraftingContainer> arg0) {
-        return arg0.matches(craftingInventory, player.level);
+        return arg0.matches(craftingInventory, player.level());
     }
 
     @Override
@@ -201,13 +201,13 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
         super.removed(playerIn);
 
         craftResultInventory.clearContent();
-        if (!playerIn.level.isClientSide)
+        if (!playerIn.level().isClientSide)
             clearContainer(playerIn, craftingInventory);
     }
 
     @Override
     public void slotsChanged(Container inventoryIn) {
-        updateCrafting(this, player.level, player, craftingInventory, craftResultInventory);
+        updateCrafting(this, player.level(), player, craftingInventory, craftResultInventory);
     }
 
     @Override

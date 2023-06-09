@@ -1,13 +1,13 @@
 package lain.mods.cos.impl.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.packet.PacketSetSkinArmor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
@@ -49,7 +49,6 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
 
     public GuiCosArmorInventory(ContainerCosArmor container, Inventory invPlayer, Component displayName) {
         super(container, invPlayer, displayName);
-        passEvents = true;
         titleLabelX = 97;
 
         craftingText = Component.translatable("container.crafting");
@@ -58,42 +57,42 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
     }
 
     @Override
-    public void render(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(matrix);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(graphics);
         if (recipeBook.isVisible() && widthTooNarrow) {
-            renderBg(matrix, partialTicks, mouseX, mouseY);
-            recipeBook.render(matrix, mouseX, mouseY, partialTicks);
+            renderBg(graphics, partialTicks, mouseX, mouseY);
+            recipeBook.render(graphics, mouseX, mouseY, partialTicks);
         } else {
-            recipeBook.render(matrix, mouseX, mouseY, partialTicks);
-            super.render(matrix, mouseX, mouseY, partialTicks);
-            recipeBook.renderGhostRecipe(matrix, leftPos, topPos, false, partialTicks);
+            recipeBook.render(graphics, mouseX, mouseY, partialTicks);
+            super.render(graphics, mouseX, mouseY, partialTicks);
+            recipeBook.renderGhostRecipe(graphics, leftPos, topPos, false, partialTicks);
         }
 
-        renderTooltip(matrix, mouseX, mouseY);
-        recipeBook.renderTooltip(matrix, leftPos, topPos, mouseX, mouseY);
+        renderTooltip(graphics, mouseX, mouseY);
+        recipeBook.renderTooltip(graphics, leftPos, topPos, mouseX, mouseY);
         oldMouseX = (float) mouseX;
         oldMouseY = (float) mouseY;
     }
 
     @Override
-    protected void renderBg(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
         int i = leftPos;
         int j = topPos;
-        blit(matrix, i, j, 0, 0, imageWidth, imageHeight);
+        graphics.blit(TEXTURE, i, j, 0, 0, imageWidth, imageHeight);
         if (useMousePos) {
             oldMouseX = (float) mouseX;
             oldMouseY = (float) mouseY;
             useMousePos = false;
         }
-        InventoryScreen.renderEntityInInventoryFollowsMouse(matrix, i + 51, j + 75, 30, (float) (i + 51) - oldMouseX, (float) (j + 75 - 50) - oldMouseY, mc.player);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, i + 51, j + 75, 30, (float) (i + 51) - oldMouseX, (float) (j + 75 - 50) - oldMouseY, mc.player);
     }
 
     @Override
-    protected void renderLabels(PoseStack matrix, int mouseX, int mouseY) {
-        font.draw(matrix, craftingText, (float) titleLabelX, (float) titleLabelY, 4210752);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawString(font, craftingText, titleLabelX, titleLabelY, 4210752, false);
     }
 
     @Override
@@ -177,8 +176,8 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
 
     private void smoothTransition() {
         if (mc.screen instanceof InventoryScreen) {
-            oldMouseX = ((InventoryScreen) mc.screen).xMouse;
-            oldMouseY = ((InventoryScreen) mc.screen).yMouse;
+            oldMouseX = InventoryScreenAccess.getXMouse((InventoryScreen) mc.screen);
+            oldMouseY = InventoryScreenAccess.getYMouse((InventoryScreen) mc.screen);
         } else if (mc.screen instanceof CreativeModeInventoryScreen) {
             useMousePos = true;
         }
