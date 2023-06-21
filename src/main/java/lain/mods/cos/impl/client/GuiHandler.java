@@ -49,7 +49,7 @@ public enum GuiHandler {
             AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) event.getScreen();
 
             lastLeft = screen instanceof CreativeModeInventoryScreen ? 0 : screen.getGuiLeft();
-            lastInventoryOpen = false;
+            lastInventoryOpen = true;
         }
 
         if (event.getScreen() instanceof InventoryScreen || event.getScreen() instanceof GuiCosArmorInventory) {
