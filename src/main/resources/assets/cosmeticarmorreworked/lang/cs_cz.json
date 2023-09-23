@@ -1,0 +1,7 @@
+{
+  "cos.key.opencosarmorinventory": "Otevřít inventář kosmetického brnění",
+  "cos.gui.buttoncos": "Kosmetické brnění",
+  "cos.gui.buttonnormal": "Normal",
+  "cos.command.clearcosarmor.success.single": "Odstranění %s položky z inventáře kosmetického brnění u %s hráče",
+  "cos.command.clearcosarmor.success.multiple": "Odstraněno %s položek z inventáře kosmetického brnění u %s hráčů"
+}
