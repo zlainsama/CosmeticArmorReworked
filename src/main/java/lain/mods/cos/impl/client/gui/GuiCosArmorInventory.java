@@ -1,6 +1,5 @@
 package lain.mods.cos.impl.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
@@ -14,7 +13,6 @@ import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,7 +22,6 @@ import net.minecraft.world.inventory.Slot;
 public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<ContainerCosArmor> implements RecipeUpdateListener {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
-    public static final ResourceLocation RECIPE_BUTTON_TEXTURE = new ResourceLocation("textures/gui/recipe_button.png");
 
     private final RecipeBookComponent recipeBook = new RecipeBookComponent() {
 
@@ -58,13 +55,12 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(graphics);
         if (recipeBook.isVisible() && widthTooNarrow) {
-            renderBg(graphics, partialTicks, mouseX, mouseY);
+            renderBackground(graphics, mouseX, mouseY, partialTicks);
             recipeBook.render(graphics, mouseX, mouseY, partialTicks);
         } else {
-            recipeBook.render(graphics, mouseX, mouseY, partialTicks);
             super.render(graphics, mouseX, mouseY, partialTicks);
+            recipeBook.render(graphics, mouseX, mouseY, partialTicks);
             recipeBook.renderGhostRecipe(graphics, leftPos, topPos, false, partialTicks);
         }
 
@@ -76,9 +72,6 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
         int i = leftPos;
         int j = topPos;
         graphics.blit(TEXTURE, i, j, 0, 0, imageWidth, imageHeight);
@@ -87,7 +80,7 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
             oldMouseY = (float) mouseY;
             useMousePos = false;
         }
-        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, i + 51, j + 75, 30, (float) (i + 51) - oldMouseX, (float) (j + 75 - 50) - oldMouseY, mc.player);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, i + 26, j + 8, i + 75, j + 78, 30, 0.0625F, oldMouseY, oldMouseY, this.minecraft.player);
     }
 
     @Override
@@ -103,6 +96,7 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
     @Override
     public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
         if (recipeBook.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_)) {
+            setFocused(recipeBook);
             return true;
         } else {
             return (!widthTooNarrow || !recipeBook.isVisible()) && super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
@@ -128,7 +122,7 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
         addWidget(recipeBook);
         setInitialFocus(recipeBook);
         if (!ModConfigs.CosArmorDisableRecipeBook.get()) {
-            addRenderableWidget(new ImageButton(leftPos + 76, topPos + 27, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, button -> {
+            addRenderableWidget(new ImageButton(leftPos + 76, topPos + 27, 20, 18, RecipeBookComponent.RECIPE_BUTTON_SPRITES, button -> {
                 recipeBook.toggleVisibility();
                 leftPos = recipeBook.updateScreenPosition(width, imageWidth);
                 ((ImageButton) button).setPosition(leftPos + 76, topPos + 27);

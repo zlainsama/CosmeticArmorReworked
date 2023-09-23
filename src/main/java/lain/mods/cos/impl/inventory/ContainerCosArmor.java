@@ -15,6 +15,7 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -123,19 +124,24 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
         }
     }
 
-    // net.minecraft.inventory.container.WorkbenchContainer.func_217066_a()
+    // net.minecraft.world.inventory.CraftingMenu.slotChangedCraftingGrid()
     private static void updateCrafting(AbstractContainerMenu menu, Level world, Player player, CraftingContainer craftingInventory, ResultContainer craftResultInventory) {
         if (!world.isClientSide) {
             ServerPlayer serverplayer = (ServerPlayer) player;
             ItemStack stack = ItemStack.EMPTY;
-            Optional<CraftingRecipe> optionalrecipe = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
-            if (optionalrecipe.isPresent()) {
-                CraftingRecipe recipe = optionalrecipe.get();
-                if (craftResultInventory.setRecipeUsed(world, serverplayer, recipe))
-                    stack = recipe.assemble(craftingInventory, world.registryAccess());
+            Optional<RecipeHolder<CraftingRecipe>> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
+            if (optional.isPresent()) {
+                RecipeHolder<CraftingRecipe> holder = optional.get();
+                CraftingRecipe recipe = holder.value();
+                if (craftResultInventory.setRecipeUsed(world, serverplayer, holder)) {
+                    ItemStack stack1 = recipe.assemble(craftingInventory, world.registryAccess());
+                    if (stack1.isItemEnabled(world.enabledFeatures()))
+                        stack = stack1;
+                }
             }
 
             craftResultInventory.setItem(0, stack);
+            menu.setRemoteSlot(0, stack);
             serverplayer.connection.send(new ClientboundContainerSetSlotPacket(menu.containerId, menu.incrementStateId(), 0, stack));
         }
     }
@@ -192,8 +198,8 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
     }
 
     @Override
-    public boolean recipeMatches(Recipe<? super CraftingContainer> arg0) {
-        return arg0.matches(craftingInventory, player.level());
+    public boolean recipeMatches(RecipeHolder<? extends Recipe<CraftingContainer>> arg0) {
+        return arg0.value().matches(craftingInventory, player.level());
     }
 
     @Override

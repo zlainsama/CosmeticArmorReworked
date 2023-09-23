@@ -5,96 +5,90 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.Channel;
+import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.network.SimpleChannel;
 
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class NetworkManager {
 
     protected final SimpleChannel channel;
 
-    public NetworkManager(ResourceLocation name, String version) {
-        if (name == null || version == null)
+    public NetworkManager(ResourceLocation name, int version) {
+        if (name == null || version < 0)
             throw new IllegalArgumentException();
-        channel = NetworkRegistry.newSimpleChannel(name, () -> version, version::equals, version::equals);
-    }
-
-    public NetworkManager(ResourceLocation name, Supplier<String> networkProtocolVersion, Predicate<String> clientAcceptedVersions, Predicate<String> serverAcceptedVersions) {
-        if (name == null || networkProtocolVersion == null || clientAcceptedVersions == null || serverAcceptedVersions == null)
-            throw new IllegalArgumentException();
-        channel = NetworkRegistry.newSimpleChannel(name, networkProtocolVersion, clientAcceptedVersions, serverAcceptedVersions);
+        channel = ChannelBuilder.named(name).networkProtocolVersion(version).acceptedVersions(Channel.VersionTest.exact(version)).simpleChannel();
     }
 
     public <T extends NetworkPacket> void registerPacket(int discriminator, Class<T> packetClass, Supplier<T> packetSupplier) {
         if (packetClass == null || packetSupplier == null || packetSupplier.get() == null)
             throw new IllegalArgumentException();
-        channel.registerMessage(discriminator, packetClass, (p, b) -> {
-            p.writeToBuffer(b);
-        }, (b) -> {
+        channel.messageBuilder(packetClass, discriminator).decoder((b) -> {
             T p = packetSupplier.get();
             p.readFromBuffer(b);
             return p;
-        }, (p, s) -> {
-            switch (s.get().getDirection().getReceptionSide()) {
+        }).encoder((p, b) -> {
+            p.writeToBuffer(b);
+        }).consumerNetworkThread((p, c) -> {
+            switch (c.getDirection().getReceptionSide()) {
                 case CLIENT:
-                    p.handlePacketClient(s.get());
-                    s.get().setPacketHandled(true);
+                    p.handlePacketClient(c);
+                    c.setPacketHandled(true);
                     break;
                 case SERVER:
-                    p.handlePacketServer(s.get());
-                    s.get().setPacketHandled(true);
+                    p.handlePacketServer(c);
+                    c.setPacketHandled(true);
                     break;
                 default:
                     break;
             }
-        });
+        }).add();
     }
 
     public <T extends NetworkPacket> void send(T packet, PacketDistributor.PacketTarget target) {
         if (packet == null || target == null)
             throw new IllegalArgumentException();
-        channel.send(target, packet);
+        channel.send(packet, target);
     }
 
     public <T extends NetworkPacket> void sendTo(T packet, ServerPlayer player) {
         if (packet == null || player == null)
             throw new IllegalArgumentException();
-        channel.send(PacketDistributor.PLAYER.with(() -> player), packet);
+        channel.send(packet, PacketDistributor.PLAYER.with(player));
     }
 
     public <T extends NetworkPacket> void sendToAll(T packet) {
         if (packet == null)
             throw new IllegalArgumentException();
-        channel.send(PacketDistributor.ALL.noArg(), packet);
+        channel.send(packet, PacketDistributor.ALL.noArg());
     }
 
     public <T extends NetworkPacket> void sendToAllAround(T packet, PacketDistributor.TargetPoint point) {
         if (packet == null || point == null)
             throw new IllegalArgumentException();
-        channel.send(PacketDistributor.NEAR.with(() -> point), packet);
+        channel.send(packet, PacketDistributor.NEAR.with(point));
     }
 
     public <T extends NetworkPacket> void sendToDimension(T packet, ResourceKey<Level> dimension) {
         if (packet == null || dimension == null)
             throw new IllegalArgumentException();
-        channel.send(PacketDistributor.DIMENSION.with(() -> dimension), packet);
+        channel.send(packet, PacketDistributor.DIMENSION.with(dimension));
     }
 
     public <T extends NetworkPacket> void sendToServer(T packet) {
         if (packet == null)
             throw new IllegalArgumentException();
-        channel.send(PacketDistributor.SERVER.noArg(), packet);
+        channel.send(packet, PacketDistributor.SERVER.noArg());
     }
 
     public interface NetworkPacket {
 
-        void handlePacketClient(NetworkEvent.Context context);
+        void handlePacketClient(CustomPayloadEvent.Context context);
 
-        void handlePacketServer(NetworkEvent.Context context);
+        void handlePacketServer(CustomPayloadEvent.Context context);
 
         void readFromBuffer(FriendlyByteBuf buffer);
 
