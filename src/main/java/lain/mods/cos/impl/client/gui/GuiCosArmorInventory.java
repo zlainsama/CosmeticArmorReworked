@@ -96,7 +96,7 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
     @Override
     public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
         if (recipeBook.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_)) {
-//          setFocused(recipeBook);
+            setFocused(recipeBook);
             return true;
         } else {
             return (!widthTooNarrow || !recipeBook.isVisible()) && super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);

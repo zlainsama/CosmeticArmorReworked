@@ -265,7 +265,7 @@ public class InventoryManager {
         try {
             File file;
             if ((file = getDataFile(uuid)).exists())
-                inventory.deserializeNBT(NbtIo.read(file));
+                inventory.deserializeNBT(NbtIo.read(file.toPath()));
         } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to load CosmeticArmor data", t);
         }
@@ -304,7 +304,7 @@ public class InventoryManager {
         if (inventory == Dummy)
             return;
         try {
-            NbtIo.write(inventory.serializeNBT(), getDataFile(uuid));
+            NbtIo.write(inventory.serializeNBT(), getDataFile(uuid).toPath());
         } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to save CosmeticArmor data", t);
         }
