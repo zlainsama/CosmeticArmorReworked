@@ -1,7 +1,7 @@
 package lain.mods.cos.impl.client.gui;
 
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 

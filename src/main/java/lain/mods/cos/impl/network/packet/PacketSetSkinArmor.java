@@ -3,7 +3,7 @@ package lain.mods.cos.impl.network.packet;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class PacketSetSkinArmor implements NetworkPacket {
 
@@ -19,11 +19,11 @@ public class PacketSetSkinArmor implements NetworkPacket {
     }
 
     @Override
-    public void handlePacketClient(CustomPayloadEvent.Context context) {
+    public void handlePacketClient(NetworkEvent.Context context) {
     }
 
     @Override
-    public void handlePacketServer(CustomPayloadEvent.Context context) {
+    public void handlePacketServer(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
             ModObjects.invMan.getCosArmorInventory(context.getSender().getUUID()).setSkinArmor(slot, isSkinArmor);
         });

@@ -7,11 +7,10 @@ import lain.mods.cos.impl.InventoryManager;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.UUID;
 
@@ -27,7 +26,7 @@ public class InventoryManagerClient extends InventoryManager {
     });
 
     @Override
-    public ContainerCosArmor createContainerClient(int windowId, Inventory invPlayer, FriendlyByteBuf extraData) {
+    public ContainerCosArmor createContainerClient(int windowId, Inventory invPlayer) {
         Player player = Minecraft.getInstance().player;
         return new ContainerCosArmor(invPlayer, getCosArmorInventoryClient(player.getUUID()), player, windowId);
     }
@@ -45,7 +44,7 @@ public class InventoryManagerClient extends InventoryManager {
 
     @Override
     public void registerEventsClient() {
-        MinecraftForge.EVENT_BUS.addListener(this::handleLoggedOut);
+        NeoForge.EVENT_BUS.addListener(this::handleLoggedOut);
     }
 
 }

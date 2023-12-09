@@ -1,10 +1,10 @@
 package lain.mods.cos.impl;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
+import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
 
 public class ModConfigs {
 
@@ -22,7 +22,7 @@ public class ModConfigs {
     public static BooleanValue CosArmorDisableCosHatCommand;
 
     public static void registerConfigs() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, new ForgeConfigSpec.Builder() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, new ModConfigSpec.Builder() {
             {
                 comment("These settings only affects client").push("Client");
                 CosArmorGuiButton_Hidden = comment("Whether or not to hide the button for opening CosmeticArmorInventory")
@@ -55,7 +55,7 @@ public class ModConfigs {
                 pop();
             }
         }.build());
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, new ForgeConfigSpec.Builder() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, new ModConfigSpec.Builder() {
             {
                 comment("These settings affects both server and client").push("Common");
                 CosArmorKeepThroughDeath = comment("Whether or not to keep items in cosmetic armor slots in the event of player death")

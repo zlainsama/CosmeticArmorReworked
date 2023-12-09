@@ -9,12 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.RenderArmEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.RenderArmEvent;
+import net.neoforged.neoforge.client.event.RenderHandEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -133,14 +133,14 @@ public enum PlayerRenderHandler {
     }
 
     public void registerEvents() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handlePreRenderPlayer_High);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, this::handlePostRenderPlayer_Low);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handlePreRenderPlayer_LowestCanceled);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handleRenderHand_High);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handleRenderHand_LowestCanceled);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handleRenderArm_High);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handleRenderArm_LowestCanceled);
-        MinecraftForge.EVENT_BUS.addListener(this::handleLoggedOut);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handlePreRenderPlayer_High);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOW, this::handlePostRenderPlayer_Low);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handlePreRenderPlayer_LowestCanceled);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handleRenderHand_High);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handleRenderHand_LowestCanceled);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handleRenderArm_High);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handleRenderArm_LowestCanceled);
+        NeoForge.EVENT_BUS.addListener(this::handleLoggedOut);
     }
 
     private void restoreItems(Deque<Runnable> queue) {

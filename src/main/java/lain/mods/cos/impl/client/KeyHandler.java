@@ -6,8 +6,8 @@ import lain.mods.cos.impl.client.gui.GuiCosArmorInventory;
 import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 
 import java.util.function.Consumer;
 
@@ -27,7 +27,7 @@ public enum KeyHandler {
     }
 
     public void registerEvents() {
-        MinecraftForge.EVENT_BUS.addListener(this::handleClientTick);
+        NeoForge.EVENT_BUS.addListener(this::handleClientTick);
     }
 
     public void registerKeyMappings(Consumer<KeyMapping> register) {

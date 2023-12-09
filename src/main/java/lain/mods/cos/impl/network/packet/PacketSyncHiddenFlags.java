@@ -5,7 +5,7 @@ import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.UUID;
 
@@ -27,7 +27,7 @@ public class PacketSyncHiddenFlags implements NetworkPacket {
     }
 
     @Override
-    public void handlePacketClient(CustomPayloadEvent.Context context) {
+    public void handlePacketClient(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
             if (InventoryManager.checkIdentifier(modid, identifier)) {
                 ModObjects.invMan.getCosArmorInventoryClient(uuid).setHidden(modid, identifier, hidden);
@@ -36,7 +36,7 @@ public class PacketSyncHiddenFlags implements NetworkPacket {
     }
 
     @Override
-    public void handlePacketServer(CustomPayloadEvent.Context context) {
+    public void handlePacketServer(NetworkEvent.Context context) {
     }
 
     @Override

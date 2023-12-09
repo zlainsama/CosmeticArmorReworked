@@ -5,7 +5,7 @@ import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public class PacketSyncCosArmor implements NetworkPacket {
     }
 
     @Override
-    public void handlePacketClient(CustomPayloadEvent.Context context) {
+    public void handlePacketClient(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
             ModObjects.invMan.getCosArmorInventoryClient(uuid).setStackInSlot(slot, itemCosArmor);
             ModObjects.invMan.getCosArmorInventoryClient(uuid).setSkinArmor(slot, isSkinArmor);
@@ -37,7 +37,7 @@ public class PacketSyncCosArmor implements NetworkPacket {
     }
 
     @Override
-    public void handlePacketServer(CustomPayloadEvent.Context context) {
+    public void handlePacketServer(NetworkEvent.Context context) {
     }
 
     @Override

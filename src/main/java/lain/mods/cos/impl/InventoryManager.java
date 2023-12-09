@@ -11,7 +11,6 @@ import lain.mods.cos.impl.network.packet.PacketSyncHiddenFlags;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,15 +21,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.storage.LevelResource;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -125,7 +124,7 @@ public class InventoryManager {
         return false;
     }
 
-    public ContainerCosArmor createContainerClient(int windowId, Inventory invPlayer, FriendlyByteBuf extraData) {
+    public ContainerCosArmor createContainerClient(int windowId, Inventory invPlayer) {
         throw new UnsupportedOperationException();
     }
 
@@ -149,7 +148,7 @@ public class InventoryManager {
         if (event.getEntity() instanceof Player) {
             if (event.getEntity().isEffectiveAi() && !event.getEntity().getCommandSenderWorld().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && !ModConfigs.CosArmorKeepThroughDeath.get()) {
                 InventoryCosArmor inv = getCosArmorInventory(event.getEntity().getUUID());
-                if (MinecraftForge.EVENT_BUS.post(new CosArmorDeathDrops((Player) event.getEntity(), inv)))
+                if (NeoForge.EVENT_BUS.post(new CosArmorDeathDrops((Player) event.getEntity(), inv)).isCanceled())
                     return;
                 for (int i = 0; i < inv.getSlots(); i++) {
                     ItemStack stack = inv.getStackInSlot(i).copy();
@@ -265,7 +264,7 @@ public class InventoryManager {
         try {
             File file;
             if ((file = getDataFile(uuid)).exists())
-                inventory.deserializeNBT(NbtIo.read(file.toPath()));
+                inventory.deserializeNBT(NbtIo.read(file));
         } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to load CosmeticArmor data", t);
         }
@@ -288,12 +287,12 @@ public class InventoryManager {
     }
 
     public void registerEvents() {
-        MinecraftForge.EVENT_BUS.addListener(this::handlePlayerDrops);
-        MinecraftForge.EVENT_BUS.addListener(this::handlePlayerLoggedIn);
-        MinecraftForge.EVENT_BUS.addListener(this::handlePlayerLoggedOut);
-        MinecraftForge.EVENT_BUS.addListener(this::handleSaveToFile);
-        MinecraftForge.EVENT_BUS.addListener(this::handleRegisterCommands);
-        MinecraftForge.EVENT_BUS.addListener(this::handleServerStopping);
+        NeoForge.EVENT_BUS.addListener(this::handlePlayerDrops);
+        NeoForge.EVENT_BUS.addListener(this::handlePlayerLoggedIn);
+        NeoForge.EVENT_BUS.addListener(this::handlePlayerLoggedOut);
+        NeoForge.EVENT_BUS.addListener(this::handleSaveToFile);
+        NeoForge.EVENT_BUS.addListener(this::handleRegisterCommands);
+        NeoForge.EVENT_BUS.addListener(this::handleServerStopping);
     }
 
     public void registerEventsClient() {
@@ -304,7 +303,7 @@ public class InventoryManager {
         if (inventory == Dummy)
             return;
         try {
-            NbtIo.write(inventory.serializeNBT(), getDataFile(uuid).toPath());
+            NbtIo.write(inventory.serializeNBT(), getDataFile(uuid));
         } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to save CosmeticArmor data", t);
         }

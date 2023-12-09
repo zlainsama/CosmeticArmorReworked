@@ -11,8 +11,8 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.Set;
 
@@ -108,8 +108,8 @@ public enum GuiHandler {
     }
 
     public void registerEvents() {
-        MinecraftForge.EVENT_BUS.addListener(this::handleGuiDrawPre);
-        MinecraftForge.EVENT_BUS.addListener(this::handleGuiInitPost);
+        NeoForge.EVENT_BUS.addListener(this::handleGuiDrawPre);
+        NeoForge.EVENT_BUS.addListener(this::handleGuiInitPost);
         setupGuiFactory();
     }
 
