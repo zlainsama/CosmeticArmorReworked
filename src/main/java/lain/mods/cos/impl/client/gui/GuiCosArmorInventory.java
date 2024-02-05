@@ -4,7 +4,8 @@ import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
-import lain.mods.cos.impl.network.packet.PacketSetSkinArmor;
+import lain.mods.cos.impl.network.payload.PayloadSetSkinArmor;
+import lain.mods.cos.init.ModConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
@@ -18,10 +19,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<ContainerCosArmor> implements RecipeUpdateListener {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(ModConstants.MODID, "textures/gui/cosarmorinventory.png");
 
     private final RecipeBookComponent recipeBook = new RecipeBookComponent() {
 
@@ -136,7 +138,7 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
                 InventoryCosArmor inv = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUUID());
                 inv.setSkinArmor(j, !inv.isSkinArmor(j));
                 ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(j) ? 1 : 0;
-                ModObjects.network.sendToServer(new PacketSetSkinArmor(j, inv.isSkinArmor(j)));
+                PacketDistributor.SERVER.noArg().send(new PayloadSetSkinArmor(j, inv.isSkinArmor(j)));
             }));
         }
     }

@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableSet;
 import lain.mods.cos.impl.ModConfigs;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.client.gui.*;
-import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
-import lain.mods.cos.impl.network.packet.PacketOpenNormalInventory;
+import lain.mods.cos.impl.network.payload.PayloadOpenCosArmorInventory;
+import lain.mods.cos.impl.network.payload.PayloadOpenNormalInventory;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Set;
 
@@ -69,9 +70,9 @@ public enum GuiHandler {
                                 InventoryScreenAccess.setXMouse(newGui, ((GuiCosArmorInventory) screen).oldMouseX);
                                 InventoryScreenAccess.setYMouse(newGui, ((GuiCosArmorInventory) screen).oldMouseY);
                                 screen.getMinecraft().setScreen(newGui);
-                                ModObjects.network.sendToServer(new PacketOpenNormalInventory());
+                                PacketDistributor.SERVER.noArg().send(new PayloadOpenNormalInventory());
                             } else {
-                                ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
+                                PacketDistributor.SERVER.noArg().send(new PayloadOpenCosArmorInventory());
                             }
                         },
                         null));
@@ -98,7 +99,7 @@ public enum GuiHandler {
                         10, 10,
                         Component.translatable("cos.gui.buttoncos"),
                         button -> {
-                            ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
+                            PacketDistributor.SERVER.noArg().send(new PayloadOpenCosArmorInventory());
                         },
                         (button, isInventoryOpen) -> {
                             button.visible = isInventoryOpen;

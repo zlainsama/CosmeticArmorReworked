@@ -1,13 +1,13 @@
 package lain.mods.cos.impl.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.client.gui.GuiCosArmorInventory;
-import lain.mods.cos.impl.network.packet.PacketOpenCosArmorInventory;
+import lain.mods.cos.impl.network.payload.PayloadOpenCosArmorInventory;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.function.Consumer;
 
@@ -23,7 +23,7 @@ public enum KeyHandler {
         if (event.phase != TickEvent.Phase.START || !mc.isWindowActive())
             return;
         if (keyOpenCosArmorInventory.consumeClick() && !(mc.screen instanceof GuiCosArmorInventory))
-            ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
+            PacketDistributor.SERVER.noArg().send(new PayloadOpenCosArmorInventory());
     }
 
     public void registerEvents() {

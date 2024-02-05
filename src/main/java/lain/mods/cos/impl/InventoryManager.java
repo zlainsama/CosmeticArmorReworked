@@ -6,8 +6,8 @@ import com.google.common.cache.LoadingCache;
 import lain.mods.cos.api.event.CosArmorDeathDrops;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
-import lain.mods.cos.impl.network.packet.PacketSyncCosArmor;
-import lain.mods.cos.impl.network.packet.PacketSyncHiddenFlags;
+import lain.mods.cos.impl.network.payload.PayloadSyncCosArmor;
+import lain.mods.cos.impl.network.payload.PayloadSyncHiddenFlags;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.NbtIo;
@@ -29,6 +29,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
@@ -182,8 +183,8 @@ public class InventoryManager {
                 UUID uuid = other.getUUID();
                 InventoryCosArmor inv = getCosArmorInventory(uuid);
                 for (int i = 0; i < inv.getSlots(); i++)
-                    ModObjects.network.sendTo(new PacketSyncCosArmor(uuid, inv, i), player);
-                inv.forEachHidden((modid, identifier) -> ModObjects.network.sendTo(new PacketSyncHiddenFlags(uuid, inv, modid, identifier), player));
+                    PacketDistributor.PLAYER.with(player).send(new PayloadSyncCosArmor(uuid, inv, i));
+                inv.forEachHidden((modid, identifier) -> PacketDistributor.PLAYER.with(player).send(new PayloadSyncHiddenFlags(uuid, inv, modid, identifier)));
             }
         }
     }
@@ -273,17 +274,17 @@ public class InventoryManager {
     protected void onHiddenFlagsChanged(UUID uuid, InventoryCosArmor inventory, String modid, String identifier) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server.isDedicatedServer())
-            ModObjects.network.sendToAll(new PacketSyncHiddenFlags(uuid, inventory, modid, identifier));
+            PacketDistributor.ALL.noArg().send(new PayloadSyncHiddenFlags(uuid, inventory, modid, identifier));
         else
-            server.getPlayerList().getPlayers().forEach(player -> ModObjects.network.sendTo(new PacketSyncHiddenFlags(uuid, inventory, modid, identifier), player));
+            server.getPlayerList().getPlayers().forEach(player -> PacketDistributor.PLAYER.with(player).send(new PayloadSyncHiddenFlags(uuid, inventory, modid, identifier)));
     }
 
     protected void onInventoryChanged(UUID uuid, InventoryCosArmor inventory, int slot) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server.isDedicatedServer())
-            ModObjects.network.sendToAll(new PacketSyncCosArmor(uuid, inventory, slot));
+            PacketDistributor.ALL.noArg().send(new PayloadSyncCosArmor(uuid, inventory, slot));
         else
-            server.getPlayerList().getPlayers().forEach(player -> ModObjects.network.sendTo(new PacketSyncCosArmor(uuid, inventory, slot), player));
+            server.getPlayerList().getPlayers().forEach(player -> PacketDistributor.PLAYER.with(player).send(new PayloadSyncCosArmor(uuid, inventory, slot)));
     }
 
     public void registerEvents() {
