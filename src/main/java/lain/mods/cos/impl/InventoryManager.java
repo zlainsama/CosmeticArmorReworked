@@ -38,76 +38,89 @@ import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
 
-public class InventoryManager {
+public class InventoryManager {//物品栏管理类
 
-    protected static final InventoryCosArmor Dummy = new InventoryCosArmor() {
+    protected static final InventoryCosArmor Dummy = new InventoryCosArmor() {//匿名InventoryCosArmor类
 
         @Override
         @Nonnull
+        //额外的物品 - 节点id 数量 <?>simulate
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
+            return ItemStack.EMPTY;//空
         }
 
         @Override
         @Nonnull
+        //获取对应节点的物品
         public ItemStack getStackInSlot(int slot) {
             return ItemStack.EMPTY;
         }
 
         @Override
         @Nonnull
+        //插入物品
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
             return stack;
         }
 
         @Override
+        //是否可见 - Modid  <?>identifier
         public boolean isHidden(String modid, String identifier) {
             return false;
         }
 
         @Override
+        //根据节点判断是否为皮肤盔甲
         public boolean isSkinArmor(int slot) {
             return false;
         }
 
         @Override
+        //根据节点来改变内容
         protected void onContentsChanged(int slot) {
         }
 
         @Override
+        //<?>
         protected void onLoad() {
         }
 
         @Override
+        //设置可见
         public boolean setHidden(String modid, String identifier, boolean set) {
             return false;
         }
 
         @Override
+        //设置皮肤启用
         public void setSkinArmor(int slot, boolean enabled) {
         }
 
         @Override
+        //设置格子中的物品
         public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
         }
 
         @Override
+        //设置内容改变更新监听
         public boolean setUpdateListener(ContentsChangeListener listener) {
             return false;
         }
 
         @Override
+        //设置隐藏按钮状态更新监听
         public boolean setUpdateListener(HiddenFlagsChangeListener listener) {
             return false;
         }
 
     };
-
+    //获取随机值
     protected static final Random RANDOM = new Random();
-
+    //Cache信息<?>
     protected final LoadingCache<UUID, InventoryCosArmor> CommonCache = CacheBuilder.newBuilder().build(new CacheLoader<UUID, InventoryCosArmor>() {
 
         @Override
+        //根据UUID 加载类 返回一个InventoryCosArmor的实例
         public InventoryCosArmor load(UUID key) throws Exception {
             InventoryCosArmor inventory = new InventoryCosArmor();
             inventory.setUpdateListener((inv, slot) -> onInventoryChanged(key, inv, slot));
@@ -117,14 +130,14 @@ public class InventoryManager {
         }
 
     });
-
+    //检查模组装备的问题 防止加载其它模组装备出现错误
     public static boolean checkIdentifier(String modid, String identifier) {
         if (modid == null || modid.isEmpty() || identifier == null || identifier.isEmpty() || !ModList.get().isLoaded(modid))
             return false;
 
-        return false;
+        return false;//作者为什么在这里返回的都是false？？？（<?>）
     }
-
+    //创建客户端容器（不支持的操作）
     public ContainerCosArmor createContainerClient(int windowId, Inventory invPlayer) {
         throw new UnsupportedOperationException();
     }
@@ -258,14 +271,14 @@ public class InventoryManager {
         });
         CommonCache.invalidateAll();
     }
-
+    //加载Inventory 
     protected void loadInventory(UUID uuid, InventoryCosArmor inventory) {
-        if (inventory == Dummy)
+        if (inventory == Dummy)//空
             return;
         try {
             File file;
-            if ((file = getDataFile(uuid)).exists())
-                inventory.deserializeNBT(NbtIo.read(file.toPath()));
+            if ((file = getDataFile(uuid)).exists())//读取Minecraft下的Data玩家文件 UUID+.dat
+                inventory.deserializeNBT(NbtIo.read(file.toPath()));//反序化NBT
         } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to load CosmeticArmor data", t);
         }
