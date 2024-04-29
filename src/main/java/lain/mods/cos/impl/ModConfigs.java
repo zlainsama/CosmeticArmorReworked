@@ -22,7 +22,7 @@ public class ModConfigs {
     public static BooleanValue CosArmorDisableCosHatCommand;
 
     public static void registerConfigs() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, new ModConfigSpec.Builder() {
+        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, new ModConfigSpec.Builder() {
             {
                 comment("These settings only affects client").push("Client");
                 CosArmorGuiButton_Hidden = comment("Whether or not to hide the button for opening CosmeticArmorInventory")
@@ -55,7 +55,7 @@ public class ModConfigs {
                 pop();
             }
         }.build());
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, new ModConfigSpec.Builder() {
+        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.COMMON, new ModConfigSpec.Builder() {
             {
                 comment("These settings affects both server and client").push("Common");
                 CosArmorKeepThroughDeath = comment("Whether or not to keep items in cosmetic armor slots in the event of player death")

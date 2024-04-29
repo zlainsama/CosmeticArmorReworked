@@ -5,8 +5,8 @@ import lain.mods.cos.impl.client.gui.GuiCosArmorInventory;
 import lain.mods.cos.impl.network.payload.PayloadOpenCosArmorInventory;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.function.Consumer;
@@ -19,11 +19,11 @@ public enum KeyHandler {
 
     public KeyMapping keyOpenCosArmorInventory = new KeyMapping("cos.key.opencosarmorinventory", InputConstants.UNKNOWN.getValue(), "key.categories.inventory");
 
-    private void handleClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.START || !mc.isWindowActive())
+    private void handleClientTick(ClientTickEvent.Pre event) {
+        if (!mc.isWindowActive())
             return;
         if (keyOpenCosArmorInventory.consumeClick() && !(mc.screen instanceof GuiCosArmorInventory))
-            PacketDistributor.SERVER.noArg().send(new PayloadOpenCosArmorInventory());
+            PacketDistributor.sendToServer(new PayloadOpenCosArmorInventory());
     }
 
     public void registerEvents() {

@@ -17,7 +17,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -54,8 +54,8 @@ public class NeoForgeCosmeticArmorReworked {
         KeyHandler.INSTANCE.registerKeyMappings(event::register);
     }
 
-    private void setupPayloadHandlers(RegisterPayloadHandlerEvent event) {
-        ModPayloads.setupPayloads(event.registrar(ModConstants.MODID).versioned("4"));
+    private void setupPayloadHandlers(RegisterPayloadHandlersEvent event) {
+        ModPayloads.setupPayloads(event.registrar("5"));
     }
 
 }

@@ -1,5 +1,6 @@
 package lain.mods.cos.api.inventory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -39,7 +40,7 @@ public class CAStacksBase extends ItemStackHandler {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         setSize(nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : stacks.size());
         ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++) {
@@ -48,7 +49,7 @@ public class CAStacksBase extends ItemStackHandler {
 
             if (slot >= 0 && slot < stacks.size()) {
                 if (itemTags.contains("id"))
-                    stacks.set(slot, ItemStack.of(itemTags));
+                    ItemStack.parse(provider, itemTags).ifPresent(stack -> stacks.set(slot, stack));
                 if (itemTags.contains("isSkinArmor"))
                     isSkinArmor[slot] = itemTags.getBoolean("isSkinArmor");
             }
@@ -90,14 +91,14 @@ public class CAStacksBase extends ItemStackHandler {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         ListTag nbtTagList = new ListTag();
         for (int i = 0; i < stacks.size(); i++) {
             if (!stacks.get(i).isEmpty() || isSkinArmor[i]) {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
                 if (!stacks.get(i).isEmpty())
-                    stacks.get(i).save(itemTag);
+                    itemTag = (CompoundTag) stacks.get(i).save(provider, itemTag);
                 if (isSkinArmor[i])
                     itemTag.putBoolean("isSkinArmor", true);
                 nbtTagList.add(itemTag);

@@ -70,9 +70,9 @@ public enum GuiHandler {
                                 InventoryScreenAccess.setXMouse(newGui, ((GuiCosArmorInventory) screen).oldMouseX);
                                 InventoryScreenAccess.setYMouse(newGui, ((GuiCosArmorInventory) screen).oldMouseY);
                                 screen.getMinecraft().setScreen(newGui);
-                                PacketDistributor.SERVER.noArg().send(new PayloadOpenNormalInventory());
+                                PacketDistributor.sendToServer(new PayloadOpenNormalInventory());
                             } else {
-                                PacketDistributor.SERVER.noArg().send(new PayloadOpenCosArmorInventory());
+                                PacketDistributor.sendToServer(new PayloadOpenCosArmorInventory());
                             }
                         },
                         null));
@@ -99,7 +99,7 @@ public enum GuiHandler {
                         10, 10,
                         Component.translatable("cos.gui.buttoncos"),
                         button -> {
-                            PacketDistributor.SERVER.noArg().send(new PayloadOpenCosArmorInventory());
+                            PacketDistributor.sendToServer(new PayloadOpenCosArmorInventory());
                         },
                         (button, isInventoryOpen) -> {
                             button.visible = isInventoryOpen;

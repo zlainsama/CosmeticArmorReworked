@@ -138,7 +138,7 @@ public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<Contain
                 InventoryCosArmor inv = ModObjects.invMan.getCosArmorInventoryClient(mc.player.getUUID());
                 inv.setSkinArmor(j, !inv.isSkinArmor(j));
                 ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(j) ? 1 : 0;
-                PacketDistributor.SERVER.noArg().send(new PayloadSetSkinArmor(j, inv.isSkinArmor(j)));
+                PacketDistributor.sendToServer(new PayloadSetSkinArmor(j, inv.isSkinArmor(j)));
             }));
         }
     }

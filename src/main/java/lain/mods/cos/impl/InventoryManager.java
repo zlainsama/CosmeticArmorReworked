@@ -183,8 +183,8 @@ public class InventoryManager {
                 UUID uuid = other.getUUID();
                 InventoryCosArmor inv = getCosArmorInventory(uuid);
                 for (int i = 0; i < inv.getSlots(); i++)
-                    PacketDistributor.PLAYER.with(player).send(new PayloadSyncCosArmor(uuid, inv, i));
-                inv.forEachHidden((modid, identifier) -> PacketDistributor.PLAYER.with(player).send(new PayloadSyncHiddenFlags(uuid, inv, modid, identifier)));
+                    PacketDistributor.sendToPlayer(player, new PayloadSyncCosArmor(uuid, inv, i));
+                inv.forEachHidden((modid, identifier) -> PacketDistributor.sendToPlayer(player, new PayloadSyncHiddenFlags(uuid, inv, modid, identifier)));
             }
         }
     }
@@ -265,7 +265,7 @@ public class InventoryManager {
         try {
             File file;
             if ((file = getDataFile(uuid)).exists())
-                inventory.deserializeNBT(NbtIo.read(file.toPath()));
+                inventory.deserializeNBT(ServerLifecycleHooks.getCurrentServer().registryAccess(), NbtIo.read(file.toPath()));
         } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to load CosmeticArmor data", t);
         }
@@ -274,17 +274,17 @@ public class InventoryManager {
     protected void onHiddenFlagsChanged(UUID uuid, InventoryCosArmor inventory, String modid, String identifier) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server.isDedicatedServer())
-            PacketDistributor.ALL.noArg().send(new PayloadSyncHiddenFlags(uuid, inventory, modid, identifier));
+            PacketDistributor.sendToAllPlayers(new PayloadSyncHiddenFlags(uuid, inventory, modid, identifier));
         else
-            server.getPlayerList().getPlayers().forEach(player -> PacketDistributor.PLAYER.with(player).send(new PayloadSyncHiddenFlags(uuid, inventory, modid, identifier)));
+            server.getPlayerList().getPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, new PayloadSyncHiddenFlags(uuid, inventory, modid, identifier)));
     }
 
     protected void onInventoryChanged(UUID uuid, InventoryCosArmor inventory, int slot) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server.isDedicatedServer())
-            PacketDistributor.ALL.noArg().send(new PayloadSyncCosArmor(uuid, inventory, slot));
+            PacketDistributor.sendToAllPlayers(new PayloadSyncCosArmor(uuid, inventory, slot));
         else
-            server.getPlayerList().getPlayers().forEach(player -> PacketDistributor.PLAYER.with(player).send(new PayloadSyncCosArmor(uuid, inventory, slot)));
+            server.getPlayerList().getPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, new PayloadSyncCosArmor(uuid, inventory, slot)));
     }
 
     public void registerEvents() {
@@ -304,7 +304,7 @@ public class InventoryManager {
         if (inventory == Dummy)
             return;
         try {
-            NbtIo.write(inventory.serializeNBT(), getDataFile(uuid).toPath());
+            NbtIo.write(inventory.serializeNBT(ServerLifecycleHooks.getCurrentServer().registryAccess()), getDataFile(uuid).toPath());
         } catch (Throwable t) {
             ModObjects.logger.fatal("Failed to save CosmeticArmor data", t);
         }
