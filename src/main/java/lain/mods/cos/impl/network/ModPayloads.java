@@ -3,6 +3,7 @@ package lain.mods.cos.impl.network;
 import lain.mods.cos.impl.InventoryManager;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.network.payload.*;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ModPayloads {
@@ -23,7 +24,7 @@ public class ModPayloads {
             });
         }).playToServer(PayloadOpenNormalInventory.TYPE, PayloadOpenNormalInventory.STREAM_CODEC, (p, c) -> {
             c.enqueueWork(() -> {
-                c.player().closeContainer();
+                ((ServerPlayer) c.player()).doCloseContainer();
             });
         }).playToClient(PayloadSyncHiddenFlags.TYPE, PayloadSyncHiddenFlags.STREAM_CODEC, (p, c) -> {
             c.enqueueWork(() -> {
