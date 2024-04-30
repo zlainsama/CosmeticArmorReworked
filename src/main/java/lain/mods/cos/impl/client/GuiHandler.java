@@ -6,11 +6,11 @@ import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.client.gui.*;
 import lain.mods.cos.impl.network.payload.PayloadOpenCosArmorInventory;
 import lain.mods.cos.impl.network.payload.PayloadOpenNormalInventory;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -111,11 +111,10 @@ public enum GuiHandler {
     public void registerEvents() {
         NeoForge.EVENT_BUS.addListener(this::handleGuiDrawPre);
         NeoForge.EVENT_BUS.addListener(this::handleGuiInitPost);
-        setupGuiFactory();
     }
 
-    private void setupGuiFactory() {
-        MenuScreens.register(ModObjects.getTypeContainerCosArmor(), GuiCosArmorInventory::new);
+    public void registerMenuScreens(RegisterMenuScreensEvent event) {
+        event.register(ModObjects.getTypeContainerCosArmor(), GuiCosArmorInventory::new);
     }
 
 }

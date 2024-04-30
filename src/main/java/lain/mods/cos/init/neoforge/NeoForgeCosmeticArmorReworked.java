@@ -17,6 +17,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -34,6 +35,7 @@ public class NeoForgeCosmeticArmorReworked {
         bus.addListener(this::setupClient);
         if (FMLEnvironment.dist.isClient()) {
             bus.addListener(this::setupKeyMappings);
+            bus.addListener(this::setupMenuScreens);
         }
         bus.addListener(this::setupPayloadHandlers);
         ModConfigs.registerConfigs();
@@ -52,6 +54,10 @@ public class NeoForgeCosmeticArmorReworked {
 
     private void setupKeyMappings(RegisterKeyMappingsEvent event) {
         KeyHandler.INSTANCE.registerKeyMappings(event::register);
+    }
+
+    private void setupMenuScreens(RegisterMenuScreensEvent event) {
+        GuiHandler.INSTANCE.registerMenuScreens(event);
     }
 
     private void setupPayloadHandlers(RegisterPayloadHandlersEvent event) {
