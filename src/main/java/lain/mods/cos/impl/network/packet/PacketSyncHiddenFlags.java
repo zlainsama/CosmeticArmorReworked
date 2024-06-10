@@ -4,7 +4,7 @@ import lain.mods.cos.impl.InventoryManager;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
 import java.util.UUID;
@@ -40,7 +40,7 @@ public class PacketSyncHiddenFlags implements NetworkPacket {
     }
 
     @Override
-    public void readFromBuffer(FriendlyByteBuf buffer) {
+    public void readFromBuffer(RegistryFriendlyByteBuf buffer) {
         uuid = new UUID(buffer.readLong(), buffer.readLong());
         modid = buffer.readUtf(Short.MAX_VALUE);
         identifier = buffer.readUtf(Short.MAX_VALUE);
@@ -48,7 +48,7 @@ public class PacketSyncHiddenFlags implements NetworkPacket {
     }
 
     @Override
-    public void writeToBuffer(FriendlyByteBuf buffer) {
+    public void writeToBuffer(RegistryFriendlyByteBuf buffer) {
         buffer.writeLong(uuid.getMostSignificantBits());
         buffer.writeLong(uuid.getLeastSignificantBits());
         buffer.writeUtf(modid, Short.MAX_VALUE);

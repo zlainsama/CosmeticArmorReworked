@@ -2,7 +2,7 @@ package lain.mods.cos.impl.network.packet;
 
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class PacketSetSkinArmor implements NetworkPacket {
@@ -30,13 +30,13 @@ public class PacketSetSkinArmor implements NetworkPacket {
     }
 
     @Override
-    public void readFromBuffer(FriendlyByteBuf buffer) {
+    public void readFromBuffer(RegistryFriendlyByteBuf buffer) {
         slot = buffer.readByte();
         isSkinArmor = buffer.readBoolean();
     }
 
     @Override
-    public void writeToBuffer(FriendlyByteBuf buffer) {
+    public void writeToBuffer(RegistryFriendlyByteBuf buffer) {
         buffer.writeByte(slot);
         buffer.writeBoolean(isSkinArmor);
     }

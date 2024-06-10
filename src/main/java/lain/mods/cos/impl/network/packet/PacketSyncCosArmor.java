@@ -3,7 +3,7 @@ package lain.mods.cos.impl.network.packet;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
@@ -41,20 +41,20 @@ public class PacketSyncCosArmor implements NetworkPacket {
     }
 
     @Override
-    public void readFromBuffer(FriendlyByteBuf buffer) {
+    public void readFromBuffer(RegistryFriendlyByteBuf buffer) {
         uuid = new UUID(buffer.readLong(), buffer.readLong());
         slot = buffer.readByte();
         isSkinArmor = buffer.readBoolean();
-        itemCosArmor = buffer.readItem();
+        itemCosArmor = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
     }
 
     @Override
-    public void writeToBuffer(FriendlyByteBuf buffer) {
+    public void writeToBuffer(RegistryFriendlyByteBuf buffer) {
         buffer.writeLong(uuid.getMostSignificantBits());
         buffer.writeLong(uuid.getLeastSignificantBits());
         buffer.writeByte(slot);
         buffer.writeBoolean(isSkinArmor);
-        buffer.writeItem(itemCosArmor);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, itemCosArmor);
     }
 
 }

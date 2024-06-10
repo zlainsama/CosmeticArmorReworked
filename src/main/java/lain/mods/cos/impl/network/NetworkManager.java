@@ -1,6 +1,7 @@
 package lain.mods.cos.impl.network;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,26 +27,21 @@ public class NetworkManager {
     public <T extends NetworkPacket> void registerPacket(int discriminator, Class<T> packetClass, Supplier<T> packetSupplier) {
         if (packetClass == null || packetSupplier == null || packetSupplier.get() == null)
             throw new IllegalArgumentException();
-        channel.messageBuilder(packetClass, discriminator).decoder((b) -> {
-            T p = packetSupplier.get();
-            p.readFromBuffer(b);
-            return p;
-        }).encoder((p, b) -> {
-            p.writeToBuffer(b);
-        }).consumerNetworkThread((p, c) -> {
-            switch (c.getDirection().getReceptionSide()) {
-                case CLIENT:
-                    p.handlePacketClient(c);
-                    c.setPacketHandled(true);
-                    break;
-                case SERVER:
-                    p.handlePacketServer(c);
-                    c.setPacketHandled(true);
-                    break;
-                default:
-                    break;
+        channel.play().bidirectional().add(packetClass, StreamCodec.of((buffer, packet) -> {
+            packet.writeToBuffer(buffer);
+        }, (buffer) -> {
+            T packet = packetSupplier.get();
+            packet.readFromBuffer(buffer);
+            return packet;
+        }), (packet, context) -> {
+            if (context.isClientSide()) {
+                packet.handlePacketClient(context);
+                context.setPacketHandled(true);
+            } else {
+                packet.handlePacketServer(context);
+                context.setPacketHandled(true);
             }
-        }).add();
+        }).build();
     }
 
     public <T extends NetworkPacket> void send(T packet, PacketDistributor.PacketTarget target) {
@@ -90,9 +86,9 @@ public class NetworkManager {
 
         void handlePacketServer(CustomPayloadEvent.Context context);
 
-        void readFromBuffer(FriendlyByteBuf buffer);
+        void readFromBuffer(RegistryFriendlyByteBuf buffer);
 
-        void writeToBuffer(FriendlyByteBuf buffer);
+        void writeToBuffer(RegistryFriendlyByteBuf buffer);
 
     }
 

@@ -3,7 +3,7 @@ package lain.mods.cos.impl.network.packet;
 import lain.mods.cos.impl.InventoryManager;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.network.NetworkManager.NetworkPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class PacketSetHiddenFlags implements NetworkPacket {
@@ -35,14 +35,14 @@ public class PacketSetHiddenFlags implements NetworkPacket {
     }
 
     @Override
-    public void readFromBuffer(FriendlyByteBuf buffer) {
+    public void readFromBuffer(RegistryFriendlyByteBuf buffer) {
         modid = buffer.readUtf(Short.MAX_VALUE);
         identifier = buffer.readUtf(Short.MAX_VALUE);
         set = buffer.readBoolean();
     }
 
     @Override
-    public void writeToBuffer(FriendlyByteBuf buffer) {
+    public void writeToBuffer(RegistryFriendlyByteBuf buffer) {
         buffer.writeUtf(modid, Short.MAX_VALUE);
         buffer.writeUtf(identifier, Short.MAX_VALUE);
         buffer.writeBoolean(set);
