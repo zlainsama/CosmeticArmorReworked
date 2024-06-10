@@ -24,7 +24,7 @@ public class NetworkManager {
         channel = ChannelBuilder.named(name).networkProtocolVersion(version).acceptedVersions(Channel.VersionTest.exact(version)).simpleChannel();
     }
 
-    public <T extends NetworkPacket> void registerPacket(int discriminator, Class<T> packetClass, Supplier<T> packetSupplier) {
+    public <T extends NetworkPacket> void registerPacket(Class<T> packetClass, Supplier<T> packetSupplier) {
         if (packetClass == null || packetSupplier == null || packetSupplier.get() == null)
             throw new IllegalArgumentException();
         channel.play().bidirectional().add(packetClass, StreamCodec.of((buffer, packet) -> {
@@ -41,7 +41,11 @@ public class NetworkManager {
                 packet.handlePacketServer(context);
                 context.setPacketHandled(true);
             }
-        }).build();
+        });
+    }
+
+    public void finishSetup() {
+        channel.build();
     }
 
     public <T extends NetworkPacket> void send(T packet, PacketDistributor.PacketTarget target) {

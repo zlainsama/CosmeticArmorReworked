@@ -54,12 +54,13 @@ public class ForgeCosmeticArmorReworked {
     }
 
     private void setupNetworkPackets() {
-        ModObjects.network.registerPacket(1, PacketSyncCosArmor.class, PacketSyncCosArmor::new);
-        ModObjects.network.registerPacket(2, PacketSetSkinArmor.class, PacketSetSkinArmor::new);
-        ModObjects.network.registerPacket(3, PacketOpenCosArmorInventory.class, PacketOpenCosArmorInventory::new);
-        ModObjects.network.registerPacket(4, PacketOpenNormalInventory.class, PacketOpenNormalInventory::new);
-        ModObjects.network.registerPacket(5, PacketSyncHiddenFlags.class, PacketSyncHiddenFlags::new);
-        ModObjects.network.registerPacket(6, PacketSetHiddenFlags.class, PacketSetHiddenFlags::new);
+        ModObjects.network.registerPacket(PacketSyncCosArmor.class, PacketSyncCosArmor::new);
+        ModObjects.network.registerPacket(PacketSetSkinArmor.class, PacketSetSkinArmor::new);
+        ModObjects.network.registerPacket(PacketOpenCosArmorInventory.class, PacketOpenCosArmorInventory::new);
+        ModObjects.network.registerPacket(PacketOpenNormalInventory.class, PacketOpenNormalInventory::new);
+        ModObjects.network.registerPacket(PacketSyncHiddenFlags.class, PacketSyncHiddenFlags::new);
+        ModObjects.network.registerPacket(PacketSetHiddenFlags.class, PacketSetHiddenFlags::new);
+        ModObjects.network.finishSetup();
     }
 
 }
