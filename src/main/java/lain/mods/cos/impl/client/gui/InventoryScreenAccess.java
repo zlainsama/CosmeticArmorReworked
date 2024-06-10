@@ -6,8 +6,8 @@ import java.lang.reflect.Field;
 
 public class InventoryScreenAccess {
 
-    private static final Field fXMouse = findField(InventoryScreen.class, "xMouse", "D");
-    private static final Field fYMouse = findField(InventoryScreen.class, "yMouse", "E");
+    private static final Field fXMouse = findField(InventoryScreen.class, "xMouse", "f_98831_");
+    private static final Field fYMouse = findField(InventoryScreen.class, "yMouse", "f_98832_");
 
     public static float getXMouse(InventoryScreen screen) {
         try {
