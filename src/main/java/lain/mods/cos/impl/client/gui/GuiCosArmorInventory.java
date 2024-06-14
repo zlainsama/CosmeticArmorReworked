@@ -23,7 +23,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<ContainerCosArmor> implements RecipeUpdateListener {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(ModConstants.MODID, "textures/gui/cosarmorinventory.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "textures/gui/cosarmorinventory.png");
 
     private final RecipeBookComponent recipeBook = new RecipeBookComponent() {
 

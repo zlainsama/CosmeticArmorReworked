@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public record PayloadOpenCosArmorInventory() implements CustomPacketPayload {
 
-    public static final Type<PayloadOpenCosArmorInventory> TYPE = new Type<>(new ResourceLocation(ModConstants.MODID, "open_cosarmor_inv"));
+    public static final Type<PayloadOpenCosArmorInventory> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "open_cosarmor_inv"));
 
     public static final StreamCodec<FriendlyByteBuf, PayloadOpenCosArmorInventory> STREAM_CODEC = StreamCodec.of(PayloadOpenCosArmorInventory::encode, PayloadOpenCosArmorInventory::decode);
 

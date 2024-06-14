@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public record PayloadOpenNormalInventory() implements CustomPacketPayload {
 
-    public static final Type<PayloadOpenNormalInventory> TYPE = new Type<>(new ResourceLocation(ModConstants.MODID, "open_normal_inv"));
+    public static final Type<PayloadOpenNormalInventory> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "open_normal_inv"));
 
     public static final StreamCodec<FriendlyByteBuf, PayloadOpenNormalInventory> STREAM_CODEC = StreamCodec.of(PayloadOpenNormalInventory::encode, PayloadOpenNormalInventory::decode);
 

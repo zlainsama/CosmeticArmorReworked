@@ -13,7 +13,7 @@ import java.util.UUID;
 public record PayloadSyncCosArmor(UUID uuid, int slot, boolean isSkinArmor,
                                   ItemStack itemCosArmor) implements CustomPacketPayload {
 
-    public static final Type<PayloadSyncCosArmor> TYPE = new Type<>(new ResourceLocation(ModConstants.MODID, "sync_slot"));
+    public static final Type<PayloadSyncCosArmor> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "sync_slot"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PayloadSyncCosArmor> STREAM_CODEC = StreamCodec.of(PayloadSyncCosArmor::encode, PayloadSyncCosArmor::decode);
 

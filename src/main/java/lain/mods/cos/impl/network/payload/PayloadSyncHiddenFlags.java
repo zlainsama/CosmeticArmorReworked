@@ -12,7 +12,7 @@ import java.util.UUID;
 public record PayloadSyncHiddenFlags(UUID uuid, String modid, String identifier,
                                      boolean hidden) implements CustomPacketPayload {
 
-    public static final Type<PayloadSyncHiddenFlags> TYPE = new Type<>(new ResourceLocation(ModConstants.MODID, "sync_flag"));
+    public static final Type<PayloadSyncHiddenFlags> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "sync_flag"));
 
     public static final StreamCodec<FriendlyByteBuf, PayloadSyncHiddenFlags> STREAM_CODEC = StreamCodec.of(PayloadSyncHiddenFlags::encode, PayloadSyncHiddenFlags::decode);
 

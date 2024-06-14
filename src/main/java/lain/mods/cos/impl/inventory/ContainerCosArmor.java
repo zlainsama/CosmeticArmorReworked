@@ -7,16 +7,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -25,7 +25,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
+public class ContainerCosArmor extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
 
     private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET};
     private static final EquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
@@ -52,9 +52,15 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
             addSlot(new Slot(invPlayer, 39 - k, 8, 8 + k * 18) {
 
                 @Override
+                public void setByPlayer(ItemStack pNewStack, ItemStack pOldStack) {
+                    player.onEquipItem(equipmentslottype, pOldStack, pNewStack);
+                    super.setByPlayer(pNewStack, pOldStack);
+                }
+
+                @Override
                 public boolean mayPickup(Player playerIn) {
                     ItemStack itemstack = getItem();
-                    return (itemstack.isEmpty() || playerIn.isCreative() || !EnchantmentHelper.hasBindingCurse(itemstack)) && super.mayPickup(playerIn);
+                    return (itemstack.isEmpty() || playerIn.isCreative() || !EnchantmentHelper.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) && super.mayPickup(playerIn);
                 }
 
                 @Override
@@ -127,14 +133,15 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
     // net.minecraft.world.inventory.CraftingMenu.slotChangedCraftingGrid()
     private static void updateCrafting(AbstractContainerMenu menu, Level world, Player player, CraftingContainer craftingInventory, ResultContainer craftResultInventory) {
         if (!world.isClientSide) {
+            CraftingInput craftingInput = craftingInventory.asCraftInput();
             ServerPlayer serverplayer = (ServerPlayer) player;
             ItemStack stack = ItemStack.EMPTY;
-            Optional<RecipeHolder<CraftingRecipe>> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
+            Optional<RecipeHolder<CraftingRecipe>> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInput, world);
             if (optional.isPresent()) {
                 RecipeHolder<CraftingRecipe> holder = optional.get();
                 CraftingRecipe recipe = holder.value();
                 if (craftResultInventory.setRecipeUsed(world, serverplayer, holder)) {
-                    ItemStack stack1 = recipe.assemble(craftingInventory, world.registryAccess());
+                    ItemStack stack1 = recipe.assemble(craftingInput, world.registryAccess());
                     if (stack1.isItemEnabled(world.enabledFeatures()))
                         stack = stack1;
                 }
@@ -198,8 +205,8 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
     }
 
     @Override
-    public boolean recipeMatches(RecipeHolder<? extends Recipe<CraftingContainer>> arg0) {
-        return arg0.value().matches(craftingInventory, player.level());
+    public boolean recipeMatches(RecipeHolder<CraftingRecipe> pRecipe) {
+        return pRecipe.value().matches(craftingInventory.asCraftInput(), player.level());
     }
 
     @Override
@@ -224,7 +231,7 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
         if ((slot != null) && (slot.hasItem())) {
             ItemStack stack1 = slot.getItem();
             stack = stack1.copy();
-            EquipmentSlot desiredSlot = Mob.getEquipmentSlotForItem(stack);
+            EquipmentSlot desiredSlot = player.getEquipmentSlotForItem(stack);
 
             if (slotIndex == 0) // CraftingResult
             {
@@ -244,13 +251,13 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingContainer> {
             {
                 if (!moveItemStackTo(stack1, 9, 45, false))
                     return ItemStack.EMPTY;
-            } else if (desiredSlot.getType() == EquipmentSlot.Type.ARMOR && !slots.get(8 - desiredSlot.getIndex()).hasItem()) // ItemArmor - check NormalArmor slots
+            } else if (desiredSlot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR && !slots.get(8 - desiredSlot.getIndex()).hasItem()) // ItemArmor - check NormalArmor slots
             {
                 int j = 8 - desiredSlot.getIndex();
 
                 if (!moveItemStackTo(stack1, j, j + 1, false))
                     return ItemStack.EMPTY;
-            } else if (desiredSlot.getType() == EquipmentSlot.Type.ARMOR && !slots.get(49 - desiredSlot.getIndex()).hasItem()) // ItemArmor - check CosmeticArmor slots
+            } else if (desiredSlot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR && !slots.get(49 - desiredSlot.getIndex()).hasItem()) // ItemArmor - check CosmeticArmor slots
             {
                 int j = 49 - desiredSlot.getIndex();
 

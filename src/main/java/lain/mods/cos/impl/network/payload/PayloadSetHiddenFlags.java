@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public record PayloadSetHiddenFlags(String modid, String identifier, boolean hidden) implements CustomPacketPayload {
 
-    public static final Type<PayloadSetHiddenFlags> TYPE = new Type<>(new ResourceLocation(ModConstants.MODID, "set_flag"));
+    public static final Type<PayloadSetHiddenFlags> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "set_flag"));
 
     public static final StreamCodec<FriendlyByteBuf, PayloadSetHiddenFlags> STREAM_CODEC = StreamCodec.of(PayloadSetHiddenFlags::encode, PayloadSetHiddenFlags::decode);
 

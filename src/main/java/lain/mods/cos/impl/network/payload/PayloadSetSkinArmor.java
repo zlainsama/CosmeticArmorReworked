@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public record PayloadSetSkinArmor(int slot, boolean isSkinArmor) implements CustomPacketPayload {
 
-    public static final Type<PayloadSetSkinArmor> TYPE = new Type<>(new ResourceLocation(ModConstants.MODID, "set_skin_toggle"));
+    public static final Type<PayloadSetSkinArmor> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "set_skin_toggle"));
 
     public static final StreamCodec<FriendlyByteBuf, PayloadSetSkinArmor> STREAM_CODEC = StreamCodec.of(PayloadSetSkinArmor::encode, PayloadSetSkinArmor::decode);
 
