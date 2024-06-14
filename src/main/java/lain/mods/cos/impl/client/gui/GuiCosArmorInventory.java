@@ -21,7 +21,7 @@ import net.minecraft.world.inventory.Slot;
 
 public class GuiCosArmorInventory extends EffectRenderingInventoryScreen<ContainerCosArmor> implements RecipeUpdateListener {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("cosmeticarmorreworked", "textures/gui/cosarmorinventory.png");
 
     private final RecipeBookComponent recipeBook = new RecipeBookComponent() {
 

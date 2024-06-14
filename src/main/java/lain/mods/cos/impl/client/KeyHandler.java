@@ -19,8 +19,8 @@ public enum KeyHandler {
 
     public KeyMapping keyOpenCosArmorInventory = new KeyMapping("cos.key.opencosarmorinventory", InputConstants.UNKNOWN.getValue(), "key.categories.inventory");
 
-    private void handleClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.START || !mc.isWindowActive())
+    private void handleClientTick(TickEvent.ClientTickEvent.Pre event) {
+        if (!mc.isWindowActive())
             return;
         if (keyOpenCosArmorInventory.consumeClick() && !(mc.screen instanceof GuiCosArmorInventory))
             ModObjects.network.sendToServer(new PacketOpenCosArmorInventory());
