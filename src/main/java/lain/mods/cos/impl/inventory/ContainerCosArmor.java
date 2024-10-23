@@ -4,12 +4,12 @@ import com.mojang.datafixers.util.Pair;
 import lain.mods.cos.impl.ModObjects;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -18,37 +18,33 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-public class ContainerCosArmor extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
+public class ContainerCosArmor extends AbstractCraftingMenu {
 
-    private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET};
-    private static final EquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+    private static final Map<EquipmentSlot, ResourceLocation> TEXTURE_EMPTY_SLOTS = Map.of(EquipmentSlot.FEET, InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, EquipmentSlot.LEGS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, EquipmentSlot.CHEST, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, EquipmentSlot.HEAD, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET);
+    private static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     private final Player player;
 
-    private final CraftingContainer craftingInventory = new TransientCraftingContainer(this, 2, 2);
-    private final ResultContainer craftResultInventory = new ResultContainer();
-
     public ContainerCosArmor(Inventory invPlayer, InventoryCosArmor invCosArmor, Player player, int windowId) {
-        super(ModObjects.getTypeContainerCosArmor(), windowId);
+        super(ModObjects.getTypeContainerCosArmor(), windowId, 2, 2);
 
         this.player = player;
 
         // Crafting
-        addSlot(new ResultSlot(player, craftingInventory, craftResultInventory, 0, 154, 28));
-        for (int i = 0; i < 2; ++i)
-            for (int j = 0; j < 2; ++j)
-                addSlot(new Slot(craftingInventory, j + i * 2, 98 + j * 18, 18 + i * 18));
+        this.addResultSlot(player, 154, 28);
+        this.addCraftingGridSlots(98, 18);
 
         // NormalArmor
         for (int k = 0; k < 4; ++k) {
-            final EquipmentSlot equipmentslottype = VALID_EQUIPMENT_SLOTS[k];
+            final EquipmentSlot equipmentslottype = SLOT_IDS[k];
             addSlot(new Slot(invPlayer, 39 - k, 8, 8 + k * 18) {
 
                 @Override
@@ -67,7 +63,7 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingInput, CraftingRec
                 @Nullable
                 @OnlyIn(Dist.CLIENT)
                 public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                    return Pair.of(InventoryMenu.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
+                    return Pair.of(InventoryMenu.BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS.get(equipmentslottype));
                 }
 
                 @Override
@@ -83,17 +79,17 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingInput, CraftingRec
             });
         }
 
-        // PlayerInventory
-        for (int l = 0; l < 3; ++l)
-            for (int j1 = 0; j1 < 9; ++j1)
-                addSlot(new Slot(invPlayer, j1 + (l + 1) * 9, 8 + j1 * 18, 84 + l * 18));
-
-        // HotBar
-        for (int i1 = 0; i1 < 9; ++i1)
-            addSlot(new Slot(invPlayer, i1, 8 + i1 * 18, 142));
+        // PlayerInventory & HotBar
+        addStandardInventorySlots(invPlayer, 8, 84);
 
         // OffHand
         addSlot(new Slot(invPlayer, 40, 77, 62) {
+
+            @Override
+            public void setByPlayer(ItemStack pNewStack, ItemStack pOldStack) {
+                player.onEquipItem(EquipmentSlot.OFFHAND, pOldStack, pNewStack);
+                super.setByPlayer(pNewStack, pOldStack);
+            }
 
             @Override
             @Nullable
@@ -106,14 +102,14 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingInput, CraftingRec
 
         // CosmeticArmor
         for (int i = 0; i < 4; i++) {
-            final EquipmentSlot equipmentslottype = VALID_EQUIPMENT_SLOTS[i];
+            final EquipmentSlot equipmentslottype = SLOT_IDS[i];
             addSlot(new Slot(invCosArmor, 3 - i, 98 + i * 18, 62) {
 
                 @Override
                 @Nullable
                 @OnlyIn(Dist.CLIENT)
                 public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                    return Pair.of(InventoryMenu.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[equipmentslottype.getIndex()]);
+                    return Pair.of(InventoryMenu.BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS.get(equipmentslottype));
                 }
 
                 @Override
@@ -130,97 +126,46 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingInput, CraftingRec
         }
     }
 
-    // net.minecraft.world.inventory.CraftingMenu.slotChangedCraftingGrid()
-    private static void updateCrafting(AbstractContainerMenu menu, Level world, Player player, CraftingContainer craftingInventory, ResultContainer craftResultInventory) {
-        if (!world.isClientSide) {
-            CraftingInput craftingInput = craftingInventory.asCraftInput();
-            ServerPlayer serverplayer = (ServerPlayer) player;
-            ItemStack stack = ItemStack.EMPTY;
-            Optional<RecipeHolder<CraftingRecipe>> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInput, world);
-            if (optional.isPresent()) {
-                RecipeHolder<CraftingRecipe> holder = optional.get();
-                CraftingRecipe recipe = holder.value();
-                if (craftResultInventory.setRecipeUsed(world, serverplayer, holder)) {
-                    ItemStack stack1 = recipe.assemble(craftingInput, world.registryAccess());
-                    if (stack1.isItemEnabled(world.enabledFeatures()))
-                        stack = stack1;
+    // net.minecraft.world.inventory.InventoryMenu.slotChangedCraftingGrid()
+    private static void slotChangedCraftingGrid(AbstractContainerMenu p_150547_, ServerLevel p_379963_, Player p_150549_, CraftingContainer p_150550_, ResultContainer p_150551_, @Nullable RecipeHolder<CraftingRecipe> p_345124_) {
+        CraftingInput craftinginput = p_150550_.asCraftInput();
+        ServerPlayer serverplayer = (ServerPlayer) p_150549_;
+        ItemStack itemstack = ItemStack.EMPTY;
+        Optional<RecipeHolder<CraftingRecipe>> optional = p_379963_.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftinginput, p_379963_, p_345124_);
+        if (optional.isPresent()) {
+            RecipeHolder<CraftingRecipe> recipeholder = optional.get();
+            CraftingRecipe craftingrecipe = recipeholder.value();
+            if (p_150551_.setRecipeUsed(serverplayer, recipeholder)) {
+                ItemStack itemstack1 = craftingrecipe.assemble(craftinginput, p_379963_.registryAccess());
+                if (itemstack1.isItemEnabled(p_379963_.enabledFeatures())) {
+                    itemstack = itemstack1;
                 }
             }
-
-            craftResultInventory.setItem(0, stack);
-            menu.setRemoteSlot(0, stack);
-            serverplayer.connection.send(new ClientboundContainerSetSlotPacket(menu.containerId, menu.incrementStateId(), 0, stack));
         }
+
+        p_150551_.setItem(0, itemstack);
+        p_150547_.setRemoteSlot(0, itemstack);
+        serverplayer.connection.send(new ClientboundContainerSetSlotPacket(p_150547_.containerId, p_150547_.incrementStateId(), 0, itemstack));
     }
 
     @Override
-    public boolean stillValid(Player playerIn) {
-        return true;
-    }
-
-    @Override
-    public boolean canTakeItemForPickAll(ItemStack stack, Slot slotIn) {
-        return slotIn.container != craftResultInventory && super.canTakeItemForPickAll(stack, slotIn);
-    }
-
-    @Override
-    public void clearCraftingContent() {
-        craftResultInventory.clearContent();
-        craftingInventory.clearContent();
-    }
-
-    @Override
-    public void fillCraftSlotsStackedContents(StackedContents arg0) {
-        craftingInventory.fillStackedContents(arg0);
-    }
-
-    @Override
-    public RecipeBookType getRecipeBookType() {
-        return RecipeBookType.CRAFTING;
-    }
-
-    @Override
-    public boolean shouldMoveToInventory(int slotIndex) {
-        return slotIndex != getResultSlotIndex();
-    }
-
-    @Override
-    public int getGridHeight() {
-        return craftingInventory.getHeight();
-    }
-
-    @Override
-    public int getResultSlotIndex() {
-        return 0;
-    }
-
-    @Override
-    public int getSize() {
-        return 5;
-    }
-
-    @Override
-    public int getGridWidth() {
-        return craftingInventory.getWidth();
-    }
-
-    @Override
-    public boolean recipeMatches(RecipeHolder<CraftingRecipe> pRecipe) {
-        return pRecipe.value().matches(craftingInventory.asCraftInput(), player.level());
+    public void slotsChanged(Container inventoryIn) {
+        if (player.level() instanceof ServerLevel level)
+            slotChangedCraftingGrid(this, level, player, craftSlots, resultSlots, null);
     }
 
     @Override
     public void removed(Player playerIn) {
         super.removed(playerIn);
 
-        craftResultInventory.clearContent();
+        resultSlots.clearContent();
         if (!playerIn.level().isClientSide)
-            clearContainer(playerIn, craftingInventory);
+            clearContainer(playerIn, craftSlots);
     }
 
     @Override
-    public void slotsChanged(Container inventoryIn) {
-        updateCrafting(this, player.level(), player, craftingInventory, craftResultInventory);
+    public boolean stillValid(Player playerIn) {
+        return true;
     }
 
     @Override
@@ -289,6 +234,31 @@ public class ContainerCosArmor extends RecipeBookMenu<CraftingInput, CraftingRec
         }
 
         return stack;
+    }
+
+    @Override
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slotIn) {
+        return slotIn.container != resultSlots && super.canTakeItemForPickAll(stack, slotIn);
+    }
+
+    @Override
+    public Slot getResultSlot() {
+        return slots.get(0);
+    }
+
+    @Override
+    public List<Slot> getInputGridSlots() {
+        return slots.subList(1, 5);
+    }
+
+    @Override
+    public RecipeBookType getRecipeBookType() {
+        return RecipeBookType.CRAFTING;
+    }
+
+    @Override
+    protected Player owner() {
+        return player;
     }
 
 }

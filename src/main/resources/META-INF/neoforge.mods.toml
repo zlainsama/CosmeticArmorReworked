@@ -16,3 +16,6 @@ mandatory = true
 versionRange = "${neo_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+[[mixins]]
+config = "${mod_id}-mixins.json"

@@ -5,15 +5,11 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.RenderArmEvent;
-import net.neoforged.neoforge.client.event.RenderHandEvent;
-import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.ArrayDeque;
@@ -34,112 +30,39 @@ public enum PlayerRenderHandler {
 
     });
 
+    public void onExtractPlayerRenderState(AbstractClientPlayer player, PlayerRenderState state, float partialTicks) {
+        Deque<Runnable> queue = cache.getUnchecked(player);
+        restoreItems(queue);
+        NonNullList<ItemStack> armor = player.getInventory().armor;
+
+        for (int i = 0; i < armor.size(); i++) {
+            int slot = i;
+            ItemStack stack = armor.get(slot);
+            queue.add(() -> armor.set(slot, stack));
+        }
+
+        if (Disabled)
+            return;
+
+        InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(player.getUUID());
+        ItemStack stack;
+        for (int i = 0; i < armor.size(); i++) {
+            if (invCosArmor.isSkinArmor(i))
+                armor.set(i, ItemStack.EMPTY);
+            else if (!(stack = invCosArmor.getStackInSlot(i)).isEmpty())
+                armor.set(i, stack);
+        }
+    }
+
+    public void onFinishPlayerRenderState(AbstractClientPlayer player, PlayerRenderState state, float partialTicks) {
+        restoreItems(cache.getUnchecked(player));
+    }
+
     private void handleLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
         Disabled = false;
     }
 
-    private void handlePreRenderPlayer_High(RenderPlayerEvent.Pre event) {
-        Player player = event.getEntity();
-        Deque<Runnable> queue = cache.getUnchecked(player);
-        restoreItems(queue);
-        NonNullList<ItemStack> armor = player.getInventory().armor;
-
-        for (int i = 0; i < armor.size(); i++) {
-            int slot = i;
-            ItemStack stack = armor.get(slot);
-            queue.add(() -> armor.set(slot, stack));
-        }
-
-        if (Disabled)
-            return;
-
-        InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(player.getUUID());
-        ItemStack stack;
-        for (int i = 0; i < armor.size(); i++) {
-            if (invCosArmor.isSkinArmor(i))
-                armor.set(i, ItemStack.EMPTY);
-            else if (!(stack = invCosArmor.getStackInSlot(i)).isEmpty())
-                armor.set(i, stack);
-        }
-    }
-
-    private void handlePostRenderPlayer_Low(RenderPlayerEvent.Post event) {
-        restoreItems(cache.getUnchecked(event.getEntity()));
-    }
-
-    private void handlePreRenderPlayer_LowestCanceled(RenderPlayerEvent.Pre event) {
-        if (!event.isCanceled())
-            return;
-
-        restoreItems(cache.getUnchecked(event.getEntity()));
-    }
-
-    private void handleRenderHand_High(RenderHandEvent event) {
-        Player player = Minecraft.getInstance().player;
-        Deque<Runnable> queue = cache.getUnchecked(player);
-        restoreItems(queue);
-        NonNullList<ItemStack> armor = player.getInventory().armor;
-
-        for (int i = 0; i < armor.size(); i++) {
-            int slot = i;
-            ItemStack stack = armor.get(slot);
-            queue.add(() -> armor.set(slot, stack));
-        }
-
-        if (Disabled)
-            return;
-
-        InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(player.getUUID());
-        ItemStack stack;
-        for (int i = 0; i < armor.size(); i++) {
-            if (invCosArmor.isSkinArmor(i))
-                armor.set(i, ItemStack.EMPTY);
-            else if (!(stack = invCosArmor.getStackInSlot(i)).isEmpty())
-                armor.set(i, stack);
-        }
-    }
-
-    private void handleRenderHand_LowestCanceled(RenderHandEvent event) {
-        restoreItems(cache.getUnchecked(Minecraft.getInstance().player));
-    }
-
-    private void handleRenderArm_High(RenderArmEvent event) {
-        Player player = Minecraft.getInstance().player;
-        Deque<Runnable> queue = cache.getUnchecked(player);
-        restoreItems(queue);
-        NonNullList<ItemStack> armor = player.getInventory().armor;
-
-        for (int i = 0; i < armor.size(); i++) {
-            int slot = i;
-            ItemStack stack = armor.get(slot);
-            queue.add(() -> armor.set(slot, stack));
-        }
-
-        if (Disabled)
-            return;
-
-        InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(player.getUUID());
-        ItemStack stack;
-        for (int i = 0; i < armor.size(); i++) {
-            if (invCosArmor.isSkinArmor(i))
-                armor.set(i, ItemStack.EMPTY);
-            else if (!(stack = invCosArmor.getStackInSlot(i)).isEmpty())
-                armor.set(i, stack);
-        }
-    }
-
-    private void handleRenderArm_LowestCanceled(RenderArmEvent event) {
-        restoreItems(cache.getUnchecked(Minecraft.getInstance().player));
-    }
-
     public void registerEvents() {
-        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handlePreRenderPlayer_High);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOW, this::handlePostRenderPlayer_Low);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handlePreRenderPlayer_LowestCanceled);
-        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handleRenderHand_High);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handleRenderHand_LowestCanceled);
-        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::handleRenderArm_High);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, this::handleRenderArm_LowestCanceled);
         NeoForge.EVENT_BUS.addListener(this::handleLoggedOut);
     }
 
