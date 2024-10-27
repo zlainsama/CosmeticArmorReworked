@@ -3,8 +3,8 @@ package lain.mods.cos.impl;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class ModConfigs {
 
@@ -21,8 +21,8 @@ public class ModConfigs {
     public static BooleanValue CosArmorDisableRecipeBook;
     public static BooleanValue CosArmorDisableCosHatCommand;
 
-    public static void registerConfigs() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, new ForgeConfigSpec.Builder() {
+    public static void registerConfigs(FMLJavaModLoadingContext context) {
+        context.registerConfig(ModConfig.Type.CLIENT, new ForgeConfigSpec.Builder() {
             {
                 comment("These settings only affects client").push("Client");
                 CosArmorGuiButton_Hidden = comment("Whether or not to hide the button for opening CosmeticArmorInventory")
@@ -55,7 +55,7 @@ public class ModConfigs {
                 pop();
             }
         }.build());
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, new ForgeConfigSpec.Builder() {
+        context.registerConfig(ModConfig.Type.COMMON, new ForgeConfigSpec.Builder() {
             {
                 comment("These settings affects both server and client").push("Common");
                 CosArmorKeepThroughDeath = comment("Whether or not to keep items in cosmetic armor slots in the event of player death")

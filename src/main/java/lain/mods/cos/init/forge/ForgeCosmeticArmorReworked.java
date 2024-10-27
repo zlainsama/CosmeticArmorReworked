@@ -27,14 +27,14 @@ public class ForgeCosmeticArmorReworked {
 
     public static final RegistryObject<MenuType<ContainerCosArmor>> typeContainerCosArmor = MENU.register("inventorycosarmor", () -> IForgeMenuType.create(ModObjects.invMan::createContainerClient));
 
-    public ForgeCosmeticArmorReworked() {
-        MENU.register(FMLJavaModLoadingContext.get().getModEventBus());
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
+    public ForgeCosmeticArmorReworked(FMLJavaModLoadingContext context) {
+        MENU.register(context.getModEventBus());
+        context.getModEventBus().addListener(this::setup);
+        context.getModEventBus().addListener(this::setupClient);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupKeyMappings);
+            context.getModEventBus().addListener(this::setupKeyMappings);
         });
-        ModConfigs.registerConfigs();
+        ModConfigs.registerConfigs(context);
     }
 
     private void setup(FMLCommonSetupEvent event) {

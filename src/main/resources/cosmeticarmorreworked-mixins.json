@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "lain.mods.cos.init.forge.mixins",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "MixinPlayerRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
