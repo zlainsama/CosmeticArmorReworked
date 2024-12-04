@@ -62,8 +62,8 @@ public class ContainerCosArmor extends AbstractCraftingMenu {
                 @Override
                 @Nullable
                 @OnlyIn(Dist.CLIENT)
-                public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                    return Pair.of(InventoryMenu.BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS.get(equipmentslottype));
+                public ResourceLocation getNoItemIcon() {
+                    return TEXTURE_EMPTY_SLOTS.get(equipmentslottype);
                 }
 
                 @Override
@@ -94,8 +94,8 @@ public class ContainerCosArmor extends AbstractCraftingMenu {
             @Override
             @Nullable
             @OnlyIn(Dist.CLIENT)
-            public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+            public ResourceLocation getNoItemIcon() {
+                return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
             }
 
         });
@@ -108,8 +108,8 @@ public class ContainerCosArmor extends AbstractCraftingMenu {
                 @Override
                 @Nullable
                 @OnlyIn(Dist.CLIENT)
-                public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                    return Pair.of(InventoryMenu.BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS.get(equipmentslottype));
+                public ResourceLocation getNoItemIcon() {
+                    return TEXTURE_EMPTY_SLOTS.get(equipmentslottype);
                 }
 
                 @Override
