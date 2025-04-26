@@ -7,7 +7,8 @@ import lain.mods.cos.impl.ModObjects;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,6 +19,8 @@ import java.util.Deque;
 public enum PlayerRenderHandler {
 
     INSTANCE;
+
+    private static final EquipmentSlot[] SLOTS = new EquipmentSlot[]{EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
 
     public static boolean Disabled = false;
 
@@ -33,24 +36,27 @@ public enum PlayerRenderHandler {
     public void onExtractPlayerRenderState(AbstractClientPlayer player, PlayerRenderState state, float partialTicks) {
         Deque<Runnable> queue = cache.getUnchecked(player);
         restoreItems(queue);
-        NonNullList<ItemStack> armor = player.getInventory().armor;
+        Inventory invPlayer = PlayerInventoryHelper.getPlayerInventory(player);
 
-        for (int i = 0; i < armor.size(); i++) {
-            int slot = i;
-            ItemStack stack = armor.get(slot);
-            queue.add(() -> armor.set(slot, stack));
+        for (EquipmentSlot slot : SLOTS) {
+            PlayerInventoryHelper.getPlayerEquipmentSlotIndex(slot).ifPresent(index -> {
+                ItemStack stack = invPlayer.getItem(index);
+                queue.add(() -> invPlayer.setItem(index, stack));
+            });
         }
 
         if (Disabled)
             return;
 
         InventoryCosArmor invCosArmor = ModObjects.invMan.getCosArmorInventoryClient(player.getUUID());
-        ItemStack stack;
-        for (int i = 0; i < armor.size(); i++) {
+        for (int i = 0; i < SLOTS.length; i++) {
             if (invCosArmor.isSkinArmor(i))
-                armor.set(i, ItemStack.EMPTY);
-            else if (!(stack = invCosArmor.getStackInSlot(i)).isEmpty())
-                armor.set(i, stack);
+                PlayerInventoryHelper.getPlayerEquipmentSlotIndex(SLOTS[i]).ifPresent(index -> invPlayer.setItem(index, ItemStack.EMPTY));
+            else {
+                ItemStack stack = invCosArmor.getStackInSlot(i);
+                if (!stack.isEmpty())
+                    PlayerInventoryHelper.getPlayerEquipmentSlotIndex(SLOTS[i]).ifPresent(index -> invPlayer.setItem(index, stack));
+            }
         }
     }
 

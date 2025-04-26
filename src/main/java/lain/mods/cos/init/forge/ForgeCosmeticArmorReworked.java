@@ -8,14 +8,13 @@ import lain.mods.cos.impl.client.PlayerRenderHandler;
 import lain.mods.cos.impl.inventory.ContainerCosArmor;
 import lain.mods.cos.impl.network.packet.*;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -31,9 +30,9 @@ public class ForgeCosmeticArmorReworked {
         MENU.register(context.getModEventBus());
         context.getModEventBus().addListener(this::setup);
         context.getModEventBus().addListener(this::setupClient);
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+        if (FMLEnvironment.dist.isClient()) {
             context.getModEventBus().addListener(this::setupKeyMappings);
-        });
+        }
         ModConfigs.registerConfigs(context);
     }
 

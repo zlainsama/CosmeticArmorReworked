@@ -10,7 +10,6 @@ import java.util.function.BiConsumer;
 
 public class GuiCosArmorButton extends Button implements IShiftingWidget, ICreativeInvWidget {
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final BiConsumer<GuiCosArmorButton, Boolean> onCreativeTabChanged;
 
     public GuiCosArmorButton(int x, int y, int width, int height, Component message, Button.OnPress onPress, BiConsumer<GuiCosArmorButton, Boolean> onCreativeTabChanged) {
@@ -23,7 +22,7 @@ public class GuiCosArmorButton extends Button implements IShiftingWidget, ICreat
         boolean state = isHoveredOrFocused();
         graphics.blit(RenderType::guiTextured, GuiCosArmorInventory.TEXTURE, getX(), getY(), state ? 10 : 0, 166, 10, 10, 256, 256);
         if (state)
-            graphics.drawCenteredString(mc.font, getMessage(), getX() + 5, getY() + height, 0xffffff);
+            graphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + 5, getY() + height, 0xffffff);
     }
 
     @Override
