@@ -15,11 +15,10 @@ public enum KeyHandler {
 
     INSTANCE;
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     public KeyMapping keyOpenCosArmorInventory = new KeyMapping("cos.key.opencosarmorinventory", InputConstants.UNKNOWN.getValue(), "key.categories.inventory");
 
     private void handleClientTick(ClientTickEvent.Pre event) {
+        Minecraft mc = Minecraft.getInstance();
         if (!mc.isWindowActive())
             return;
         if (keyOpenCosArmorInventory.consumeClick() && !(mc.screen instanceof GuiCosArmorInventory))

@@ -1,6 +1,5 @@
 package lain.mods.cos.impl.inventory;
 
-import com.mojang.datafixers.util.Pair;
 import lain.mods.cos.impl.ModObjects;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.resources.ResourceLocation;

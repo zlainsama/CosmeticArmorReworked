@@ -3,7 +3,6 @@ package lain.mods.cos.api.inventory;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
@@ -41,24 +40,27 @@ public class CAStacksBase extends ItemStackHandler {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        setSize(nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : stacks.size());
-        ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
-        for (int i = 0; i < tagList.size(); i++) {
-            CompoundTag itemTags = tagList.getCompound(i);
-            int slot = itemTags.getInt("Slot");
-
-            if (slot >= 0 && slot < stacks.size()) {
-                if (itemTags.contains("id"))
-                    ItemStack.parse(provider, itemTags).ifPresent(stack -> stacks.set(slot, stack));
-                if (itemTags.contains("isSkinArmor"))
-                    isSkinArmor[slot] = itemTags.getBoolean("isSkinArmor");
+        setSize(nbt.getInt("Size").orElse(stacks.size()));
+        nbt.getList("Items").ifPresent(tagList -> {
+            for (int i = 0; i < tagList.size(); i++) {
+                tagList.getCompound(i).ifPresent(itemTags -> {
+                    itemTags.getInt("Slot").ifPresent(slot -> {
+                        if (slot >= 0 && slot < stacks.size()) {
+                            if (itemTags.contains("id"))
+                                ItemStack.parse(provider, itemTags).ifPresent(stack -> stacks.set(slot, stack));
+                            itemTags.getBoolean("isSkinArmor").ifPresent(b -> isSkinArmor[slot] = b);
+                        }
+                    });
+                });
             }
-        }
+        });
         hidden.clear();
-        Arrays.stream(nbt.getString("Hidden").split("\0")).forEach(str -> {
-            int i = str.indexOf(":");
-            if (i != -1)
-                hidden.computeIfAbsent(str.substring(0, i), key -> new HashSet<>()).add(str.substring(i + 1));
+        nbt.getString("Hidden").ifPresent(h -> {
+            Arrays.stream(h.split("\0")).forEach(str -> {
+                int i = str.indexOf(":");
+                if (i != -1)
+                    hidden.computeIfAbsent(str.substring(0, i), key -> new HashSet<>()).add(str.substring(i + 1));
+            });
         });
         onLoad();
     }
