@@ -122,33 +122,12 @@ public class GuiCosArmorInventory extends InventoryEffectRenderer
         ySizeFloat = p_drawScreen_2_;
     }
 
-    @SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked")
     @Override
     public void initGui()
     {
         buttonList.clear();
         super.initGui();
-
-        int offset = 0;
-        if (!mc.thePlayer.getActivePotionEffects().isEmpty() && !GuiEvents.isNeiHidden())
-            offset -= 60;
-
-        for (int i = 0; i < 4; i++)
-        {
-            int j = 3 - i;
-            GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(80 + j, guiLeft + 97 + offset, guiTop + 7 + 18 * i, 5, 5, "");
-            t.state = CosmeticArmorReworked.invMan.getCosArmorInventoryClient(mc.thePlayer.getUniqueID()).isSkinArmor(j) ? 1 : 0;
-            buttonList.add(t);
-        }
-    }
-
-    @Override
-    protected void keyTyped(char par1, int par2)
-    {
-        if (par2 == CosmeticArmorReworked.keyHandler.keyOpenCosArmorInventory.getKeyCode())
-            mc.thePlayer.closeScreen();
-        else
-            super.keyTyped(par1, par2);
     }
 
 }

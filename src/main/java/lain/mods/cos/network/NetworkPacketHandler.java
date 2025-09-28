@@ -7,14 +7,13 @@ import net.minecraft.network.NetHandlerPlayServer;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
 @Sharable
-public class NetworkPacketHandler extends SimpleChannelInboundHandler<NetworkPacket>
-{
+public class NetworkPacketHandler extends SimpleChannelInboundHandler<NetworkPacket> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket msg) throws Exception
-    {
+    protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket msg) throws Exception {
         if (ctx.channel().attr(NetworkRegistry.CHANNEL_SOURCE).get().isServer())
-            msg.handlePacketServer(((NetHandlerPlayServer) ctx.channel().attr(NetworkRegistry.NET_HANDLER).get()).playerEntity);
+            msg.handlePacketServer(
+                    ((NetHandlerPlayServer) ctx.channel().attr(NetworkRegistry.NET_HANDLER).get()).playerEntity);
         else
             msg.handlePacketClient();
     }

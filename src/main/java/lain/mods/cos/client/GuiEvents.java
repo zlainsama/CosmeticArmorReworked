@@ -63,25 +63,46 @@ public class GuiEvents
     @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void guiPostInit(GuiScreenEvent.InitGuiEvent.Post event)
-    {
-        if (event.gui instanceof GuiInventory || event.gui instanceof GuiCosArmorInventory)
-        {
+    public void guiPostInit(GuiScreenEvent.InitGuiEvent.Post event) {
+        if (event.gui instanceof GuiInventory || event.gui instanceof GuiCosArmorInventory) {
             int xSize = 176;
             int ySize = 166;
-
             int guiLeft = (event.gui.width - xSize) / 2;
             int guiTop = (event.gui.height - ySize) / 2;
 
-            if (!event.gui.mc.thePlayer.getActivePotionEffects().isEmpty() && isNeiHidden())
-            {
+            if (!event.gui.mc.thePlayer.getActivePotionEffects().isEmpty() && isNeiHidden()) {
                 guiLeft = 160 + (event.gui.width - xSize - 200) / 2;
             }
 
-            event.buttonList.add(new GuiCosArmorButton(76, guiLeft + 66, guiTop + 67, 10, 10, event.gui instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
+            event.buttonList.add(new GuiCosArmorButton(76, guiLeft + 66, guiTop + 67, 10, 10,
+                    event.gui instanceof GuiCosArmorInventory ? "cos.gui.buttonNormal" : "cos.gui.buttonCos"));
             GuiCosArmorToggleButton t = new GuiCosArmorToggleButton(77, guiLeft + 60, guiTop + 72, 5, 5, "");
             t.state = PlayerRenderHandler.HideCosArmor ? 1 : 0;
             event.buttonList.add(t);
+
+            if (event.gui instanceof GuiCosArmorInventory) {
+                net.minecraft.client.renderer.InventoryEffectRenderer gui = (net.minecraft.client.renderer.InventoryEffectRenderer) event.gui;
+                net.minecraft.inventory.Container container = gui.inventorySlots;
+
+                for (int i = 0; i < 4; i++) {
+                    net.minecraft.inventory.Slot cosmeticSlot = (net.minecraft.inventory.Slot) container.inventorySlots
+                            .get(9 + i);
+                    int slotX = cosmeticSlot.xDisplayPosition;
+                    int slotY = cosmeticSlot.yDisplayPosition;
+
+                    int buttonX = guiLeft + slotX + 18;
+                    int buttonY = guiTop + slotY;
+
+                    int buttonId = 80 + (3 - i);
+                    int armorSlotIndex = 3 - i;
+                    GuiCosArmorToggleButton skinButton = new GuiCosArmorToggleButton(buttonId, buttonX, buttonY, 5, 5,
+                            "");
+                    skinButton.state = CosmeticArmorReworked.invMan
+                            .getCosArmorInventoryClient(gui.mc.thePlayer.getUniqueID()).isSkinArmor(armorSlotIndex) ? 1
+                                    : 0;
+                    event.buttonList.add(skinButton);
+                }
+            }
         }
     }
 
