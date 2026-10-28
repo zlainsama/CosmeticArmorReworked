@@ -7,22 +7,23 @@ import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import lain.mods.cos.impl.network.payload.PayloadSetSkinArmor;
 import lain.mods.cos.init.ModConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.EffectsInInventory;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.recipebook.CraftingRecipeBookComponent;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 public class GuiCosArmorInventory extends AbstractRecipeBookScreen<ContainerCosArmor> {
 
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "textures/gui/cosarmorinventory.png");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(ModConstants.MODID, "textures/gui/cosarmorinventory.png");
     private final EffectsInInventory effects;
     public float oldMouseX;
     public float oldMouseY;
@@ -51,7 +52,7 @@ public class GuiCosArmorInventory extends AbstractRecipeBookScreen<ContainerCosA
                 InventoryCosArmor inv = ModObjects.invMan.getCosArmorInventoryClient(minecraft.player.getUUID());
                 inv.setSkinArmor(j, !inv.isSkinArmor(j));
                 ((GuiCosArmorToggleButton) button).state = inv.isSkinArmor(j) ? 1 : 0;
-                PacketDistributor.sendToServer(new PayloadSetSkinArmor(j, inv.isSkinArmor(j)));
+                ClientPacketDistributor.sendToServer(new PayloadSetSkinArmor(j, inv.isSkinArmor(j)));
             }));
         }
     }
@@ -67,14 +68,14 @@ public class GuiCosArmorInventory extends AbstractRecipeBookScreen<ContainerCosA
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, titleLabelX, titleLabelY, 4210752, false);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.text(font, title, titleLabelX, titleLabelY, 0xff404040, false);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        effects.render(graphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        effects.extractRenderState(graphics, mouseX, mouseY);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
         oldMouseX = (float) mouseX;
         oldMouseY = (float) mouseY;
     }
@@ -90,25 +91,26 @@ public class GuiCosArmorInventory extends AbstractRecipeBookScreen<ContainerCosA
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTicks);
         int i = leftPos;
         int j = topPos;
-        graphics.blit(RenderType::guiTextured, TEXTURE, i, j, 0, 0, imageWidth, imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0, 0, imageWidth, imageHeight, 256, 256);
         if (useMousePos) {
             oldMouseX = (float) mouseX;
             oldMouseY = (float) mouseY;
             useMousePos = false;
         }
-        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, i + 26, j + 8, i + 75, j + 78, 30, 0.0625F, oldMouseX, oldMouseY, minecraft.player);
+        InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, i + 26, j + 8, i + 75, j + 78, 30, 0.0625F, oldMouseX, oldMouseY, minecraft.player);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int buttonId) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         if (buttonClicked) {
             buttonClicked = false;
             return true;
         } else {
-            return super.mouseReleased(mouseX, mouseY, buttonId);
+            return super.mouseReleased(event);
         }
     }
 

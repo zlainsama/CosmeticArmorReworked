@@ -4,11 +4,11 @@ import lain.mods.cos.init.ModConstants;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record PayloadOpenNormalInventory() implements CustomPacketPayload {
 
-    public static final Type<PayloadOpenNormalInventory> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "open_normal_inv"));
+    public static final Type<PayloadOpenNormalInventory> TYPE = new Type<>(Identifier.fromNamespaceAndPath(ModConstants.MODID, "open_normal_inv"));
 
     public static final StreamCodec<FriendlyByteBuf, PayloadOpenNormalInventory> STREAM_CODEC = StreamCodec.of(PayloadOpenNormalInventory::encode, PayloadOpenNormalInventory::decode);
 

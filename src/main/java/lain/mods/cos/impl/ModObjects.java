@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 public class ModObjects {
 
     public static final Logger logger = LogManager.getLogger(NeoForgeCosmeticArmorReworked.class);
-    public static final InventoryManager invMan = FMLEnvironment.dist.isClient() ? new InventoryManagerClient() : new InventoryManager();
+    public static final InventoryManager invMan = FMLEnvironment.getDist().isClient() ? new InventoryManagerClient() : new InventoryManager();
 
     public static MenuType<ContainerCosArmor> getTypeContainerCosArmor() {
         return NeoForgeCosmeticArmorReworked.typeContainerCosArmor.get();

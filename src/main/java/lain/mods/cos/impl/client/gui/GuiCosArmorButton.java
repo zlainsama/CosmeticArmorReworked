@@ -1,9 +1,9 @@
 package lain.mods.cos.impl.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.BiConsumer;
@@ -18,11 +18,11 @@ public class GuiCosArmorButton extends Button implements IShiftingWidget, ICreat
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         boolean state = isHoveredOrFocused();
-        graphics.blit(RenderType::guiTextured, GuiCosArmorInventory.TEXTURE, getX(), getY(), state ? 10 : 0, 166, 10, 10, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, GuiCosArmorInventory.TEXTURE, getX(), getY(), state ? 10 : 0, 166, 10, 10, 256, 256);
         if (state)
-            graphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + 5, getY() + height, 0xffffff);
+            graphics.centeredText(Minecraft.getInstance().font, getMessage(), getX() + 5, getY() + height, 0xffffffff);
     }
 
     @Override

@@ -7,7 +7,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.function.Consumer;
 
@@ -15,14 +15,14 @@ public enum KeyHandler {
 
     INSTANCE;
 
-    public KeyMapping keyOpenCosArmorInventory = new KeyMapping("cos.key.opencosarmorinventory", InputConstants.UNKNOWN.getValue(), "key.categories.inventory");
+    public KeyMapping keyOpenCosArmorInventory = new KeyMapping("cos.key.opencosarmorinventory", InputConstants.UNKNOWN.getValue(), KeyMapping.Category.INVENTORY);
 
     private void handleClientTick(ClientTickEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
         if (!mc.isWindowActive())
             return;
         if (keyOpenCosArmorInventory.consumeClick() && !(mc.screen instanceof GuiCosArmorInventory))
-            PacketDistributor.sendToServer(new PayloadOpenCosArmorInventory());
+            ClientPacketDistributor.sendToServer(new PayloadOpenCosArmorInventory());
     }
 
     public void registerEvents() {

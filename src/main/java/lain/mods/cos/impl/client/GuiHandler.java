@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.Set;
 
@@ -70,9 +70,9 @@ public enum GuiHandler {
                                 InventoryScreenAccess.setXMouse(newGui, ((GuiCosArmorInventory) screen).oldMouseX);
                                 InventoryScreenAccess.setYMouse(newGui, ((GuiCosArmorInventory) screen).oldMouseY);
                                 screen.getMinecraft().setScreen(newGui);
-                                PacketDistributor.sendToServer(new PayloadOpenNormalInventory());
+                                ClientPacketDistributor.sendToServer(new PayloadOpenNormalInventory());
                             } else {
-                                PacketDistributor.sendToServer(new PayloadOpenCosArmorInventory());
+                                ClientPacketDistributor.sendToServer(new PayloadOpenCosArmorInventory());
                             }
                         },
                         null));
@@ -99,7 +99,7 @@ public enum GuiHandler {
                         10, 10,
                         Component.translatable("cos.gui.buttoncos"),
                         button -> {
-                            PacketDistributor.sendToServer(new PayloadOpenCosArmorInventory());
+                            ClientPacketDistributor.sendToServer(new PayloadOpenCosArmorInventory());
                         },
                         (button, isInventoryOpen) -> {
                             button.visible = isInventoryOpen;

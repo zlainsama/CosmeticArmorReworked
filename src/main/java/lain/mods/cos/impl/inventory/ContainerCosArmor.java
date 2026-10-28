@@ -2,7 +2,7 @@ package lain.mods.cos.impl.inventory;
 
 import lain.mods.cos.impl.ModObjects;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -27,7 +27,7 @@ import java.util.Optional;
 
 public class ContainerCosArmor extends AbstractCraftingMenu {
 
-    private static final Map<EquipmentSlot, ResourceLocation> TEXTURE_EMPTY_SLOTS = Map.of(EquipmentSlot.FEET, InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, EquipmentSlot.LEGS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, EquipmentSlot.CHEST, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, EquipmentSlot.HEAD, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET);
+    private static final Map<EquipmentSlot, Identifier> TEXTURE_EMPTY_SLOTS = Map.of(EquipmentSlot.FEET, InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, EquipmentSlot.LEGS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, EquipmentSlot.CHEST, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, EquipmentSlot.HEAD, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET);
     private static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     private final Player player;
@@ -61,7 +61,7 @@ public class ContainerCosArmor extends AbstractCraftingMenu {
                 @Override
                 @Nullable
                 @OnlyIn(Dist.CLIENT)
-                public ResourceLocation getNoItemIcon() {
+                public Identifier getNoItemIcon() {
                     return TEXTURE_EMPTY_SLOTS.get(equipmentslottype);
                 }
 
@@ -93,7 +93,7 @@ public class ContainerCosArmor extends AbstractCraftingMenu {
             @Override
             @Nullable
             @OnlyIn(Dist.CLIENT)
-            public ResourceLocation getNoItemIcon() {
+            public Identifier getNoItemIcon() {
                 return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
             }
 
@@ -107,7 +107,7 @@ public class ContainerCosArmor extends AbstractCraftingMenu {
                 @Override
                 @Nullable
                 @OnlyIn(Dist.CLIENT)
-                public ResourceLocation getNoItemIcon() {
+                public Identifier getNoItemIcon() {
                     return TEXTURE_EMPTY_SLOTS.get(equipmentslottype);
                 }
 
@@ -135,7 +135,7 @@ public class ContainerCosArmor extends AbstractCraftingMenu {
             RecipeHolder<CraftingRecipe> recipeholder = optional.get();
             CraftingRecipe craftingrecipe = recipeholder.value();
             if (p_150551_.setRecipeUsed(serverplayer, recipeholder)) {
-                ItemStack itemstack1 = craftingrecipe.assemble(craftinginput, p_379963_.registryAccess());
+                ItemStack itemstack1 = craftingrecipe.assemble(craftinginput);
                 if (itemstack1.isItemEnabled(p_379963_.enabledFeatures())) {
                     itemstack = itemstack1;
                 }
@@ -158,7 +158,7 @@ public class ContainerCosArmor extends AbstractCraftingMenu {
         super.removed(playerIn);
 
         resultSlots.clearContent();
-        if (!playerIn.level().isClientSide)
+        if (!playerIn.level().isClientSide())
             clearContainer(playerIn, craftSlots);
     }
 

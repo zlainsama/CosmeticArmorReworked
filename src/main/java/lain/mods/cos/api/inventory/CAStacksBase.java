@@ -3,6 +3,7 @@ package lain.mods.cos.api.inventory;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
@@ -38,7 +39,6 @@ public class CAStacksBase extends ItemStackHandler {
         isSkinArmor = new boolean[stacks.size()];
     }
 
-    @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         setSize(nbt.getInt("Size").orElse(stacks.size()));
         nbt.getList("Items").ifPresent(tagList -> {
@@ -47,7 +47,7 @@ public class CAStacksBase extends ItemStackHandler {
                     itemTags.getInt("Slot").ifPresent(slot -> {
                         if (slot >= 0 && slot < stacks.size()) {
                             if (itemTags.contains("id"))
-                                ItemStack.parse(provider, itemTags).ifPresent(stack -> stacks.set(slot, stack));
+                                ItemStack.CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), itemTags).result().ifPresent(stack -> stacks.set(slot, stack));
                             itemTags.getBoolean("isSkinArmor").ifPresent(b -> isSkinArmor[slot] = b);
                         }
                     });
@@ -92,7 +92,6 @@ public class CAStacksBase extends ItemStackHandler {
         return isSkinArmor[slot];
     }
 
-    @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         ListTag nbtTagList = new ListTag();
         for (int i = 0; i < stacks.size(); i++) {
@@ -100,7 +99,7 @@ public class CAStacksBase extends ItemStackHandler {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
                 if (!stacks.get(i).isEmpty())
-                    itemTag = (CompoundTag) stacks.get(i).save(provider, itemTag);
+                    itemTag = (CompoundTag) ItemStack.CODEC.encode(stacks.get(i), provider.createSerializationContext(NbtOps.INSTANCE), itemTag).getOrThrow();
                 if (isSkinArmor[i])
                     itemTag.putBoolean("isSkinArmor", true);
                 nbtTagList.add(itemTag);

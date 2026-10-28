@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'eclipse'
     id 'idea'
-    id 'net.neoforged.gradle.userdev' version '7.0.145'
+    id 'net.neoforged.moddev' version '2.0.141'
 }
 
 version = mod_version
@@ -15,12 +15,27 @@ base {
     archivesName = mod_id
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-dependencies {
-    implementation "net.neoforged:neoforge:${neo_version}"
+neoForge {
+    version = neo_version
+
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -47,7 +62,7 @@ processResources {
     from 'LICENSE.txt'
 }
 
-task apiZip(type: Jar) {
+tasks.register('apiZip', Jar) {
     from(sourceSets.main.java) {
         include "lain/mods/cos/api/**"
     }
@@ -58,8 +73,8 @@ task apiZip(type: Jar) {
     archiveClassifier = 'api'
 }
 
-artifacts {
-    archives apiZip
+tasks.named('assemble') {
+    dependsOn tasks.named('apiZip')
 }
 
 jar.doLast {

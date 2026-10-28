@@ -4,11 +4,11 @@ import lain.mods.cos.init.ModConstants;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record PayloadSetSkinArmor(int slot, boolean isSkinArmor) implements CustomPacketPayload {
 
-    public static final Type<PayloadSetSkinArmor> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "set_skin_toggle"));
+    public static final Type<PayloadSetSkinArmor> TYPE = new Type<>(Identifier.fromNamespaceAndPath(ModConstants.MODID, "set_skin_toggle"));
 
     public static final StreamCodec<FriendlyByteBuf, PayloadSetSkinArmor> STREAM_CODEC = StreamCodec.of(PayloadSetSkinArmor::encode, PayloadSetSkinArmor::decode);
 

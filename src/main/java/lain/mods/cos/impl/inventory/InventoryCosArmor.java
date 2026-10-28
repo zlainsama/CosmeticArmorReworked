@@ -30,10 +30,6 @@ public class InventoryCosArmor extends CAStacksBase implements Container, MenuPr
     }
 
     @Override
-    public void stopOpen(Player player) {
-    }
-
-    @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory invPlayer, Player player) {
         return new ContainerCosArmor(invPlayer, this, player, windowId);
     }
@@ -106,10 +102,6 @@ public class InventoryCosArmor extends CAStacksBase implements Container, MenuPr
                 listeners.stream().filter(HiddenFlagsChangeListener.class::isInstance).map(HiddenFlagsChangeListener.class::cast).forEach(l -> l.accept(this, modid, identifier));
             }
         }
-    }
-
-    @Override
-    public void startOpen(Player player) {
     }
 
     @Override

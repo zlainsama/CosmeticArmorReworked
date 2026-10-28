@@ -4,11 +4,11 @@ import lain.mods.cos.init.ModConstants;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record PayloadSetHiddenFlags(String modid, String identifier, boolean hidden) implements CustomPacketPayload {
 
-    public static final Type<PayloadSetHiddenFlags> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "set_flag"));
+    public static final Type<PayloadSetHiddenFlags> TYPE = new Type<>(Identifier.fromNamespaceAndPath(ModConstants.MODID, "set_flag"));
 
     public static final StreamCodec<FriendlyByteBuf, PayloadSetHiddenFlags> STREAM_CODEC = StreamCodec.of(PayloadSetHiddenFlags::encode, PayloadSetHiddenFlags::decode);
 

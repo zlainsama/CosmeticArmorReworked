@@ -33,7 +33,7 @@ public class NeoForgeCosmeticArmorReworked {
         MENU.register(bus);
         bus.addListener(this::setup);
         bus.addListener(this::setupClient);
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             bus.addListener(this::setupKeyMappings);
             bus.addListener(this::setupMenuScreens);
         }

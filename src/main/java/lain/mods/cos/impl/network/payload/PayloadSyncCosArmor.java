@@ -5,7 +5,7 @@ import lain.mods.cos.init.ModConstants;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.UUID;
@@ -13,7 +13,7 @@ import java.util.UUID;
 public record PayloadSyncCosArmor(UUID uuid, int slot, boolean isSkinArmor,
                                   ItemStack itemCosArmor) implements CustomPacketPayload {
 
-    public static final Type<PayloadSyncCosArmor> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ModConstants.MODID, "sync_slot"));
+    public static final Type<PayloadSyncCosArmor> TYPE = new Type<>(Identifier.fromNamespaceAndPath(ModConstants.MODID, "sync_slot"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PayloadSyncCosArmor> STREAM_CODEC = StreamCodec.of(PayloadSyncCosArmor::encode, PayloadSyncCosArmor::decode);
 

@@ -1,9 +1,9 @@
 {
   "required": true,
   "package": "lain.mods.cos.init.neoforge.mixins",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_21",
   "client": [
-    "MixinPlayerRenderer"
+    "MixinAvatarRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
